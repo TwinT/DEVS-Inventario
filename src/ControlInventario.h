@@ -11,10 +11,9 @@
 
 class ControlInventario : public Atomic {
   public:
-    
     ControlInventario(const string &name = ATOMIC_MODEL_NAME );
     virtual string className() const {return ATOMIC_MODEL_NAME;}
-    enum class State {WAITING, QUERY, CALC}
+    enum class State {WAITING, QUERY, CALC};
 
   protected:
     Model &initFunction();
@@ -28,9 +27,10 @@ class ControlInventario : public Atomic {
     Port &querySuppliers_o;
 
     VTime query_time;
-    int quantity = 0;
-    int s = 50;     // Parámetro de la política de pedidos
-    ControlInventario::State state = {WAITING};
+    int quantity{0};
+    int invStock{0};
+    int s{50};     // Parámetro de la política de pedidos
+    State state{State::WAITING};
 };
 
 #endif

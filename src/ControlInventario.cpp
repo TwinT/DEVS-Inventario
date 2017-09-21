@@ -2,8 +2,8 @@
 
 #include "message.h"
 #include "parsimu.h"
-#include "real.h"
-#include "tuple_value.h"
+//#include "real.h"
+//#include "tuple_value.h"
 
 #include "ControlInventario.h"
 
@@ -22,42 +22,45 @@ ControlInventario::ControlInventario(const string &name) :
 
 Model &ControlInventario::initFunction()
 {
-	holdIn(AtomicState::active, this->query_time);
-	this->state = WAITING;
+	holdIn(AtomicState::active, query_time);
+	state = State::WAITING;
 	return *this;
 }
 
 
 Model &ControlInventario::externalFunction(const ExternalMessage &msg)
 {
-	// Tiene un puerto solo de entrada
-	if(this->state == QUERY)
+	// Tiene un puerto solo de entrada, sino hay que preguntar por el puerto.
+	invStock = msg.value();
+	
+	if(state == State::QUERY)
 	{
 		quantity = 0;
-		if (msg.value() < s)
-			quantity = S - msg.value();
+		if (invStock < s)
+			quantity = S - invStock;
 
-		this->state = CALC;
-		holdIn(AtomicState::active, 0);
+		state = State::CALC;
+		holdIn(AtomicState::active, VTime::Zero);
 	}
 	else
-		holdin(AtomicState::active, nextChange() - (msg.time() - lastChange()));  // TODO: ver timeLeft()
-	
+		// TODO: ver timeLeft()
+		holdIn(AtomicState::active, nextChange() - (msg.time() - lastChange()));
+		
 	return *this;
 }
 
 
 Model &ControlInventario::internalFunction(const InternalMessage &)
 {
-	switch(this->state)
+	switch(state)
 	{
-		case WAITING:
-			holdIn(AtomicState::passive, infinite);
-			this->state = QUERY;
+		case State::WAITING:
+			holdIn(AtomicState::passive, VTime::Inf);
+			state = State::QUERY;
 			break;
 		default:	// sirve para case: CALC
 			holdIn(AtomicState::active, query_time);
-			this->state = WAITING;
+			state = State::WAITING;
 			break;
 	}
 	return *this ;
@@ -66,14 +69,13 @@ Model &ControlInventario::internalFunction(const InternalMessage &)
 
 Model &ControlInventario::outputFunction(const CollectMessage &msg)
 {
-	switch(this->state)
+	switch(state)
 	{
-		case WAITING:
-			double query = 1;
-			sendOuput(msg.time(), queryInventory_o, query);
+		case State::WAITING:
+			sendOutput(msg.time(), queryInventory_o, 1);
 			break;
 		default:
-			sendOuput(msg.time(), queryInventory_o, this->quantity);
+			sendOutput(msg.time(), querySuppliers_o, quantity);
 			break;
 	}
 	return *this ;
