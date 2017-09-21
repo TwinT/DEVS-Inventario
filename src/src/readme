@@ -1,0 +1,3 @@
+El cliente A genera pedidos siguiendo una distribución de probabilidad exponencial con una media de 0.12.
+Para verificarlo, edité el archivo output con vim reemplazando los caracteres ':' por ' ', quitando los
+'[' y ']' y haciendo magia para alinear las columnas.
