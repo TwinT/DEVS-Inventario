@@ -31,8 +31,8 @@ Model &ControlInventario::initFunction()
 Model &ControlInventario::externalFunction(const ExternalMessage &msg)
 {
 	// Tiene un puerto solo de entrada, sino hay que preguntar por el puerto.
-	invStock = msg.value();
-	
+	double invStock = (Real::from_value(msg.value())).value();
+
 	if(state == State::QUERY)
 	{
 		quantity = 0;
