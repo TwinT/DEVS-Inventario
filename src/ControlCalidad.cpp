@@ -2,8 +2,8 @@
 
 #include "message.h"
 #include "parsimu.h"
-//#include "real.h"
-//#include "tuple_value.h"
+#include "Product.h"
+#include "tuple_value.h"
 
 #include "ControlCalidad.h"
 
@@ -32,7 +32,7 @@ Model &ControlCalidad::externalFunction(const ExternalMessage &msg)
 {
 	if (msg.port() == prod_i)
 	{
-		Tuple<double> products = Tuple<double>::from_value(msg.value());
+		Tuple<Product> products = Tuple<Product>::from_value(msg.value());
 		std::cout<<products.size();
 	}
 	

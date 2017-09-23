@@ -2,8 +2,7 @@
 
 #include "message.h"
 #include "parsimu.h"
-//#include "real.h"
-//#include "tuple_value.h"
+#include "real.h"
 
 #include "ControlInventario.h"
 
