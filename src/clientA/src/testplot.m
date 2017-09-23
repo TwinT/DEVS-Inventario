@@ -1,4 +1,4 @@
-A = importdata('test',' ');
+A = importdata('salida',' ');
 hh = A(:,1); mm = A(:,2); ss = A(:,3); mss = A(:,4); n = A(:,5);
 figure()
 histogram(n,4,'Normalization','probability')

@@ -1,4 +1,9 @@
 [top]
-components : ClientA@ClientA
+components : CA@ClientA
 out : out_port
-link : query_o@ClientA out_port
+link : query_o@CA out_port
+
+[CA]
+distribution : Exponential
+value : 0.12
+

@@ -17,6 +17,10 @@ ClientA::ClientA(const string &name) :
 	// query_time(0,0,1,0),
 	distval({1,2,2,1})
 {
+	//TODO: pasar los parámetros de la distribución por el clientA.ma
+	//dist = Distribution::create( MainSimulator::Instance().getParameter( description(), "distribution" ) );
+	//string parameter( MainSimulator::Instance().getParameter( description(), dist->getVar( 0 ) ) ) ;
+	//dist->setVar( 0, str2Value( parameter ) ) ;
 	dist = Distribution::create("exponential");
 	dist->setVar(0, 12) ;
 	cout << "Model Created" << endl;
