@@ -91,8 +91,13 @@ Model &ClientB::outputFunction(const CollectMessage &msg)
 			//Tuple<Real> out_value{lastQuery};
 			sendOutput(msg.time(), query_o, this->lastQuery);
 		case StateClient::CALC: // pido n productos por puerto pedido_o
-			sendOutput(msg.time(), pedido_o, this->inStock);
-			sendOutput(msg.time(), encargado_o, this->lastQuery - this->inStock);
+			Tuple<Real> out_val{Real(this->inStock),Real(this->lastQuery-this->inStock)}
+			sendOutput(msg.time(), pedido_o, out_val);
+			// en lugar de usar una tupla podría hacer 2 envíos por 2 puertos
+			// pero para eso debería usar un flag y entre los dos envíos setear
+			// un holdIn(active,VTime::Zero).
+			//sendOutput(msg.time(), pedido_o, this->inStock);
+			//sendOutput(msg.time(), encargado_o, this->lastQuery - this->inStock);
 	}
 
 	return *this ;
