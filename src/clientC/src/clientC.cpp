@@ -6,17 +6,16 @@
 #include "real.h"
 #include "tuple_value.h"
 
-#include "clientB.h"
+#include "clientC.h"
 
 using namespace std;
 
 
-ClientB::ClientB(const string &name) :
+ClientC::ClientC(const string &name) :
 	Atomic(name),
 	disponibles_i(addInputPort("disponibles_i")),
 	query_o(addOutputPort("query_o")),
 	pedido_o(addOutputPort("pedido_o")),
-	encargado_o(addOutputPort("encargado_o")),
 	distval({1,2,2,1})
 {
 	//TODO: pasar los parámetros de la distribución por le .ma
@@ -26,7 +25,7 @@ ClientB::ClientB(const string &name) :
 }
 
 
-Model &ClientB::initFunction()
+Model &ClientC::initFunction()
 {
 	
 	this->elapsed = VTime::Zero;
@@ -42,7 +41,7 @@ Model &ClientB::initFunction()
 }
 
 
-Model &ClientB::externalFunction(const ExternalMessage &msg)
+Model &ClientC::externalFunction(const ExternalMessage &msg)
 {
 	this->sigma    = nextChange();
 	this->elapsed  = msg.time() - lastChange();
@@ -52,7 +51,14 @@ Model &ClientB::externalFunction(const ExternalMessage &msg)
 		if(this->stateC == StateClient::QUERY)
 		{
 			this->inStock = Real::from_value(msg.value());
-			this->stateC = StateClient::CALC;
+			if(this->inStock >= this->lastQuery)
+			{
+				this->stateC = StateClient::ACCEPT;
+			}
+			else
+			{
+				this->stateC = StateClient::DECLINE;
+			}
 			holdIn(AtomicState::active, VTime::Zero);
 		}else{ // si llegara un msg cuando stateC != QUERY
 			holdIn(AtomicState::active, this->elapsed);
@@ -63,11 +69,11 @@ Model &ClientB::externalFunction(const ExternalMessage &msg)
 }
 
 
-Model &ClientB::internalFunction(const InternalMessage &)
+Model &ClientC::internalFunction(const InternalMessage &)
 {
 	switch(this->stateC)
 	{
-		case StateClient::CALC:
+		case StateClient::ACCEPT:
 			this->stateC = StateClient::IDLE;
 			query_time = VTime(fabs(this->dist->get()));
 			holdIn(AtomicState::active, this->query_time);
@@ -82,7 +88,7 @@ Model &ClientB::internalFunction(const InternalMessage &)
 }
 
 
-Model &ClientB::outputFunction(const CollectMessage &msg)
+Model &ClientC::outputFunction(const CollectMessage &msg)
 {
 	switch(this->stateC)
 	{
@@ -90,9 +96,8 @@ Model &ClientB::outputFunction(const CollectMessage &msg)
 			this->lastQuery = Real(this->distval(this->rng)+1);
 			//Tuple<Real> out_value{lastQuery};
 			sendOutput(msg.time(), query_o, this->lastQuery);
-		case StateClient::CALC: // pido n productos por puerto pedido_o
-			sendOutput(msg.time(), pedido_o, this->inStock);
-			sendOutput(msg.time(), encargado_o, this->lastQuery - this->inStock);
+		case StateClient::ACCEPT: // pido n productos por puerto pedido_o
+			sendOutput(msg.time(), pedido_o, this->lastQuery);
 	}
 
 	return *this ;

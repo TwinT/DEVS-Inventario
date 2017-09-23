@@ -1,5 +1,5 @@
-#ifndef _CLIENTB_H_
-#define _CLIENTB_H_
+#ifndef _CLIENTC_H_
+#define _CLIENTRCH_
 
 #include <random>
 
@@ -8,15 +8,15 @@
 #include "distri.h"        // class Distribution 
 
 
-#define ATOMIC_MODEL_NAME "ClientB"
+#define ATOMIC_MODEL_NAME "ClientC"
 
 
-class ClientB : public Atomic {
+class ClientC : public Atomic {
   public:
     
-    ClientB(const string &name = ATOMIC_MODEL_NAME );
+    ClientC(const string &name = ATOMIC_MODEL_NAME );
     virtual string className() const {  return ATOMIC_MODEL_NAME ;}
-    enum class StateClient {IDLE, QUERY, CALC};
+    enum class StateClient {IDLE, QUERY, ACCEPT, DECLINE};
   
   protected:
     Model &initFunction();
@@ -28,7 +28,6 @@ class ClientB : public Atomic {
     const Port &disponibles_i; // respuesta de cantidad de productos disponibles
     Port &query_o;       // consulta de disponibilidad de productos
     Port &pedido_o;      // cantidad de productos pedidos
-    Port &encargado_o;   // cantidad de productos encargados
 
     // Lifetime programmed since the last state transition to the next planned internal transition.
     VTime sigma;
