@@ -1,9 +1,9 @@
 #include "pmodeladm.h"
 #include "register.h"
 
-#include "ControlInventario.h"
-#include "proveedorInmediato.h"
-
+// TODO: cambiar este include por el header del modelo atómico
+// que se desee utilizar.
+#include "clientB.h"
 
 
 void register_atomics_on(ParallelModelAdmin &admin)
@@ -11,6 +11,5 @@ void register_atomics_on(ParallelModelAdmin &admin)
 	// TODO: cambiar 'MiModelo' por el nombre de la clase que representa
 	// el modelo atómico y "Nombre del modelo" por el string utilizado en
 	// dicha clase como valor de retorno del método className().
-	admin.registerAtomic(NewAtomicFunction<ProveedorInmediato>(), "ProveedorInmediato");
-	admin.registerAtomic(NewAtomicFunction<ControlInventario>(), "ControlInventario");
+	admin.registerAtomic(NewAtomicFunction<ClientB>(), "ClientB");
 }

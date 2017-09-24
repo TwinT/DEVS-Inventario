@@ -1,0 +1,7 @@
+El cliente A genera pedidos siguiendo una distribución de probabilidad exponencial con una media de 0.12.
+Para verificarlo, edité el archivo output con vim reemplazando los caracteres ':' por ' ', quitando los
+'[' y ']' y haciendo magia para alinear las columnas (invocando al comando column desde vim: %! column -t).
+
+Ejecución:
+
+bin/cd++ -m../clientA.ma -osalida -t10:00:00:00
