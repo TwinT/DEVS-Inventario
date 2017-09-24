@@ -4,6 +4,8 @@
 #include <random>
 
 #include "atomic.h"
+#include "VTime.h"
+#include "real.h"
 
 #define ATOMIC_MODEL_NAME "ProveedorInmediato"
 
@@ -20,17 +22,24 @@ class ProveedorInmediato : public Atomic {
     Model &outputFunction( const CollectMessage & );
 
   private:
-    const Port &pedido;
     Port &entrega;
+    const Port &pedido;
+
+    enum State{
+	  idle,
+      serve,
+    };
+    State state;
+    std::vector<VTime> productos;
 
     // Lifetime programmed since the last state transition to the next planned internal transition.    
-    Time sigma; 
+    VTime sigma; 
     
     // Time elapsed since the last state transition until now
-    Time elapsed;
+    VTime elapsed;
     
     // Time remaining to complete the last programmed Lifetime
-    Time timeLeft;  
+    VTime timeLeft;  
 };
 
 #endif
