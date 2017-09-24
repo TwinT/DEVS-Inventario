@@ -56,12 +56,10 @@ Model &ControlInventario::internalFunction(const InternalMessage &)
 		case State::WAITING:
 			holdIn(AtomicState::passive, VTime::Inf);
 			state = State::QUERY;
-			std::cout<<"Internal Function WAITING"<<std::endl;
 			break;
 		case State::CALC:
 			holdIn(AtomicState::passive, query_time);
 			state = State::WAITING;
-			std::cout<<"Internal Function CALC"<<std::endl;
 		default:	// sirve para case: CALC
 			holdIn(AtomicState::active, query_time);
 			state = State::WAITING;
@@ -77,11 +75,9 @@ Model &ControlInventario::outputFunction(const CollectMessage &msg)
 	{
 		case State::WAITING:
 			sendOutput(msg.time(), queryInventory_o, 1);
-			std::cout<<"Ouput Function QI"<<std::endl;
 			break;
 		default: //CALC
 			sendOutput(msg.time(), querySuppliers_o, quantity);
-			std::cout<<"Ouput Function QS:"<<quantity<<std::endl;
 			break;
 	}
 	return *this ;

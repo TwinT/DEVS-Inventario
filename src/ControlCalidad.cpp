@@ -13,7 +13,7 @@ using namespace std;
 ControlCalidad::ControlCalidad(const string &name) :
 	Atomic(name),
 	prod_i(addInputPort("prod_i")),
-	queryClient_i(addInputPort("queryInventory_o")), 
+	queryClient_i(addInputPort("queryClient_i")), 
 	queryInventory_o(addOutputPort("queryInventory_o")), 
 	prod_o(addOutputPort("prod_o"))
 {
@@ -37,6 +37,8 @@ Model &ControlCalidad::externalFunction(const ExternalMessage &msg)
 		// Process input
 		for (int i=0; i<products.size(); i++)
 		{
+			//Debug:
+			std::cout<<"External function: "<<products[i]<<std::endl;
 			if (products[i] > msg.time())
 			{
 				passProducts.push_back(products[i]);
