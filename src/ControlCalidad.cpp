@@ -32,28 +32,29 @@ Model &ControlCalidad::externalFunction(const ExternalMessage &msg)
 {
 	if (msg.port() == prod_i)
 	{
-		Tuple<Product> products = Tuple<Product>::from_value(msg.value());
-		
-		// Process input
-		for (int i=0; i<products.size(); i++)
+		if (state == State::INV_WAIT)
 		{
-			//Debug:
-			std::cout<<"External function: "<<products[i]<<std::endl;
-			if (products[i] == VTime::Zero)
-				invEmpty = true;
-			if (products[i] > msg.time())
+			Tuple<Real> products = Tuple<Real>::from_value(msg.value());
+			int tupleSize = products.size();
+			// Process input
+			for (int i=0; i<tupleSize; i++)
 			{
-				passProducts.push_back(products[i]);
-				numPassProd++;
+				if (products[i].value() == 0)
+					invEmpty = true;
+				if (VTime(static_cast<float>(products[i].value())) > msg.time())
+				{
+					passProducts.push_back(products[i]);
+					numPassProd++;
+				}
 			}
+			
+			// Next State
+			state = State::CHECK;
+			holdIn(AtomicState::active, VTime::Zero);
 		}
-		
-		// Next State
-		state = State::CHECK;
-		holdIn(AtomicState::active, VTime::Zero);
 	}
 	
-	if (msg.port() == queryClient_i)
+	else if (msg.port() == queryClient_i)
 	{
 		if (state == State::WAITING)	// Redundant
 		{
@@ -62,6 +63,7 @@ Model &ControlCalidad::externalFunction(const ExternalMessage &msg)
 			holdIn(AtomicState::active, VTime::Zero);
 		}
 	}
+	
 	else
 		// No particular time Advance in this module
 		holdIn(AtomicState::passive, VTime::Inf);
@@ -78,13 +80,16 @@ Model &ControlCalidad::internalFunction(const InternalMessage &)
 			state = State::INV_WAIT;
 			holdIn(AtomicState::passive, VTime::Inf);
 			break;
+			
 		case State::CHECK:
-			if (numPassProd <= numClientQuery)
+			if ((numPassProd < numClientQuery) & (~invEmpty))
 				state = State::QUERY;
 			else
 				state = State::SEND;
+				
 			holdIn(AtomicState::active, VTime::Zero);
 			break;
+			
 		case State::SEND:
 			holdIn(AtomicState::passive, VTime::Inf);
 			state = State::WAITING;
@@ -92,6 +97,7 @@ Model &ControlCalidad::internalFunction(const InternalMessage &)
 			invEmpty = false;
 			passProducts.clear();
 			break;
+			
 		default:	// Should not enter here
 			holdIn(AtomicState::passive, VTime::Inf);
 			state = State::WAITING;
@@ -113,7 +119,7 @@ Model &ControlCalidad::outputFunction(const CollectMessage &msg)
 		case State::CHECK:
 			break;
 		case State::SEND:
-			sendOutput(msg.time(), prod_o, Tuple<VTime>(&passProducts));
+			sendOutput(msg.time(), prod_o, Tuple<Real>(&passProducts));
 			break;
 		default:
 			break;

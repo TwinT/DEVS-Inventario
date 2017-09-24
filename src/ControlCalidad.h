@@ -28,7 +28,7 @@ class ControlCalidad : public Atomic {
 	
 	double numClientQuery{0};
 	double numPassProd{0};
-	std::vector<VTime> passProducts;
+	std::vector<Real> passProducts;
     State state = {State::WAITING};
     bool invEmpty{false};	//Flag to inform when invetory is empty
 };
