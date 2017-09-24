@@ -1,0 +1,4 @@
+[logfiles]
+ParallelRoot : ../test/proveedorInmediato.log00 
+top : ../test/proveedorInmediato.log02 
+proveedorinmediato : ../test/proveedorInmediato.log01 
