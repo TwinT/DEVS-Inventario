@@ -5,13 +5,13 @@
 #include "VTime.h"
 
 
-#define ATOMIC_MODEL_NAME "AtencionAlCliente"
+#define ATENCIONALCLIENTE_NAME "AtencionAlCliente"
 
 
 class AtencionAlCliente : public Atomic {
   public:
-    AtencionAlCliente(const string &name = ATOMIC_MODEL_NAME );
-    virtual string className() const {return ATOMIC_MODEL_NAME;}
+    AtencionAlCliente(const string &name = ATENCIONALCLIENTE_NAME );
+    virtual string className() const {return ATENCIONALCLIENTE_NAME;}
     enum class State {WAITING, QUERY, INV_WAIT, CLI_RPLY, SEND, CLI_WAIT, INV_GET};
 
   protected:

@@ -51,6 +51,7 @@ Model &AtencionAlCliente::externalFunction(const ExternalMessage &msg)
 		if (state == State::CLI_WAIT)
 		{
 			productsBuyed = Real::from_value(msg.value()).value();
+			cout<<"Ext func prodBuyed: "<<productsBuyed<<endl;
 			if (productsBuyed != 0)
 			{
 				state = State::INV_GET;
@@ -101,12 +102,15 @@ Model &AtencionAlCliente::outputFunction(const CollectMessage &msg)
 	{
 		case State::QUERY:
 			sendOutput(msg.time(), queryInventory_o, queryClient);
+			cout<<"Inv query: "<< queryClient<<endl;
 			break;
 		case State::CLI_RPLY:
 			sendOutput(msg.time(), queryClient_o, inventoryStock);
+			cout<<"To clientreply: "<< inventoryStock<<endl;
 			break;
 		case State::INV_GET:
 			sendOutput(msg.time(), prodInventory_o, productsBuyed);
+			cout<<"Inv get: "<< productsBuyed<<endl;
 			break;
 		default:
 			break;
