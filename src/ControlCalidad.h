@@ -12,7 +12,7 @@ class ControlCalidad : public Atomic {
   public:
     ControlCalidad(const string &name = ATOMIC_MODEL_NAME );
     virtual string className() const {return ATOMIC_MODEL_NAME;}
-    enum class State {WAITING, CHECK, QUERY, INV_WAIT};
+    enum class State {WAITING, CHECK, QUERY, INV_WAIT, SEND};
 
   protected:
     Model &initFunction();
@@ -28,6 +28,7 @@ class ControlCalidad : public Atomic {
 	
 	double numClientQuery{0};
 	double numPassProd{0};
+	std::vector<VTime> passProducts;
     State state = {State::WAITING};
 };
 

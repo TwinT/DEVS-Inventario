@@ -33,7 +33,20 @@ Model &ControlCalidad::externalFunction(const ExternalMessage &msg)
 	if (msg.port() == prod_i)
 	{
 		Tuple<Product> products = Tuple<Product>::from_value(msg.value());
-		std::cout<<products.size();
+		
+		// Process input
+		for (int i=0; i<products.size(); i++)
+		{
+			if (products[i] > msg.time())
+			{
+				passProducts.push_back(products[i]);
+				numPassProd++;
+			}
+		}
+		
+		// Next State
+		state = State::CHECK;
+		holdIn(AtomicState::active, VTime::Zero);
 	}
 	
 	if (msg.port() == queryClient_i)
@@ -42,10 +55,11 @@ Model &ControlCalidad::externalFunction(const ExternalMessage &msg)
 		{
 			numClientQuery = (Real::from_value(msg.value())).value();
 			state = State::QUERY;
+			holdIn(AtomicState::active, VTime::Zero);
 		}
 	}
 	else
-		// No time Advance in this module
+		// No particular time Advance in this module
 		holdIn(AtomicState::passive, VTime::Inf);
 	
 	return *this;
@@ -57,16 +71,23 @@ Model &ControlCalidad::internalFunction(const InternalMessage &)
 	switch(state)
 	{
 		case State::QUERY:
-			holdIn(AtomicState::passive, VTime::Inf);
 			state = State::INV_WAIT;
+			holdIn(AtomicState::passive, VTime::Inf);
 			break;
 		case State::CHECK:
 			if (numPassProd <= numClientQuery)
 				state = State::QUERY;
 			else
-				state = State::WAITING;
+				state = State::SEND;
+			holdIn(AtomicState::active, VTime::Zero);
 			break;
-		default:	// Shouldnt enter here
+		case State::SEND:
+			holdIn(AtomicState::passive, VTime::Inf);
+			state = State::WAITING;
+			numPassProd = 0;
+			passProducts.clear();
+			break;
+		default:	// Should not enter here
 			holdIn(AtomicState::passive, VTime::Inf);
 			state = State::WAITING;
 			break;
@@ -77,10 +98,17 @@ Model &ControlCalidad::internalFunction(const InternalMessage &)
 
 Model &ControlCalidad::outputFunction(const CollectMessage &msg)
 {
+	double numQueryProds{0};
 	switch(state)
 	{
 		case State::QUERY:
-			sendOutput(msg.time(), queryInventory_o, numClientQuery);
+			numQueryProds = numClientQuery - numPassProd;
+			sendOutput(msg.time(), queryInventory_o, numQueryProds);
+			break;
+		case State::CHECK:
+			break;
+		case State::SEND:
+			sendOutput(msg.time(), prod_o, Tuple<VTime>(&passProducts));
 			break;
 		default:
 			break;
