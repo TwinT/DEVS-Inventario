@@ -5,13 +5,13 @@
 #include "VTime.h"
 
 
-#define ATOMIC_MODEL_NAME "ControlCalidad"
+#define CONTROLCALIDAD_NAME "ControlCalidad"
 
 
 class ControlCalidad : public Atomic {
   public:
-    ControlCalidad(const string &name = ATOMIC_MODEL_NAME );
-    virtual string className() const {return ATOMIC_MODEL_NAME;}
+    ControlCalidad(const string &name = CONTROLCALIDAD_NAME );
+    virtual string className() const {return CONTROLCALIDAD_NAME;}
     enum class State {WAITING, CHECK, QUERY, INV_WAIT, SEND};
 
   protected:

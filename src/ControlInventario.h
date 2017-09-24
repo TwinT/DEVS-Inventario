@@ -5,14 +5,14 @@
 #include "VTime.h"
 
 
-#define ATOMIC_MODEL_NAME "ControlInventario"
+#define CONTROLINVENTARIO_NAME "ControlInventario"
 
 #define S 200 // Inventario máximo
 
 class ControlInventario : public Atomic {
   public:
-    ControlInventario(const string &name = ATOMIC_MODEL_NAME );
-    virtual string className() const {return ATOMIC_MODEL_NAME;}
+    ControlInventario(const string &name = CONTROLINVENTARIO_NAME );
+    virtual string className() const {return CONTROLINVENTARIO_NAME;}
     enum class State {WAITING, QUERY, CALC};
 
   protected:

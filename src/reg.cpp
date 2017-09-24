@@ -2,6 +2,7 @@
 #include "register.h"
 
 #include "ControlInventario.h"
+#include "ControlCalidad.h"
 #include "proveedorInmediato.h"
 #include "AtencionAlCliente.h"
 
@@ -13,6 +14,7 @@ void register_atomics_on(ParallelModelAdmin &admin)
 	// el modelo atómico y "Nombre del modelo" por el string utilizado en
 	// dicha clase como valor de retorno del método className().
 	admin.registerAtomic(NewAtomicFunction<ProveedorInmediato>(), "ProveedorInmediato");
-	admin.registerAtomic(NewAtomicFunction<ControlInventario>(), "ControlInventario");
+	admin.registerAtomic(NewAtomicFunction<ControlInventario>(), CONTROLINVENTARIO_NAME);
+	admin.registerAtomic(NewAtomicFunction<ControlCalidad>(), CONTROLCALIDAD_NAME);
 	admin.registerAtomic(NewAtomicFunction<AtencionAlCliente>(), ATENCIONALCLIENTE_NAME);
 }
