@@ -1,0 +1,9 @@
+00:00:01:00	queryClient_i 1
+00:00:01:10 queryInventory_i 2
+00:00:01:15 numProdClient_i 1
+00:00:02:00	queryClient_i 3
+00:00:02:10 queryInventory_i 2
+00:00:02:15 numProdClient_i 2
+00:00:03:00	queryClient_i 3
+00:00:03:10 queryInventory_i 2
+00:00:03:15 numProdClient_i 0
