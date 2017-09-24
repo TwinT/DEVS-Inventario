@@ -66,4 +66,6 @@ ${OBJ_DIR}/proveedorInmediato.o proveedorInmediato.dep : proveedorInmediato.cpp 
  /home/marcos/Documents/facu/doctorado/SED/cdpp_kernel/cdpp_kernel/cd++/warped/notime/InputQueue.h \
  /home/marcos/Documents/facu/doctorado/SED/cdpp_kernel/cdpp_kernel/cd++/proc/process.h \
  /home/marcos/Documents/facu/doctorado/SED/cdpp_kernel/cdpp_kernel/cd++/proc/pprocess.h \
- /home/marcos/Documents/facu/doctorado/SED/cdpp_kernel/cdpp_kernel/cd++/val/tuple_value.h
+ /home/marcos/Documents/facu/doctorado/SED/cdpp_kernel/cdpp_kernel/cd++/val/tuple_value.h \
+ Product.h \
+ /home/marcos/Documents/facu/doctorado/SED/cdpp_kernel/cdpp_kernel/cd++/misc/math/distri.h

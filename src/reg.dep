@@ -14,7 +14,7 @@ ${OBJ_DIR}/reg.o reg.dep : reg.cpp \
  /home/marcos/Documents/facu/doctorado/SED/cdpp_kernel/cdpp_kernel/cd++/cell/cellpos.h \
  /home/marcos/Documents/facu/doctorado/SED/cdpp_kernel/cdpp_kernel/cd++/utils/ntupla.h \
  /home/marcos/Documents/facu/doctorado/SED/cdpp_kernel/cdpp_kernel/cd++/sim/register.h \
- proveedorInmediato.h \
+ ControlInventario.h \
  /home/marcos/Documents/facu/doctorado/SED/cdpp_kernel/cdpp_kernel/cd++/model/atomic.h \
  /home/marcos/Documents/facu/doctorado/SED/cdpp_kernel/cdpp_kernel/cd++/model/model.h \
  /home/marcos/Documents/facu/doctorado/SED/cdpp_kernel/cdpp_kernel/cd++/misc/machineid.h \
@@ -68,4 +68,5 @@ ${OBJ_DIR}/reg.o reg.dep : reg.cpp \
  /home/marcos/Documents/facu/doctorado/SED/cdpp_kernel/cdpp_kernel/cd++/warped/notime/InputQueue.h \
  /home/marcos/Documents/facu/doctorado/SED/cdpp_kernel/cdpp_kernel/cd++/proc/process.h \
  /home/marcos/Documents/facu/doctorado/SED/cdpp_kernel/cdpp_kernel/cd++/proc/pprocess.h \
- /home/marcos/Documents/facu/doctorado/SED/cdpp_kernel/cdpp_kernel/cd++/val/tuple_value.h
+ /home/marcos/Documents/facu/doctorado/SED/cdpp_kernel/cdpp_kernel/cd++/val/tuple_value.h \
+ proveedorInmediato.h Product.h

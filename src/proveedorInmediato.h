@@ -2,18 +2,22 @@
 #define _PROVEEDOR1_H_
 
 #include <random>
+#include <vector>
 
 #include "atomic.h"
 #include "VTime.h"
 #include "real.h"
+#include "Product.h"
 
-#define ATOMIC_MODEL_NAME "ProveedorInmediato"
+#define PROVEEDOR_INMEDIATO_NAME "ProveedorInmediato"
+
+class Distribution;
 
 class ProveedorInmediato : public Atomic {
   public:
     
-    ProveedorInmediato(const string &name = ATOMIC_MODEL_NAME );
-    virtual string className() const {  return ATOMIC_MODEL_NAME ;}
+    ProveedorInmediato(const string &name = PROVEEDOR_INMEDIATO_NAME );
+    virtual string className() const {  return PROVEEDOR_INMEDIATO_NAME ;}
     ~ProveedorInmediato();
   protected:
     Model &initFunction();
@@ -30,7 +34,16 @@ class ProveedorInmediato : public Atomic {
       serve,
     };
     State state;
-    std::vector<VTime> productos;
+
+    // Distribution
+    int initial, increment;
+    Distribution *dist;
+    Distribution &distribution() {return *dist;}
+
+    // contiene los vencimientos de cada producto en ms
+    // Usar VTime::makeFrom() para convertir a VTime
+    // Usar VTime::asMsecs() para convertir a float
+    std::vector<Product> productos; 
 
     // Lifetime programmed since the last state transition to the next planned internal transition.    
     VTime sigma; 

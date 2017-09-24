@@ -1,8 +1,8 @@
 #ifndef __PRODUCT_H__
 #define __PRODUCT_H__
 
-#include "VTime.h"
+#include "real.h"
 
-using Product = VTime;
+using Product = Real;
 
 #endif
