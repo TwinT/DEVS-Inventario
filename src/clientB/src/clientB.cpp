@@ -34,8 +34,8 @@ Model &ClientB::initFunction()
 	this->sigma = VTime::Inf;
 
 	// arranca en estado StateClient::IDLE
-	query_time = VTime(fabs(this->dist->get()));
-	holdIn(AtomicState::active, this->query_time);
+	this->query_time = VTime(fabs(this->dist->get()));
+	holdIn(AtomicState::active, this->query_time );
 	cout << "Model Initialized" << endl;
 
 	return *this;
@@ -54,10 +54,15 @@ Model &ClientB::externalFunction(const ExternalMessage &msg)
 			this->inStock = Real::from_value(msg.value());
 			this->stateC = StateClient::CALC;
 			holdIn(AtomicState::active, VTime::Zero);
-		}else{ // si llegara un msg cuando stateC != QUERY
-			holdIn(AtomicState::active, this->elapsed);
+			cout << "External Function execution @ " << msg.time() << "en estado QUERY" << endl;
+		}
+		else
+		{ // si llegara un msg cuando stateC != QUERY
+			holdIn(AtomicState::active, nextChange() - (msg.time() - lastChange()) );
+			cout << "External Function execution @ " << msg.time() << "en estado CALC o IDLE" << endl;
 		}
 	}
+
 
 	return *this;
 }
@@ -69,14 +74,17 @@ Model &ClientB::internalFunction(const InternalMessage &)
 	{
 		case StateClient::CALC:
 			this->stateC = StateClient::IDLE;
-			query_time = VTime(fabs(this->dist->get()));
+			this->query_time = VTime(fabs(this->dist->get()));
 			holdIn(AtomicState::active, this->query_time);
+			cout << "Internal Function execution en estado CALC paso a IDLE" << endl;
 			break;
 		case StateClient::IDLE:
 			this->stateC = StateClient::QUERY;
 			holdIn(AtomicState::passive, VTime::Inf); // equivalente a: passivate();
+			cout << "Internal Function execution en estado IDLE paso a QUERY" << endl;
 			break;
 	}
+
 
 	return *this ;
 }
@@ -90,15 +98,20 @@ Model &ClientB::outputFunction(const CollectMessage &msg)
 			this->lastQuery = Real(this->distval(this->rng)+1);
 			//Tuple<Real> out_value{lastQuery};
 			sendOutput(msg.time(), query_o, this->lastQuery);
+			cout << "Output Function execution en estado IDLE @ " << msg.time() << " pide " << this->lastQuery << " paquetes"<< endl;
+			break;
 		case StateClient::CALC: // pido n productos por puerto pedido_o
-			Tuple<Real> out_val{Real(this->inStock),Real(this->lastQuery-this->inStock)}
+			Tuple<Real> out_val{Real(this->inStock),Real(this->lastQuery-this->inStock)};
 			sendOutput(msg.time(), pedido_o, out_val);
 			// en lugar de usar una tupla podría hacer 2 envíos por 2 puertos
 			// pero para eso debería usar un flag y entre los dos envíos setear
 			// un holdIn(active,VTime::Zero).
 			//sendOutput(msg.time(), pedido_o, this->inStock);
 			//sendOutput(msg.time(), encargado_o, this->lastQuery - this->inStock);
+			cout << "Output Function execution en estado CALC @ " << msg.time() << " pide " << this->inStock << " encarga " << this->lastQuery-this->inStock << endl;
+			break;
 	}
+
 
 	return *this ;
 }
