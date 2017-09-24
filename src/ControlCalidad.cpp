@@ -39,6 +39,8 @@ Model &ControlCalidad::externalFunction(const ExternalMessage &msg)
 		{
 			//Debug:
 			std::cout<<"External function: "<<products[i]<<std::endl;
+			if (products[i] == VTime::Zero)
+				invEmpty = true;
 			if (products[i] > msg.time())
 			{
 				passProducts.push_back(products[i]);
@@ -87,6 +89,7 @@ Model &ControlCalidad::internalFunction(const InternalMessage &)
 			holdIn(AtomicState::passive, VTime::Inf);
 			state = State::WAITING;
 			numPassProd = 0;
+			invEmpty = false;
 			passProducts.clear();
 			break;
 		default:	// Should not enter here

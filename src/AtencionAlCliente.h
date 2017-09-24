@@ -5,14 +5,14 @@
 #include "VTime.h"
 
 
-#define ATOMIC_MODEL_NAME "ControlCalidad"
+#define ATOMIC_MODEL_NAME "AtencionAlCliente"
 
 
-class ControlCalidad : public Atomic {
+class AtencionAlCliente : public Atomic {
   public:
-    ControlCalidad(const string &name = ATOMIC_MODEL_NAME );
+    AtencionAlCliente(const string &name = ATOMIC_MODEL_NAME );
     virtual string className() const {return ATOMIC_MODEL_NAME;}
-    enum class State {WAITING, CHECK, QUERY, INV_WAIT, SEND};
+    enum class State {WAITING, QUERY, INV_WAIT, CLI_RPLY, SEND, CLI_WAIT, INV_GET};
 
   protected:
     Model &initFunction();
@@ -21,16 +21,16 @@ class ControlCalidad : public Atomic {
     Model &outputFunction( const CollectMessage & );
 
   private:
-    const Port &prod_i;
+    const Port &numProdClient_i;
     const Port &queryClient_i;
+    const Port &queryInventory_i;
     Port &queryInventory_o;
-    Port &prod_o;
+    Port &prodInventory_o;
+    Port &queryClient_o;
+    
+    State state{State::WAITING};
 	
-	double numClientQuery{0};
-	double numPassProd{0};
-	std::vector<VTime> passProducts;
-    State state = {State::WAITING};
-    bool invEmpty{false};	//Flag to inform when invetory is empty
+	double queryClient, inventoryStock, productsBuyed;
 };
 
 #endif
