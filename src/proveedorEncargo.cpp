@@ -50,14 +50,14 @@ ProveedorEncargo::ProveedorEncargo(const string &name)
 Model &ProveedorEncargo::initFunction()
 {
 	this->elapsed = VTime::Zero;
-    this->timeLeft = VTime::Inf;
-    this->sigma = VTime::Inf; // stays in active state until an external event occurs;
+  this->timeLeft = VTime::Inf;
+  this->sigma = VTime::Inf; // stays in active state until an external event occurs;
     
-    state = idle;
-    cout << "Proveedor por Encargo - Init finalizado" << endl;
+  state = idle;
+  cout << "Proveedor por Encargo - Init finalizado" << endl;
 
-    holdIn(AtomicState::active, this->sigma);
-	return *this ;
+  holdIn(AtomicState::active, this->sigma);
+	return *this;
 }
 
 /*******************************************************************
@@ -68,7 +68,7 @@ Model &ProveedorEncargo::externalFunction( const ExternalMessage &msg )
 {
 	this->sigma = nextChange();	
 	this->elapsed = msg.time()-lastChange();	
-    this->timeLeft = this->sigma - this->elapsed; 
+  this->timeLeft = this->sigma - this->elapsed; 
 	
 	if (msg.port() ==  pedido){
 		int	cantidad_pedida = static_cast<int>(Real::from_value(msg.value()).value());
@@ -94,13 +94,9 @@ Model &ProveedorEncargo::externalFunction( const ExternalMessage &msg )
 ********************************************************************/
 Model &ProveedorEncargo::internalFunction(const InternalMessage &msg )
 {
-
-	if(state == idle)
-		this->sigma =  VTime::Inf;
-	else
-		this->sigma =  VTime(0,0,1,0);
-	
 	state = idle;
+	this->sigma =  VTime::Inf;
+
 	holdIn(AtomicState::active, this->sigma);
 	return *this;
 
@@ -112,6 +108,9 @@ Model &ProveedorEncargo::internalFunction(const InternalMessage &msg )
 Model &ProveedorEncargo::outputFunction(const CollectMessage &msg)
 {
 	if(state == serve){
+		for(int i = 0; i < productos.size(); i++){
+			productos[i] = productos[i] + Real(msg.time().asMsecs());
+		}
 		Tuple<Product> t(&productos);
 		sendOutput(msg.time(), entrega, t);
 		cout << msg.time() << " Proveedor por Encargo - " << "Entrega: " << t <<  endl;

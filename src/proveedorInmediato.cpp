@@ -68,9 +68,8 @@ Model &ProveedorInmediato::externalFunction( const ExternalMessage &msg )
 {
 	this->sigma = nextChange();	
 	this->elapsed = msg.time()-lastChange();	
-    this->timeLeft = this->sigma - this->elapsed; 
+  this->timeLeft = this->sigma - this->elapsed; 
 	
-
 	if (msg.port() ==  pedido){
 		int cantidad_pedida;
 
@@ -82,7 +81,7 @@ Model &ProveedorInmediato::externalFunction( const ExternalMessage &msg )
 			//cout << "float: " << f << endl;
 			VTime t = VTime(f);
 			//cout << "distribution: " << t << endl;
-			productos.push_back(Real(t.asMsecs()));
+			productos.push_back(Real(t.asMsecs()) + Real(msg.time().asMsecs()));
 		}
 
 		state = serve;
@@ -96,13 +95,9 @@ Model &ProveedorInmediato::externalFunction( const ExternalMessage &msg )
 ********************************************************************/
 Model &ProveedorInmediato::internalFunction( const InternalMessage &msg )
 {
-
-	if(state == idle)
-		this->sigma =  VTime::Inf;
-	else
-		this->sigma = VTime::Zero;
-	
-	state = idle;
+	this->sigma = VTime::Inf;
+  state = idle;
+  
 	holdIn(AtomicState::active, this->sigma);
 	return *this;
 

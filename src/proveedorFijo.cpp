@@ -84,12 +84,9 @@ Model &ProveedorFijo::externalFunction( const ExternalMessage &msg )
 Model &ProveedorFijo::internalFunction(const InternalMessage &msg )
 {
 
-	if(state == idle)
-		this->sigma =  VTime::Inf;
-	else
-		this->sigma = VTime::Zero;
-	
+	this->sigma =  VTime::Inf;
 	state = idle;
+  
 	holdIn(AtomicState::active, this->sigma);
 	return *this;
 
