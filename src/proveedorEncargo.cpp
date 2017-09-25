@@ -1,14 +1,14 @@
-#include "proveedorInmediato.h" // base header
+#include "proveedorEncargo.h" // base header
 #include "message.h"            // InternalMessage ....
 #include "distri.h"             // class Distribution 
 #include "strutil.h"            // str2Value( ... )
 #include "parsimu.h"            // class Simulator
 
 /*******************************************************************
-* Function Name: ProveedorInmediato
+* Function Name: ProveedorEncargo
 * Description: constructor
 ********************************************************************/
-ProveedorInmediato::ProveedorInmediato( const string &name )
+ProveedorEncargo::ProveedorEncargo(const string &name)
 : Atomic( name )
  , entrega(addOutputPort( "entrega" ))
  , pedido(addInputPort( "pedido" ))
@@ -40,52 +40,51 @@ ProveedorInmediato::ProveedorInmediato( const string &name )
 	} catch(MException &e){
 		MTHROW(e);
 	}
-	cout << "Proveedor Inmediato Creado" << endl;
+	cout << "Proveedor por Encargo Creado" << endl;
 	
 }
 
 /*******************************************************************
 * Function Name: initFunction
 ********************************************************************/
-Model &ProveedorInmediato::initFunction()
+Model &ProveedorEncargo::initFunction()
 {
 	this->elapsed = VTime::Zero;
-    this->timeLeft = VTime::Inf;
-    this->sigma = VTime::Inf; // stays in active state until an external event occurs;
+  this->timeLeft = VTime::Inf;
+  this->sigma = VTime::Inf; // stays in active state until an external event occurs;
     
-    state = idle;
-    cout << "Proveedor Inmediato - Init finalizado" << endl;
+  state = idle;
+  cout << "Proveedor por Encargo - Init finalizado" << endl;
 
-    holdIn(AtomicState::active, this->sigma);
-	return *this ;
+  holdIn(AtomicState::active, this->sigma);
+	return *this;
 }
 
 /*******************************************************************
 * Function Name: externalFunction
 * Description: 
 ********************************************************************/
-Model &ProveedorInmediato::externalFunction( const ExternalMessage &msg )
+Model &ProveedorEncargo::externalFunction( const ExternalMessage &msg )
 {
 	this->sigma = nextChange();	
 	this->elapsed = msg.time()-lastChange();	
   this->timeLeft = this->sigma - this->elapsed; 
 	
 	if (msg.port() ==  pedido){
-		int cantidad_pedida;
+		int	cantidad_pedida = static_cast<int>(Real::from_value(msg.value()).value());
 
-		cantidad_pedida = static_cast<int>(Real::from_value(msg.value()).value());
-     	cout <<  msg.time() << " Proveedor Inmediato - " << "Pedido: " << cantidad_pedida << " productos" << endl;
+     	cout <<  msg.time() << " Proveedor por Encargo - " << "Pedido: " << cantidad_pedida << " productos" << endl;
 
 		for(int i = 0; i < cantidad_pedida; i++){
 			float f =  static_cast<float>(fabs(distribution().get()));
 			//cout << "float: " << f << endl;
 			VTime t = VTime(f);
 			//cout << "distribution: " << t << endl;
-			productos.push_back(Real(t.asMsecs()) + Real(msg.time().asMsecs()));
+			productos.push_back(Real(t.asMsecs()));
 		}
 
 		state = serve;
-		holdIn(AtomicState::active, VTime::Zero);
+		holdIn(AtomicState::active, VTime(0,0,1,0)); // 1 segundo
 	}
 	return *this;
 }
@@ -93,11 +92,11 @@ Model &ProveedorInmediato::externalFunction( const ExternalMessage &msg )
 /*******************************************************************
 * Function Name: internalFunction
 ********************************************************************/
-Model &ProveedorInmediato::internalFunction( const InternalMessage &msg )
+Model &ProveedorEncargo::internalFunction(const InternalMessage &msg )
 {
-	this->sigma = VTime::Inf;
-  state = idle;
-  
+	state = idle;
+	this->sigma =  VTime::Inf;
+
 	holdIn(AtomicState::active, this->sigma);
 	return *this;
 
@@ -106,12 +105,15 @@ Model &ProveedorInmediato::internalFunction( const InternalMessage &msg )
 /*******************************************************************
 * Function Name: outputFunction
 ********************************************************************/
-Model &ProveedorInmediato::outputFunction(const CollectMessage &msg)
+Model &ProveedorEncargo::outputFunction(const CollectMessage &msg)
 {
 	if(state == serve){
+		for(int i = 0; i < productos.size(); i++){
+			productos[i] = productos[i] + Real(msg.time().asMsecs());
+		}
 		Tuple<Product> t(&productos);
-		sendOutput( msg.time(), entrega, t);
-		cout << msg.time() << " Proveedor Inmediato - " << "Entrega: " << t <<  endl;
+		sendOutput(msg.time(), entrega, t);
+		cout << msg.time() << " Proveedor por Encargo - " << "Entrega: " << t <<  endl;
 		productos.clear(); // limpio vector
 	}
 	
@@ -119,7 +121,7 @@ Model &ProveedorInmediato::outputFunction(const CollectMessage &msg)
 
 }
 
-ProveedorInmediato::~ProveedorInmediato()
+ProveedorEncargo::~ProveedorEncargo()
 {
 	delete dist;
 }

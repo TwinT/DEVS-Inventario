@@ -1,5 +1,5 @@
-#ifndef _PROVEEDOR_INMEDIATO_H_
-#define _PROVEEDOR_INMEDIATO_H_
+#ifndef _PROVEEDOR_FIJO_H_
+#define _PROVEEDOR_FIJO_H_
 
 #include <random>
 #include <vector>
@@ -9,16 +9,14 @@
 #include "real.h"
 #include "Product.h"
 
-#define PROVEEDOR_INMEDIATO_NAME "ProveedorInmediato"
+#define PROVEEDOR_FIJO_NAME "ProveedorFijo"
 
-class Distribution;
-
-class ProveedorInmediato : public Atomic {
+class ProveedorFijo : public Atomic {
   public:
     
-    ProveedorInmediato(const string &name = PROVEEDOR_INMEDIATO_NAME );
-    virtual string className() const {  return PROVEEDOR_INMEDIATO_NAME ;}
-    ~ProveedorInmediato();
+    ProveedorFijo(const string &name = PROVEEDOR_FIJO_NAME );
+    virtual string className() const {  return PROVEEDOR_FIJO_NAME ;}
+    ~ProveedorFijo();
   protected:
     Model &initFunction();
     Model &externalFunction( const ExternalMessage & );
@@ -35,11 +33,7 @@ class ProveedorInmediato : public Atomic {
     };
     State state;
 
-    // Distribution
-    int initial, increment;
-    Distribution *dist;
-    Distribution &distribution() {return *dist;}
-
+    int productos_por_paquete;
     // contiene los vencimientos de cada producto en ms
     // Usar VTime::makeFrom() para convertir a VTime
     // Usar VTime::asMsecs() para convertir a float
@@ -52,9 +46,7 @@ class ProveedorInmediato : public Atomic {
     VTime elapsed;
     
     // Time remaining to complete the last programmed Lifetime
-    VTime timeLeft;
-    
-    double cantidad; //?
+    VTime timeLeft;  
 };
 
 #endif

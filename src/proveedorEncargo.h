@@ -1,5 +1,5 @@
-#ifndef _PROVEEDOR_INMEDIATO_H_
-#define _PROVEEDOR_INMEDIATO_H_
+#ifndef _PROVEEDOR_ENCARGO_H_
+#define _PROVEEDOR_ENCARGO_H_
 
 #include <random>
 #include <vector>
@@ -9,16 +9,16 @@
 #include "real.h"
 #include "Product.h"
 
-#define PROVEEDOR_INMEDIATO_NAME "ProveedorInmediato"
+#define PROVEEDOR_ENCARGO_NAME "ProveedorEncargo"
 
 class Distribution;
 
-class ProveedorInmediato : public Atomic {
+class ProveedorEncargo : public Atomic {
   public:
     
-    ProveedorInmediato(const string &name = PROVEEDOR_INMEDIATO_NAME );
-    virtual string className() const {  return PROVEEDOR_INMEDIATO_NAME ;}
-    ~ProveedorInmediato();
+    ProveedorEncargo(const string &name = PROVEEDOR_ENCARGO_NAME );
+    virtual string className() const {  return PROVEEDOR_ENCARGO_NAME ;}
+    ~ProveedorEncargo();
   protected:
     Model &initFunction();
     Model &externalFunction( const ExternalMessage & );
@@ -52,9 +52,7 @@ class ProveedorInmediato : public Atomic {
     VTime elapsed;
     
     // Time remaining to complete the last programmed Lifetime
-    VTime timeLeft;
-    
-    double cantidad; //?
+    VTime timeLeft;  
 };
 
 #endif

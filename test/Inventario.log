@@ -1,0 +1,4 @@
+[logfiles]
+ParallelRoot : ../test/Inventario.log00 
+top : ../test/Inventario.log02 
+inventario : ../test/Inventario.log01 
