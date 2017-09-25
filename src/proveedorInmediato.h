@@ -52,7 +52,9 @@ class ProveedorInmediato : public Atomic {
     VTime elapsed;
     
     // Time remaining to complete the last programmed Lifetime
-    VTime timeLeft;  
+    VTime timeLeft;
+    
+    double cantidad; //?
 };
 
 #endif
