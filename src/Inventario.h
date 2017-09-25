@@ -11,12 +11,12 @@
 
 #define INVENTARIO_NAME "Inventario"
 
-class ProveedorEncargo : public Atomic {
+class Inventario : public Atomic {
   public:
     
-    ProveedorEncargo(const string &name = INVENTARIO_NAME );
+    Inventario(const string &name = INVENTARIO_NAME );
     virtual string className() const {  return INVENTARIO_NAME ;}
-    ~ProveedorEncargo();
+    ~Inventario();
   protected:
     Model &initFunction();
     Model &externalFunction( const ExternalMessage & );
@@ -26,7 +26,9 @@ class ProveedorEncargo : public Atomic {
   private:
     Port &producto_out;
     Port &query_out;
-    const Port &producto_in;
+    const Port &producto_in_A;
+    const Port &producto_in_B;
+    const Port &producto_in_C;
     const Port &encargo;
     const Port &query_in;
     const Port &get;
@@ -44,6 +46,15 @@ class ProveedorEncargo : public Atomic {
     // Usar VTime::makeFrom() para convertir a VTime
     // Usar VTime::asMsecs() para convertir a float
     std::queue<Product> cola; 
+
+    std::queue<Product> colaA;
+    std::queue<Product> colaB;
+    std::queue<Product> colaC;
+  
+    int encargos_q;
+    int query_q;
+    int get_q;
+
     int N; // tamaño de la cola
 
     // Lifetime programmed since the last state transition to the next planned internal transition.    
