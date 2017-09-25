@@ -1,5 +1,5 @@
-#ifndef _CONTROLINVENTARIO_H_
-#define _CONTROLINVENTARIO_H_
+#ifndef _ATENCIONALCLIENTE_H_
+#define _ATENCIONALCLIENTE_H_
 
 #include "atomic.h"
 #include "VTime.h"
