@@ -6,7 +6,9 @@
 //#include "ControlInventario.h"
 #include "ControlCalidad.h"
 //#include "AtencionAlCliente.h"
-
+//#include "clientA.h"
+//#include "clientB.h"
+//#include "clientC.h"
 
 void register_atomics_on(ParallelModelAdmin &admin)
 {
@@ -17,4 +19,7 @@ void register_atomics_on(ParallelModelAdmin &admin)
 	//admin.registerAtomic(NewAtomicFunction<ControlInventario>(), CONTROLINVENTARIO_NAME);
 	admin.registerAtomic(NewAtomicFunction<ControlCalidad>(), CONTROLCALIDAD_NAME);
 	//admin.registerAtomic(NewAtomicFunction<AtencionAlCliente>(), ATENCIONALCLIENTE_NAME);
+	//admin.registerAtomic(NewAtomicFunction<ClientA>(), "ClientA");
+	//admin.registerAtomic(NewAtomicFunction<ClientB>(), "ClientB");
+	//admin.registerAtomic(NewAtomicFunction<ClientC>(), "ClientC");
 }
