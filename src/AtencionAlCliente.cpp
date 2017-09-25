@@ -47,7 +47,7 @@ Model &AtencionAlCliente::externalFunction(const ExternalMessage &msg)
 			holdIn(AtomicState::active, VTime::Zero);
 		}
 		
-	if (msg.port() == numProdClient_i)
+	if (msg.port() == numProdClient_i){
 		if (state == State::CLI_WAIT)
 		{
 			productsBuyed = Real::from_value(msg.value()).value();
@@ -63,7 +63,7 @@ Model &AtencionAlCliente::externalFunction(const ExternalMessage &msg)
 				holdIn(AtomicState::passive, VTime::Inf);
 			}
 		}
-	
+	}
 	else
 		holdIn(AtomicState::passive,VTime::Inf);
 		

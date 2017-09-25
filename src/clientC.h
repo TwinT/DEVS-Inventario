@@ -1,5 +1,5 @@
 #ifndef _CLIENTC_H_
-#define _CLIENTRCH_
+#define _CLIENTC_H_
 
 #include <random>
 
@@ -8,14 +8,14 @@
 #include "distri.h"        // class Distribution 
 
 
-#define ATOMIC_MODEL_NAME "ClientC"
+#define CLIENT_C_NAME "ClientC"
 
 
 class ClientC : public Atomic {
   public:
     
-    ClientC(const string &name = ATOMIC_MODEL_NAME );
-    virtual string className() const {  return ATOMIC_MODEL_NAME ;}
+    ClientC(const string &name = CLIENT_C_NAME );
+    virtual string className() const {  return CLIENT_C_NAME ;}
     enum class StateClient {IDLE, QUERY, ACCEPT, DECLINE};
   
   protected:

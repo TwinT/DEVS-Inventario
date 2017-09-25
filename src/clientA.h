@@ -8,14 +8,14 @@
 #include "distri.h"        // class Distribution 
 
 
-#define ATOMIC_MODEL_NAME "ClientA"
+#define CLIENT_A_NAME "ClientA"
 
 
 class ClientA : public Atomic {
   public:
     
-    ClientA(const string &name = ATOMIC_MODEL_NAME );
-    virtual string className() const {  return ATOMIC_MODEL_NAME ;}
+    ClientA(const string &name = CLIENT_A_NAME );
+    virtual string className() const {  return CLIENT_A_NAME ;}
   
   protected:
     Model &initFunction();
