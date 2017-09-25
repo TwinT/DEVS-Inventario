@@ -527,21 +527,21 @@ El modelo atómico correspondiente al bloque de control de inventario (CI) queda
 
 En las figuras \ref{fig:CI-esquematico} y \ref{fig:CI-estados} se pueden observar los puertos de entrada/salida y el diagrama de estados respectivamente.
 
-\begin{figure}[h]
+\begin{figure}[htbp]
 	\centering
 	\includegraphics{img/fiuba}
 	\caption{Entradas y salidas del modelo control de inventario}
 	\label{fig:CI-esquematico}
 \end{figure}
 
-\begin{figure}[h]
+\begin{figure}[htbp]
 	\centering
-	\includegraphics{img/fiuba}
+	\includegraphics{img/controlInventariodevsgraph}
 	\caption{Diagrama de estados para el modelo de control de inventario.}
 	\label{fig:CI-estados}
 \end{figure}
 
-\subsection{Control de Calidad}
+\subsection{Control de Calidad\label{sec:CC}}
 El modelo atómico correspondiente al bloque de control de calidad (CC) queda definido de la siguiente manera:
 
 
@@ -567,7 +567,7 @@ El modelo atómico correspondiente al bloque de control de calidad (CC) queda de
 		\delta_{int}(SEND)=WAITING
 		\end{cases}$\\
 		
-		$\delta_{ext}:\delta_{ext}(S,X\_i) \begin{cases} Si ~S=WAITING \wedge  queryClient\_i=N\\
+		$\delta_{ext}:\delta_{ext}(S,X) \begin{cases} Si ~S=WAITING \wedge  queryClient\_i=N\\
 		\hfill \rightarrow \delta_{ext}(QUERY,queryClient\_i)=QUERY\\
 		Si ~S=CHECK \wedge size(prod\_i)=P\\
 		\hfill \rightarrow \delta_{ext}(CHECK,prod\_i)=SEND
@@ -587,27 +587,88 @@ El modelo atómico correspondiente al bloque de control de calidad (CC) queda de
 }\\
 
 Donde:\\
-$numPassProd = $ es el número de productos que pasan el control de calidad (i.e. su fecha de expiración es mayor al tiempo en que se produce el control).
-$numClientQuery = $ es el número de productos que solicitó el cliente
+$numPassProd = $ es el número de productos que pasan el control de calidad (i.e. su fecha de expiración es mayor al tiempo en que se produce el control).\\
+$numClientQuery = $ es el número de productos que solicitó el cliente.\\
 $invEmpty = $ es un Flag que indica si el inventario está vacío (i.e. devolvió un producto con fecha de expiración $0.0$)\footnote{el símbolo $\neg$ refiere a la condición lógica de negación}
 
 En las figuras \ref{fig:CC-esquematico} y \ref{fig:CC-estados} se pueden observar los puertos de entrada/salida y el diagrama de estados respectivamente.
 
-\begin{figure}[h]
+\begin{figure}[htbp]
 	\centering
 	\includegraphics{img/fiuba}
 	\caption{Entradas y salidas del modelo control de inventario}
 	\label{fig:CC-esquematico}
 \end{figure}
 
-\begin{figure}[h]
+\begin{figure}[htbp]
 	\centering
-	\includegraphics{img/fiuba}
+	\includegraphics{img/controlCalidaddevsgraph}
 	\caption{Diagrama de estados para el modelo de control de inventario.}
 	\label{fig:CC-estados}
 \end{figure}
 
+\subsection{Atención al cliente\label{sec:AC}}
+El modelo atómico correspondiente al bloque de atención al cliente (AC) queda definido de la siguiente manera:
+
+\framebox[1\textwidth]{
+	\begin{minipage}{0.9\textwidth}
+		$AC=<S,X,Y,\delta_{int},\delta_{ext},\lambda,t_A>$\\
+		
+		$S=\{WAITING, QUERY, INV\_WAIT,\\
+		\hfill CLI\_RPLY, CLI\_WAIT, INV\_GET\}$\\
+		
+		$X=\{numProdClient\_i, queryClient\_i, queryInventory\_i \} \in \mathbb{N}^+_0$\\
+		
+		$Y=\{prodInventory\_o, queryInventory\_o, queryClient_o\}  \in \mathbb{N}^+_0$\\
+		
+		$\delta_{int}: \delta_{int}(S) \begin{cases}
+		\delta_{int}(QUERY)=INV\_WAIT\\
+		\delta_{int}(CLI\_RPLY)=CLI\_WAIT\\
+		\delta_{int}(INV\_GET)=WAITING
+		\end{cases}$\\
+		
+		$\delta_{ext}:\delta_{ext}(S,X) \begin{cases} Si ~S=WAITING \wedge  queryClient\_i=N\\
+		\hfill \rightarrow \delta_{ext}(WAITING,queryClient\_i)=QUERY\\
+		Si ~S=INV\_WAIT \wedge queryInventory\_i=P\\
+		\hfill \rightarrow \delta_{ext}(INV\_WAIT,queryInventory\_i)=CLI\_RPLY\\
+		Si ~S=CLI\_WAIT \wedge numProdClient\_i=K\\
+		\hfill \rightarrow \delta_{ext}(CLI\_WAIT,numProdClient\_i)=INV\_GET
+		\end{cases}$\\
+		
+		$\lambda:~\lambda(S)\begin{cases}
+		\lambda(QUERY)=\{queryInventory\_o = N\}\\
+		\lambda(CLI\_RPLY)=\{queryCLient\_o = P\}\\
+		\lambda(INV\_GET)=\{prodInventory\_o = K\}
+		\end{cases}$\\
+		
+		$t_A(S)=\begin{cases}
+		0~si~S=\{QUERY,CLI\_RPLY,INV\_GET\}\\
+		\infty~si~S=\{WAITING, INV\_WAIT, CLI\_WAIT\}
+		\end{cases}$
+	\end{minipage}
+}\\
+
+En las figuras \ref{fig:AC-esquematico} y \ref{fig:AC-estados} se pueden observar los puertos de entrada/salida y el diagrama de estados respectivamente.
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics{img/fiuba}
+	\caption{Entradas y salidas del modelo control de inventario}
+	\label{fig:AC-esquematico}
+\end{figure}
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics{img/atencionClientedevsgraph}
+	\caption{Diagrama de estados para el modelo de control de inventario.}
+	\label{fig:AC-estados}
+\end{figure}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Modelado y simulación}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 \subsection{Pruebas parciales}
 \subsubsection{Control de Inventario}
 Para la prueba del bloque de control de inventario se propuso el siguiente estímulo:
@@ -640,6 +701,78 @@ La salida de la prueba es la siguiente:
 \end{minipage}
 Donde se observa que se cumplen las condiciones mencionadas en la sección \ref{sec:CI}
 
+\subsubsection{Control de Calidad}
+Para la prueba del bloque de control de calidad se propuso el siguiente estímulo:
+
+\begin{minipage}{1\textwidth}
+	\centering
+	\begin{lstlisting}
+	00:00:01:00 queryClient_i 2
+	00:00:01:10 prod_i [1.2,1.3]
+	00:00:02:00 queryClient_i 3
+	00:00:02:10 prod_i [1.5,2.2,2.3]
+	00:00:02:20 prod_i [2.3]
+	00:00:03:00 queryClient_i 3
+	00:00:03:10 prod_i [3.2,3.3,0]
+	\end{lstlisting}
+	
+	\centering
+\end{minipage}
+
+Se busca probar las condiciones:
+\begin{itemize}
+	\item Un cliente compra N productos y el inventario devuelve N productos correctos. Por lo tanto se deberían enviar todos.
+	\item Un cliente compra N productos y el inventario devuelve N-1 productos correctos y uno vencido. Se debe descartar ese producto y pedir uno nuevo al inventario. El inventario devuelve un producto válido. Se deberían enviar los N productos válidos.
+	\item Un cliente compra N productos pero el inventario dispone sólo de N-1 y devuelve 0 en la última posición. El control de calidad debe interpretar la salida y despachar sólo los dos productos correctos.
+\end{itemize}
+
+La salida de la prueba es la siguiente:
+
+\begin{minipage}{1\textwidth}
+	\centering
+	\begin{lstlisting}
+	
+	\end{lstlisting}
+	
+\end{minipage}
+Donde se observa que se cumplen las condiciones mencionadas en la sección \ref{sec:CC}
+
+\subsubsection{Atención al cliente}
+Para la prueba del bloque de atención al cliente se propuso el siguiente estímulo:
+
+\begin{minipage}{1\textwidth}
+	\centering
+	\begin{lstlisting}
+	00:00:01:00	queryClient_i 1
+	00:00:01:10 queryInventory_i 2
+	00:00:01:15 numProdClient_i 1
+	00:00:02:00	queryClient_i 3
+	00:00:02:10 queryInventory_i 2
+	00:00:02:15 numProdClient_i 2
+	00:00:03:00	queryClient_i 3
+	00:00:03:10 queryInventory_i 2
+	00:00:03:15 numProdClient_i 0
+	\end{lstlisting}
+	
+\end{minipage}
+
+Se busca probar las condiciones:
+\begin{itemize}
+	\item Un cliente compra N productos y el inventario devuelve N productos correctos. Por lo tanto se deberían enviar todos.
+	\item Un cliente compra N productos y el inventario devuelve N-1 productos correctos y uno vencido. Se debe descartar ese producto y pedir uno nuevo al inventario. El inventario devuelve un producto válido. Se deberían enviar los N productos válidos.
+	\item Un cliente compra N productos pero el inventario dispone sólo de N-1 y devuelve 0 en la última posición. El control de calidad debe interpretar la salida y despachar sólo los dos productos correctos.
+\end{itemize}
+
+La salida de la prueba es la siguiente:
+
+\begin{minipage}{1\textwidth}
+	\centering
+	\begin{lstlisting}
+	
+	\end{lstlisting}
+	
+\end{minipage}
+Donde se observa que se cumplen las condiciones mencionadas en la sección \ref{sec:AC}
 
 \subsection{Pruebas de integración}
 .
