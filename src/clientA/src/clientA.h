@@ -37,8 +37,10 @@ class ClientA : public Atomic {
 
     VTime query_time;
 
-    Distribution *dist ;
 
+    // Distribution
+    int initial, increment;
+    Distribution *dist ;
     std::discrete_distribution<int> distval; // para generar numquery
     std::mt19937 rng;
 };

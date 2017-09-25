@@ -17,13 +17,41 @@ ClientA::ClientA(const string &name) :
 	// query_time(0,0,1,0),
 	distval({1,2,2,1})
 {
-	//TODO: pasar los parámetros de la distribución por el clientA.ma
-	//dist = Distribution::create( MainSimulator::Instance().getParameter( description(), "distribution" ) );
-	//string parameter( MainSimulator::Instance().getParameter( description(), dist->getVar( 0 ) ) ) ;
-	//dist->setVar( 0, str2Value( parameter ) ) ;
-	dist = Distribution::create("exponential");
-	dist->setVar(0, 12) ;
-	cout << "Model Created" << endl;
+	//dist = Distribution::create("exponential");
+	//dist->setVar(0, 12) ;
+
+	try
+	{
+		dist = Distribution::create( ParallelMainSimulator::Instance().getParameter( description(), "distribution" ) );
+		MASSERT( dist ) ;
+		for ( register int i = 0; i < dist->varCount(); i++ )
+		{
+			string parameter( ParallelMainSimulator::Instance().getParameter( description(), dist->getVar( i ) ) ) ;
+			dist->setVar( i, str2Value( parameter ) ) ;
+		}
+
+		if( ParallelMainSimulator::Instance().existsParameter( description(), "initial" ) )
+			initial = str2Int( ParallelMainSimulator::Instance().getParameter( description(), "initial" ) );
+		else
+			initial = 0;
+
+		if( ParallelMainSimulator::Instance().existsParameter( description(), "increment" ) )
+			increment = str2Int( ParallelMainSimulator::Instance().getParameter( description(), "increment" ) );
+		else
+			increment = 1;
+
+	}
+	catch(InvalidDistribution &e)
+	{
+		e.addText( "The model " + description() + " has distribution problems!" ) ;
+		e.print(cerr);
+		MTHROW( e ) ;
+	} 
+	catch(MException &e)
+	{
+		MTHROW(e);
+	}
+	cout << "Clientes tipo A creados" << endl;
 }
 
 

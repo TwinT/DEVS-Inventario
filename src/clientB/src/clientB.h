@@ -45,6 +45,8 @@ class ClientB : public Atomic {
     Real inStock{0}; // lo que me dijeron que está disponible
     Real lastQuery{0}; // lo que pedi
 
+    // Distribution
+    int initial, increment;
     Distribution *dist ;
     std::discrete_distribution<int> distval; // para generar numquery
     std::mt19937 rng;

@@ -5,5 +5,5 @@ link : query_o@CA out_port
 
 [CA]
 distribution : Exponential
-value : 0.12
+mean : 0.12
 

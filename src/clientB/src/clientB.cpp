@@ -19,10 +19,40 @@ ClientB::ClientB(const string &name) :
 	encargado_o(addOutputPort("encargado_o")),
 	distval({1,2,2,1})
 {
-	//TODO: pasar los parámetros de la distribución por le .ma
-	dist = Distribution::create("exponential");
-	dist->setVar(0, 12) ;
-	cout << "Model Created" << endl;
+	//dist = Distribution::create("exponential");
+	//dist->setVar(0, 12) ;
+	try
+	{
+		dist = Distribution::create( ParallelMainSimulator::Instance().getParameter( description(), "distribution" ) );
+		MASSERT( dist ) ;
+		for ( register int i = 0; i < dist->varCount(); i++ )
+		{
+			string parameter( ParallelMainSimulator::Instance().getParameter( description(), dist->getVar( i ) ) ) ;
+			dist->setVar( i, str2Value( parameter ) ) ;
+		}
+
+		if( ParallelMainSimulator::Instance().existsParameter( description(), "initial" ) )
+			initial = str2Int( ParallelMainSimulator::Instance().getParameter( description(), "initial" ) );
+		else
+			initial = 0;
+
+		if( ParallelMainSimulator::Instance().existsParameter( description(), "increment" ) )
+			increment = str2Int( ParallelMainSimulator::Instance().getParameter( description(), "increment" ) );
+		else
+			increment = 1;
+
+	}
+	catch(InvalidDistribution &e)
+	{
+		e.addText( "The model " + description() + " has distribution problems!" ) ;
+		e.print(cerr);
+		MTHROW( e ) ;
+	} 
+	catch(MException &e)
+	{
+		MTHROW(e);
+	}
+	cout << "Clientes tipo B creados" << endl;
 }
 
 
@@ -36,7 +66,7 @@ Model &ClientB::initFunction()
 	// arranca en estado StateClient::IDLE
 	this->query_time = VTime(fabs(this->dist->get()));
 	holdIn(AtomicState::active, this->query_time );
-	cout << "Model Initialized" << endl;
+	cout << "Clientes tipo B inicializados" << endl;
 
 	return *this;
 }
@@ -48,21 +78,21 @@ Model &ClientB::externalFunction(const ExternalMessage &msg)
 	this->elapsed  = msg.time() - lastChange();
 	this->timeLeft = this->sigma - this->elapsed;
 
-	if(msg.port() == disponibles_i){
-		if(this->stateC == StateClient::QUERY)
+	if(msg.port() == disponibles_i)
+	{
+		if(stateC == StateClient::QUERY)
 		{
-			this->inStock = Real::from_value(msg.value());
-			this->stateC = StateClient::CALC;
+			inStock = Real::from_value(msg.value()).value();
+			stateC = StateClient::CALC;
 			holdIn(AtomicState::active, VTime::Zero);
-			cout << "External Function execution @ " << msg.time() << "en estado QUERY" << endl;
+			cout << "External Function execution @ " << msg.time() << " en estado QUERY" << endl;
 		}
 		else
 		{ // si llegara un msg cuando stateC != QUERY
 			holdIn(AtomicState::active, nextChange() - (msg.time() - lastChange()) );
-			cout << "External Function execution @ " << msg.time() << "en estado CALC o IDLE" << endl;
+			cout << "External Function execution @ " << msg.time() << " en estado CALC o IDLE" << endl;
 		}
 	}
-
 
 	return *this;
 }
@@ -92,23 +122,16 @@ Model &ClientB::internalFunction(const InternalMessage &)
 
 Model &ClientB::outputFunction(const CollectMessage &msg)
 {
-	switch(this->stateC)
+	switch(stateC)
 	{
 		case StateClient::IDLE: // pregunto disponibilidad de productos por puerto query_o 
-			this->lastQuery = Real(this->distval(this->rng)+1);
-			//Tuple<Real> out_value{lastQuery};
-			sendOutput(msg.time(), query_o, this->lastQuery);
-			cout << "Output Function execution en estado IDLE @ " << msg.time() << " pide " << this->lastQuery << " paquetes"<< endl;
+			lastQuery = Real(distval(rng)+1);
+			sendOutput(msg.time(), query_o, lastQuery);
+			cout << "Output Function execution en estado IDLE @ " << msg.time() << " pide " << lastQuery << " productos" << endl;
 			break;
 		case StateClient::CALC: // pido n productos por puerto pedido_o
-			Tuple<Real> out_val{Real(this->inStock),Real(this->lastQuery-this->inStock)};
-			sendOutput(msg.time(), pedido_o, out_val);
-			// en lugar de usar una tupla podría hacer 2 envíos por 2 puertos
-			// pero para eso debería usar un flag y entre los dos envíos setear
-			// un holdIn(active,VTime::Zero).
-			//sendOutput(msg.time(), pedido_o, this->inStock);
-			//sendOutput(msg.time(), encargado_o, this->lastQuery - this->inStock);
-			cout << "Output Function execution en estado CALC @ " << msg.time() << " pide " << this->inStock << " encarga " << this->lastQuery-this->inStock << endl;
+			sendOutput(msg.time(), pedido_o, inStock);
+			cout << "Output Function execution en estado CALC @ " << msg.time() << " pide " << inStock << " productos" << endl;
 			break;
 	}
 
