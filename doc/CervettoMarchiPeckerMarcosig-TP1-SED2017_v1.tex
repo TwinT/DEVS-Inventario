@@ -290,7 +290,7 @@ En la Figura 1 se propone un esquema del proceso. Se puede observar que el top m
 
 \begin{figure}
 \centering
-\includegraphics[scale=1]{img/figura1}
+\includegraphics[scale=0.7]{img/figura1}
 \caption{Esquema del problema planteado.}
 \label{fig:fig1}
 \end{figure}
@@ -356,7 +356,7 @@ En la Figura~\ref{fig:fig5} se puede observar el comportamiento del módulo acop
 
 \begin{figure}
 \centering
-\includegraphics[scale=1]{img/figura5}
+\includegraphics[scale=0.8]{img/figura5}
 \caption{Atención al cliente.}
 \label{fig:fig5}
 \end{figure}
@@ -413,7 +413,7 @@ Los proveedores se comportan de 3 formas diferentes:
 
 \begin{figure}
 \centering
-\includegraphics[scale=1]{img/figura8}
+\includegraphics[scale=0.8]{img/figura8}
 \caption{Proveedor $1$.}
 \label{fig:fig8}
 \end{figure}
@@ -429,7 +429,7 @@ Los productos de este proveedor no tienen vencimiento.
 
 \begin{figure}
 \centering
-\includegraphics[scale=1]{img/figura9}
+\includegraphics[scale=0.8]{img/figura9}
 \caption{Proveedor $2$.}
 \label{fig:fig9}
 \end{figure}
@@ -438,55 +438,175 @@ Los productos de este proveedor no tienen vencimiento.
 
 \begin{figure}
 \centering
-\includegraphics[scale=1]{img/figura10}
+\includegraphics[scale=0.8]{img/figura10}
 \caption{Proveedor $3$.}
 \label{fig:fig10}
 \end{figure}
 \end{enumerate}
 
 \section{Descripción Formal}
-\subsection{Tipo de Cliente A}
 
-En la Figura~\ref{fig:pdftiempo} y Figura~\ref{fig:pdfpedidos} se observan los histogramas que representan a la tasa de arribos de pedidos de clientes de tipo A y a la cantidad de unidades pedidas. El eje de tiempos de la Figura~\ref{fig:pdftiempo} se utiliza en segundos en lugar de en meses.
+\subsection{Top Model\label{sec:TM}}
+El diagrama de bloques correspondiente a cada uno de los atómicos descriptos en la especificación funcional se puede ver en la figura \ref{fig:TM-esquematico}. 
 
-\begin{figure}
-\centering
-\includegraphics[scale=1]{img/pdf_tiempo_pedidos}
-\caption{Función de densidad de probabilidad del tiempo entre pedidos de clientes tipo A.}
-\label{fig:pdftiempo}
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[angle=-90, scale=0.7]{img/bloquestopmodel}
+	\caption{Interconexión de bloques en el \texttt{top model}.}
+	\label{fig:TM-esquematico}
 \end{figure}
 
-\begin{figure}
-\centering
-\includegraphics[scale=1]{img/pdf_cantidad_pedidos}
-\caption{Función de densidad de probabilidad del número de unidades pedidas $n$.}
-\label{fig:pdfpedidos}
+
+\subsection{Tipo de Cliente A\label{sec:CTA}}
+
+El modelo atómico correspondiente al bloque del cliente tipo A (CTA) queda definido de la siguiente manera:
+
+\framebox[1\textwidth]{
+	\begin{minipage}{0.9\textwidth}
+		$CTA=<S,X,Y,\delta_{int},\delta_{ext},\lambda,t_A>$\\
+		
+		$S=\{QUERY\}$\\
+		
+		$X=\{\emptyset \}$\\
+		
+		$Y=\{query\_o\}  \in \mathbb{N}^+_0$\\
+		
+		$\delta_{int}: \delta_{int}(QUERY)=QUERY$\\
+		
+		$\delta_{ext}:\emptyset$\\
+		
+		$\lambda:~\lambda(QUERY)=\{query\_o = N\}$\\
+		
+		$t_A(QUERY)=EXP\_VAR$
+	\end{minipage}
+}\\
+
+En las figuras \ref{fig:CTA-esquematico} y \ref{fig:CTA-estados} se pueden observar los puertos de entrada/salida y el diagrama de estados respectivamente.
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics{img/fiuba}
+	\caption{Entradas y salidas del modelo del cliente tipo A.}
+	\label{fig:CTA-esquematico}
 \end{figure}
 
-\begin{footnotesize}
-\begin{minipage}{\textwidth}
-  %\hspace{-1.4cm}
-  \framebox[1\textwidth]{
-  \begin{minipage}[t]{0.45\textwidth}
-    $S:$ \hspace*{1mm} $\left\{\mathbf{phase},\mathbf{sigma},\mathbf{clienteA}\right\}$\\
-    $X:$ \hspace*{1mm} $\left\{\emptyset\right\}$\\
-    $Y:$ \hspace*{1mm} $\left\{n \in \left\{1,2,3,4\right\}\right\}$\\
-    $\delta_{int}(s):$ 
-    \hspace*{1mm} sigma = exp\_var($\mu$) \textbf{// Internal Transition} \\
-    $\delta_{ext}(s,e,x):$  \textbf{// External Transition}
-  \end{minipage}\hspace*{0.05\textwidth}
-  \begin{minipage}[t]{0.45\textwidth}
-    $\lambda(s):$
-    \hspace*{5mm} query\_o = \textbf{eval}(discrete\_var) \textbf{// Output} \\
-    $ta(s):$ \hspace*{4mm} \textbf{return} sigma \textbf{// Time advance}
-  \end{minipage}}
-\end{minipage}
-\end{footnotesize}
+\begin{figure}[htbp]
+	\centering
+	\includegraphics{img/clienteAdevsgraph}
+	\caption{Diagrama de estados para el modelo del cliente tipo A.}
+	\label{fig:CTA-estados}
+\end{figure}
 
-\subsection{Tipo de Cliente B}
-\subsection{Tipo de Cliente C}
+\subsection{Tipo de Cliente B\label{sec:CTB}}
+El modelo atómico correspondiente al bloque del cliente tipo B (CTB) queda definido de la siguiente manera:
 
-\subsection{Control de inventario}
+\framebox[1\textwidth]{
+	\begin{minipage}{0.9\textwidth}
+		$CTB=<S,X,Y,\delta_{int},\delta_{ext},\lambda,t_A>$\\
+		
+		$S=\{IDLE, QUERY, CALC\}$\\
+		
+		$X=\{disponibles\_i \} \in \mathbb{N}^+_0$\\
+		
+		$Y=\{query\_o, pedido\_o\}  \in \mathbb{N}^+_0$\\
+		
+		$\delta_{int}: \delta_{int}(S) \begin{cases}
+		\delta_{int}(IDLE)=QUERY\\
+		\delta_{int}(CALC)=IDLE\\
+		\end{cases}$\\
+		
+		$\delta_{ext}:\delta_{ext}(S,X) \begin{cases} Si ~S=QUERY \wedge  disponibles\_i=P\\
+		\hfill \rightarrow \delta_{ext}(QUERY,disponibles\_i)=CALC\\
+		\end{cases}$\\
+		
+		$\lambda:~\lambda(S)\begin{cases}
+		\lambda(IDLE)=\{query\_o = N\}\\
+		\lambda(CALC)=\{pedido\_o = P\}\\
+		\end{cases}$\\
+		
+		$t_A(S)=\begin{cases}
+		0~si~S=\{CALC\}\\
+		\infty~si~S=\{QUERY\}\\
+		EXP\_VAR~si~S=\{IDLE\}\
+		\end{cases}$
+	\end{minipage}
+}\\
+
+En las figuras \ref{fig:CTB-esquematico} y \ref{fig:CTB-estados} se pueden observar los puertos de entrada/salida y el diagrama de estados respectivamente.
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics{img/fiuba}
+	\caption{Entradas y salidas del modelo del cliente tipo B.}
+	\label{fig:CTB-esquematico}
+\end{figure}
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics{img/clienteBdevsgraph}
+	\caption{Diagrama de estados para el modelo del cliente tipo B.}
+	\label{fig:CTB-estados}
+\end{figure}
+
+\subsection{Tipo de Cliente C\label{sec:CTC}}
+
+El modelo atómico correspondiente al bloque del cliente tipo C (CTC) queda definido de la siguiente manera:
+
+\framebox[1\textwidth]{
+	\begin{minipage}{0.9\textwidth}
+		$CTC=<S,X,Y,\delta_{int},\delta_{ext},\lambda,t_A>$\\
+		
+		$S=\{IDLE, QUERY, ACCEPT, DECLINE\}$\\
+		
+		$X=\{disponibles\_i \} \in \mathbb{N}^+_0$\\
+		
+		$Y=\{query\_o, pedido\_o\}  \in \mathbb{N}^+_0$\\
+		
+		$\delta_{int}: \delta_{int}(S) \begin{cases}
+		\delta_{int}(IDLE)=QUERY\\
+		\delta_{int}(DECLINE)=IDLE\\
+		\delta_{int}(ACCEPT)=IDLE
+		\end{cases}$\\
+		
+		$\delta_{ext}:\delta_{ext}(S,X) \begin{cases} Si ~S=QUERY \wedge  disponibles\_i=N\\
+		\hfill \rightarrow \delta_{ext}(QUERY,disponibles\_i)=ACCEPT\\
+		Si ~S=QUERY \wedge disponibles\_i < N\\
+		\hfill \rightarrow \delta_{ext}(QUERY,disponibles\_i)=DECLINE\\
+		\end{cases}$\\
+		
+		$\lambda:~\lambda(S)\begin{cases}
+		\lambda(IDLE)=\{query\_o = N\}\\
+		\lambda(DECLINE)=\{pedido\_o = 0\}\\
+		\lambda(ACCEPT)=\{pedido\_o = N\}
+		\end{cases}$\\
+		
+		$t_A(S)=\begin{cases}
+		0~si~S=\{ACCEPT, DECLINE\}\\
+		\infty~si~S=\{QUERY\}\\
+		EXP\_VAR~si~S=\{IDLE\}\
+		\end{cases}$
+	\end{minipage}
+}\\
+
+En las figuras \ref{fig:CTC-esquematico} y \ref{fig:CTC-estados} se pueden observar los puertos de entrada/salida y el diagrama de estados respectivamente.
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics{img/fiuba}
+	\caption{Entradas y salidas del modelo del cliente tipo C.}
+	\label{fig:CTC-esquematico}
+\end{figure}
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics{img/clienteCdevsgraph}
+	\caption{Diagrama de estados para el modelo del cliente tipo C.}
+	\label{fig:CTC-estados}
+\end{figure}
+
+
+
+\subsection{Control de inventario\label{sec:CI}}
 El modelo atómico correspondiente al bloque de control de inventario (CI) queda definido de la siguiente manera:
 
 
@@ -665,11 +785,206 @@ En las figuras \ref{fig:AC-esquematico} y \ref{fig:AC-estados} se pueden observa
 \end{figure}
 
 
+\subsection{Proveedor Inmediato\label{sec:PI}}
+El modelo atómico correspondiente al bloque del proveedor inmediato (PI) queda definido de la siguiente manera:
+
+\framebox[1\textwidth]{
+	\begin{minipage}{0.9\textwidth}
+		$AC=<S,X,Y,\delta_{int},\delta_{ext},\lambda,t_A>$\\
+		
+		$S=\{WAITING, QUERY, INV\_WAIT,\\
+		\hfill CLI\_RPLY, CLI\_WAIT, INV\_GET\}$\\
+		
+		$X=\{numProdClient\_i, queryClient\_i, queryInventory\_i \} \in \mathbb{N}^+_0$\\
+		
+		$Y=\{prodInventory\_o, queryInventory\_o, queryClient_o\}  \in \mathbb{N}^+_0$\\
+		
+		$\delta_{int}: \delta_{int}(S) \begin{cases}
+		\delta_{int}(QUERY)=INV\_WAIT\\
+		\delta_{int}(CLI\_RPLY)=CLI\_WAIT\\
+		\delta_{int}(INV\_GET)=WAITING
+		\end{cases}$\\
+		
+		$\delta_{ext}:\delta_{ext}(S,X) \begin{cases} Si ~S=WAITING \wedge  queryClient\_i=N\\
+		\hfill \rightarrow \delta_{ext}(WAITING,queryClient\_i)=QUERY\\
+		Si ~S=INV\_WAIT \wedge queryInventory\_i=P\\
+		\hfill \rightarrow \delta_{ext}(INV\_WAIT,queryInventory\_i)=CLI\_RPLY\\
+		Si ~S=CLI\_WAIT \wedge numProdClient\_i=K\\
+		\hfill \rightarrow \delta_{ext}(CLI\_WAIT,numProdClient\_i)=INV\_GET
+		\end{cases}$\\
+		
+		$\lambda:~\lambda(S)\begin{cases}
+		\lambda(QUERY)=\{queryInventory\_o = N\}\\
+		\lambda(CLI\_RPLY)=\{queryCLient\_o = P\}\\
+		\lambda(INV\_GET)=\{prodInventory\_o = K\}
+		\end{cases}$\\
+		
+		$t_A(S)=\begin{cases}
+		0~si~S=\{QUERY,CLI\_RPLY,INV\_GET\}\\
+		\infty~si~S=\{WAITING, INV\_WAIT, CLI\_WAIT\}
+		\end{cases}$
+	\end{minipage}
+}\\
+
+En las figuras \ref{fig:PI-esquematico} y \ref{fig:PI-estados} se pueden observar los puertos de entrada/salida y el diagrama de estados respectivamente.
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics{img/fiuba}
+	\caption{Entradas y salidas del modelo del proveedor inmediato}
+	\label{fig:PI-esquematico}
+\end{figure}
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics{img/proveedorInmediatodevsgraph}
+	\caption{Diagrama de estados para el modelo del proveedor inmediato.}
+	\label{fig:PI-estados}
+\end{figure}
+
+
+\subsection{Proveedor por múltiplo de cantidad fija\label{sec:PF}}
+El modelo atómico correspondiente al bloque del proveedor por múltiplo de cantidad fija (PF) queda definido de la siguiente manera:
+
+\framebox[1\textwidth]{
+	\begin{minipage}{0.9\textwidth}
+		$AC=<S,X,Y,\delta_{int},\delta_{ext},\lambda,t_A>$\\
+		
+		$S=\{WAITING, QUERY, INV\_WAIT,\\
+		\hfill CLI\_RPLY, CLI\_WAIT, INV\_GET\}$\\
+		
+		$X=\{numProdClient\_i, queryClient\_i, queryInventory\_i \} \in \mathbb{N}^+_0$\\
+		
+		$Y=\{prodInventory\_o, queryInventory\_o, queryClient_o\}  \in \mathbb{N}^+_0$\\
+		
+		$\delta_{int}: \delta_{int}(S) \begin{cases}
+		\delta_{int}(QUERY)=INV\_WAIT\\
+		\delta_{int}(CLI\_RPLY)=CLI\_WAIT\\
+		\delta_{int}(INV\_GET)=WAITING
+		\end{cases}$\\
+		
+		$\delta_{ext}:\delta_{ext}(S,X) \begin{cases} Si ~S=WAITING \wedge  queryClient\_i=N\\
+		\hfill \rightarrow \delta_{ext}(WAITING,queryClient\_i)=QUERY\\
+		Si ~S=INV\_WAIT \wedge queryInventory\_i=P\\
+		\hfill \rightarrow \delta_{ext}(INV\_WAIT,queryInventory\_i)=CLI\_RPLY\\
+		Si ~S=CLI\_WAIT \wedge numProdClient\_i=K\\
+		\hfill \rightarrow \delta_{ext}(CLI\_WAIT,numProdClient\_i)=INV\_GET
+		\end{cases}$\\
+		
+		$\lambda:~\lambda(S)\begin{cases}
+		\lambda(QUERY)=\{queryInventory\_o = N\}\\
+		\lambda(CLI\_RPLY)=\{queryCLient\_o = P\}\\
+		\lambda(INV\_GET)=\{prodInventory\_o = K\}
+		\end{cases}$\\
+		
+		$t_A(S)=\begin{cases}
+		0~si~S=\{QUERY,CLI\_RPLY,INV\_GET\}\\
+		\infty~si~S=\{WAITING, INV\_WAIT, CLI\_WAIT\}
+		\end{cases}$
+	\end{minipage}
+}\\
+
+En las figuras \ref{fig:PF-esquematico} y \ref{fig:PF-estados} se pueden observar los puertos de entrada/salida y el diagrama de estados respectivamente.
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics{img/fiuba}
+	\caption{Entradas y salidas del modelo del proveedor por múltiplo de cantidad fija}
+	\label{fig:PF-esquematico}
+\end{figure}
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics{img/proveedorFijodevsgraph}
+	\caption{Diagrama de estados para el modelo del proveedor por múltiplo de cantidad fija.}
+	\label{fig:PF-estados}
+\end{figure}
+
+\subsection{Proveedor por Encargo\label{sec:PE}}
+El modelo atómico correspondiente al bloque del proveedor por encargo (PE) queda definido de la siguiente manera:
+
+\framebox[1\textwidth]{
+	\begin{minipage}{0.9\textwidth}
+		$AC=<S,X,Y,\delta_{int},\delta_{ext},\lambda,t_A>$\\
+		
+		$S=\{WAITING, QUERY, INV\_WAIT,\\
+		\hfill CLI\_RPLY, CLI\_WAIT, INV\_GET\}$\\
+		
+		$X=\{numProdClient\_i, queryClient\_i, queryInventory\_i \} \in \mathbb{N}^+_0$\\
+		
+		$Y=\{prodInventory\_o, queryInventory\_o, queryClient_o\}  \in \mathbb{N}^+_0$\\
+		
+		$\delta_{int}: \delta_{int}(S) \begin{cases}
+		\delta_{int}(QUERY)=INV\_WAIT\\
+		\delta_{int}(CLI\_RPLY)=CLI\_WAIT\\
+		\delta_{int}(INV\_GET)=WAITING
+		\end{cases}$\\
+		
+		$\delta_{ext}:\delta_{ext}(S,X) \begin{cases} Si ~S=WAITING \wedge  queryClient\_i=N\\
+		\hfill \rightarrow \delta_{ext}(WAITING,queryClient\_i)=QUERY\\
+		Si ~S=INV\_WAIT \wedge queryInventory\_i=P\\
+		\hfill \rightarrow \delta_{ext}(INV\_WAIT,queryInventory\_i)=CLI\_RPLY\\
+		Si ~S=CLI\_WAIT \wedge numProdClient\_i=K\\
+		\hfill \rightarrow \delta_{ext}(CLI\_WAIT,numProdClient\_i)=INV\_GET
+		\end{cases}$\\
+		
+		$\lambda:~\lambda(S)\begin{cases}
+		\lambda(QUERY)=\{queryInventory\_o = N\}\\
+		\lambda(CLI\_RPLY)=\{queryCLient\_o = P\}\\
+		\lambda(INV\_GET)=\{prodInventory\_o = K\}
+		\end{cases}$\\
+		
+		$t_A(S)=\begin{cases}
+		0~si~S=\{QUERY,CLI\_RPLY,INV\_GET\}\\
+		\infty~si~S=\{WAITING, INV\_WAIT, CLI\_WAIT\}
+		\end{cases}$
+	\end{minipage}
+}\\
+
+En las figuras \ref{fig:PE-esquematico} y \ref{fig:PE-estados} se pueden observar los puertos de entrada/salida y el diagrama de estados respectivamente.
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics{img/fiuba}
+	\caption{Entradas y salidas del modelo del proveedor por encargo}
+	\label{fig:PE-esquematico}
+\end{figure}
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics{img/proveedorInmediatodevsgraph}
+	\caption{Diagrama de estados para el modelo del proveedor por encargo.}
+	\label{fig:PE-estados}
+\end{figure}
+
+
+
+
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Modelado y simulación}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \subsection{Pruebas parciales}
+
+\subsubsection{Cliente A}
+
+En la Figura~\ref{fig:pdftiempo} y Figura~\ref{fig:pdfpedidos} se observan los histogramas que representan a la tasa de arribos de pedidos de clientes de tipo A y a la cantidad de unidades pedidas. El eje de tiempos de la Figura~\ref{fig:pdftiempo} se utiliza en segundos en lugar de en meses.
+
+\begin{figure}
+\centering
+\includegraphics[scale=1]{img/pdf_tiempo_pedidos}
+\caption{Función de densidad de probabilidad del tiempo entre pedidos de clientes tipo A.}
+\label{fig:pdftiempo}
+\end{figure}
+
+\begin{figure}
+\centering
+\includegraphics[scale=1]{img/pdf_cantidad_pedidos}
+\caption{Función de densidad de probabilidad del número de unidades pedidas $n$.}
+\label{fig:pdfpedidos}
+\end{figure}
+
 \subsubsection{Control de Inventario}
 Para la prueba del bloque de control de inventario se propuso el siguiente estímulo:
 
