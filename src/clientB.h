@@ -8,14 +8,14 @@
 #include "distri.h"        // class Distribution 
 
 
-#define ATOMIC_MODEL_NAME "ClientB"
+#define CLIENT_B_NAME "ClientB"
 
 
 class ClientB : public Atomic {
   public:
     
-    ClientB(const string &name = ATOMIC_MODEL_NAME );
-    virtual string className() const {  return ATOMIC_MODEL_NAME ;}
+    ClientB(const string &name = CLIENT_B_NAME );
+    virtual string className() const {  return CLIENT_B_NAME ;}
     enum class StateClient {IDLE, QUERY, CALC};
   
   protected:

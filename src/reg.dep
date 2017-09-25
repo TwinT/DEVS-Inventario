@@ -69,4 +69,7 @@ ${OBJ_DIR}/reg.o reg.dep : reg.cpp \
  /home/marcos/Documents/facu/doctorado/SED/cdpp_kernel/cdpp_kernel/cd++/proc/process.h \
  /home/marcos/Documents/facu/doctorado/SED/cdpp_kernel/cdpp_kernel/cd++/proc/pprocess.h \
  /home/marcos/Documents/facu/doctorado/SED/cdpp_kernel/cdpp_kernel/cd++/val/tuple_value.h \
- proveedorInmediato.h Product.h proveedorFijo.h proveedorEncargo.h
+ ControlCalidad.h proveedorInmediato.h Product.h proveedorFijo.h \
+ proveedorEncargo.h Inventario.h clientA.h \
+ /home/marcos/Documents/facu/doctorado/SED/cdpp_kernel/cdpp_kernel/cd++/misc/math/distri.h \
+ clientB.h clientC.h AtencionAlCliente.h
