@@ -263,44 +263,38 @@
 % Inicio del TP:
 %
 
-\section{Enunciado}
-Acá va el enunciado del trabajo, o al menos la parte relevante del problema
-planteado.
-
-Este documento tiene por objetivos: a) servir de plantilla para los informes 
-de los Trabajos Prácticos de la materia Laboratorio de Control Automático 
-con las secciones mínimas que deberían incluírse, y b) dar \textit{guías de estilo} 
-para la elaboración de los mismos.
-
-Se recomienda organizar el informe en secciones y subsecciones para facilitar el flujo de la información y su lectura. Las secciones y subsecciones del presente documento pretenden dar una idea de una posible organización pero no son exhaustivas.
-
-%\flushleft\includegraphics[scale=0.75]{especificacion.pdf}
-
+\section{Objetivo y Enunciado}
+El objetivo de este Trabajo Práctico es demostrar la comprensión del modelado y simulación utilizando el formalismo DEVS, junto a la aplicación de las técnicas mediante la herramienta CD++.
+Se deberá identificar un sistema del mundo real que pueda ser representado usando DEVS y construir luego un modelo del mismo.
+Finalmente se ejecutarán simulaciones del sistema analizado. El sistema estudiado puede ser natural o artificial, y puede existir en la realidad o no.
 
 \section{Modelo Conceptual}
 \subsection{Motivación}
-Motivación
-Una compañía que vende un único producto está interesada en estimar cuántas unidades del mismo debería tener en inventario en los próximos n meses (n es un parámetro de entrada fijo).
+
+Una compañía que vende un único producto está interesada en estimar cuántas unidades del mismo debería tener en inventario en los próximos $n$ meses ($n$ es un parámetro de entrada fijo).
 
 La compañía cuenta básicamente con tres proveedores de diferentes materias primas. Cada producto se fabrica usando 1 unidad de cada materia prima.
 
 La planta está compuesta por un departamento de control de inventario, un departamento de atención al cliente y control de calidad de producto (ya que los productos son perecederos), un stock de productos finalizados y tres stocks de materias primas (uno para cada material). Las demandas de la clientela se producen aleatoriamente en pedidos de 1 a 4 unidades (también aleatorios). Existen 3 tipos diferentes de demanda.
 
-En la Figura 1 se propone un esquema del proceso. Se puede observar que el top model consiste de tres jerarquías. En una jerarquía se encuentran: los tres proveedores, los tres clientes y la industria, en la otra se encuentran los tres stock de materia prima, el departamento de atención al cliente y control de calidad de producto, y el departamento de control de inventario, y en el último nivel dentro de Atención al Cliente y Control de Calidad se encuentran ambos departamentos. Cada cliente consiste de un modelo atómico distinto para representar tres comportamientos distintos. De la misma manera se utilizan tres modelos atómicos para modelizar cada tipo de proveedor. Por cada materia prima se tendrá un stock distinto, que al tener el mismo comportamiento se modelizará con un único modelo atómico. Finalmente, para los departamentos de control de calidad y control de inventario se utilizarán dos modelos atómicos. En resúmen, el modelo de la Figura~\ref{fig:fig1} se conforma de 2 jerarquías, una superior con 7 bloques y una inferior con 3 modelos atómicos.
+En la Figura \ref{fig:esquema-del-problema} se propone un esquema del proceso. Se puede observar que el top-model consiste de tres jerarquías. En la jerarquía top se encuentran: los tres proveedores, los tres clientes y la industria en sí. En la siguiente se encuentran el inventario, el departamento de atención al cliente y el departamento de control de inventario. Finalmente, en el último nivel (dentro de Atención al Cliente) se encuentran la ventanilla de atención al cliente y el departamento de Control de Calidad del producto.
+Cada cliente consiste de un modelo atómico distinto para representar tres comportamientos distintos. De la misma manera se utilizan tres modelos atómicos para modelizar cada tipo de proveedor. Finalmente, para los departamentos de control de calidad, ventanilla de atención al cliente y control de inventario se utilizarán tres modelos atómicos.
 
 \begin{figure}
 \centering
-\includegraphics[scale=1]{img/figura1}
+\includegraphics[scale=0.7]{img/figura1}
 \caption{Esquema del problema planteado.}
-\label{fig:fig1}
+\label{fig:esquema-del-problema}
 \end{figure}
 
 La pregunta a responder mediante simulaciones es:
-¿Qué política de reposición nos llevará a un manejo óptimo del nivel de stock logrando la mayor satisfacción del cliente y el menor costo de mantenimiento y reposición del inventario?
-Una pregunta adicional que surge a partir de la anterior es ¿Cómo ponderar adecuadamente ambos requisitos en conflicto?
+\textit{¿Qué política de reposición nos llevará a un manejo óptimo del nivel de stock logrando la mayor satisfacción del cliente y el menor costo de mantenimiento y reposición del inventario?}.
 
-\subsection{Modelización}
-A continuación en cada subsección se describe cada uno de los bloques de la Figura 1.
+Una pregunta adicional que surge a partir de la anterior es:
+\textit{¿Cómo ponderar adecuadamente ambos requisitos en conflicto?}
+
+\subsection{Descripción funcional}
+A continuación se describen cada uno de los bloques de la Figura \ref{fig:esquema-del-problema}.
 
 \subsubsection{Demanda (cliente)}
 Los tiempos entre demandas por tipo de cliente son variables aleatorias exponenciales e independientemente distribuidas con una media de 0,12 mes. Los tamaños de las demandas (que pueden ir de uno a cuatro unidades del producto), D, son variables aleatorias independientemente distribuidas e independientes, cuya probabilidad de ocurrencia se muestra en la Tabla~\ref{tab:tabla1}.
@@ -721,9 +715,9 @@ Para la prueba del bloque de control de calidad se propuso el siguiente estímul
 
 Se busca probar las condiciones:
 \begin{itemize}
-	\item Un cliente compra N productos y el inventario devuelve N productos correctos. Por lo tanto se deberían enviar todos.
-	\item Un cliente compra N productos y el inventario devuelve N-1 productos correctos y uno vencido. Se debe descartar ese producto y pedir uno nuevo al inventario. El inventario devuelve un producto válido. Se deberían enviar los N productos válidos.
-	\item Un cliente compra N productos pero el inventario dispone sólo de N-1 y devuelve 0 en la última posición. El control de calidad debe interpretar la salida y despachar sólo los dos productos correctos.
+	\item Un cliente compra $N$ productos y el inventario devuelve $N$ productos correctos. Por lo tanto se deberían enviar todos.
+	\item Un cliente compra $N$ productos y el inventario devuelve $N-1$ productos correctos y uno vencido. Se debe descartar ese producto y pedir uno nuevo al inventario. El inventario devuelve un producto válido. Se deberían enviar los $N$ productos válidos.
+	\item Un cliente compra N productos pero el inventario dispone sólo de $N-1$ y devuelve $0$ en la última posición. El control de calidad debe interpretar la salida y despachar sólo los dos productos correctos.
 \end{itemize}
 
 La salida de la prueba es la siguiente:
@@ -758,9 +752,9 @@ Para la prueba del bloque de atención al cliente se propuso el siguiente estím
 
 Se busca probar las condiciones:
 \begin{itemize}
-	\item Un cliente compra N productos y el inventario devuelve N productos correctos. Por lo tanto se deberían enviar todos.
-	\item Un cliente compra N productos y el inventario devuelve N-1 productos correctos y uno vencido. Se debe descartar ese producto y pedir uno nuevo al inventario. El inventario devuelve un producto válido. Se deberían enviar los N productos válidos.
-	\item Un cliente compra N productos pero el inventario dispone sólo de N-1 y devuelve 0 en la última posición. El control de calidad debe interpretar la salida y despachar sólo los dos productos correctos.
+	\item Un cliente solicita $N$ productos y el inventario devuelve una cantidad $> N$ que se le informa al cliente. Por lo tanto el cliente compra N productos.
+	\item Un cliente solicita $N$ productos. El inventario responde con $P < N$ y el cliente decide comprar $P$ productos.
+	\item Un solicita $N$ productos. El inventario responde con $P < N$ y el cliente decide no comprar ningún producto.
 \end{itemize}
 
 La salida de la prueba es la siguiente:
