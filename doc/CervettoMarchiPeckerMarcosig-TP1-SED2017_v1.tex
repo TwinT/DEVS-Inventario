@@ -444,7 +444,7 @@ Los productos de este proveedor no tienen vencimiento.
 \end{figure}
 \end{enumerate}
 
-\section{Descripción Funcional}
+\section{Descripción Formal}
 \subsection{Tipo de Cliente A}
 
 En la Figura~\ref{fig:pdftiempo} y Figura~\ref{fig:pdfpedidos} se observan los histogramas que representan a la tasa de arribos de pedidos de clientes de tipo A y a la cantidad de unidades pedidas. El eje de tiempos de la Figura~\ref{fig:pdftiempo} se utiliza en segundos en lugar de en meses.
@@ -486,202 +486,89 @@ En la Figura~\ref{fig:pdftiempo} y Figura~\ref{fig:pdfpedidos} se observan los h
 \subsection{Tipo de Cliente B}
 \subsection{Tipo de Cliente C}
 
-
-\section{Introducción}
-En esta sección va una pequeña introducción teórica a los temas involucrados 
-en la realización del Trabajo Práctico:
-
-\begin{itemize}
-\item S-Functions: \begin{itemize} \item M-File. \item C-Mex. \end{itemize}
-\item \textit{Solver}.
-\item Modelo del tanque.
-\item Control PID.
-\item \dots
-\end{itemize}
-
-En caso de utilizar información de algún libro, revista, artículo, etc. 
-citarla correctamente (ver Sección~\ref{sec:referencias}).
+\subsection{Control de inventario}
+El modelo atómico correspondiente al bloque de control de inventario queda definido de la siguiente manera:
 
 
-\section{Modelo}
-\subsection{Ecuaciones matemáticas}
-Todas las ecuaciones matemáticas deben estar numeradas y deben ser invocadas por medio de este número. Por ejemplo, la Ecuación~\eqref{eq:estados} describe una ecuación de estados de tiempo continuo, con $x \in \mathbb{R}^{n}$ el vector de estados, $u \in \mathbb{R}^{m}$ el vector de entradas e $y \in \mathbb{R}^{p}$ el vector de salidas. Quedan exceptuadas las ecuaciones que están dentro del texto: $F = m\,\ddot{p}$, donde $p \in \mathbb{R}$ es la posición, $m$ la masa y $F$ la fuerza aplicada. 
+\framebox[1\textwidth]{
+\begin{minipage}{0.9\textwidth}
+	$CI=<S,X,Y,\delta_{int},\delta_{ext},\lambda,t_A>$\\
+	
+	$S=\{WAITING, QUERY, CALC\}$\\
+	
+	$X=\{numProd\_i\} \in \mathbb{N}^+_0 $\\
+	
+	$Y=\{queryInventory\_o, querySuppliers\_o\} \in \mathbb{N}^+_0$\\
+	
+	$\delta_{int}: \delta_{int}(S) \begin{cases}
+		\delta_{int}(WAITING)=QUERY\\
+		\delta_{int}(CALC)=WAITING
+		\end{cases}$\\
+		
+	$\delta_{ext}:\delta_{ext}(S,numProd\_i) \begin{cases} Si ~S=QUERY \wedge  numProd\_i=N\\
+	\hfill \rightarrow \delta_{ext}(S,numProd\_i)=CALC \end{cases}$\\
+	
+	$\lambda:~\lambda(S)\begin{cases}
+	\lambda(WAITING)={queryInventory\_o = 1}\\
+	\lambda(CALC)={querySuppliers\_o = \begin{cases}
+		S-N~si~numProd\_i < s\\
+		0~\forall~numProd\_i
+		\end{cases}}
+	\end{cases}$\\
+	
+	$t_A=\begin{cases}
+	1~si~S=WAITING\\
+	0~si~S=CALC\\
+	\infty~si~S=QUERY
+	\end{cases}$
+\end{minipage}
+}
 
-\begin{equation}
-\left\{\begin{array}{l}
-\dot{x}(t) = A x(t) + B u(t)\\
-y(t) = C x(t) + D u(t)
-\end{array}\right.
-\label{eq:estados}
-\end{equation}
-
-
-\section{Implementación del modelo del Tanque}
-\label{sec:impltanque}
-En esta sección se explica la implementación del modelo del tanque utilizando una \textit{S-Function}. Si fuera necesario para hacer más sencilla la explicación se puede recurrir al uso de figuras, diagramas de bloques y/o de flujo, tablas, etc. Todas las figuras y tablas del informe deben tener una leyenda o pie ubicado debajo de la misma con una breve descripción, estar numeradas y ser referenciadas mediante dicho número identificador. Esto último se puede observar en el Tabla~\ref{tab:paramstanque} y la Figura~\ref{fig:}.
-
-\begin{table}[t]
-\begin{center}
-\begin{tabular}{cc}
-\toprule
-\textbf{Parámetro} & \textbf{Valor}\\
-\midrule
-Área transversal & $A$\\
-Área orificio & $a$\\
-Altura máxima & $h_{\max}$\\
-Altura inicial & $h_{ini}$\\
-\bottomrule
-\end{tabular}
-\end{center}
-\caption{Parámetros del Tanque.}
-\label{tab:paramstanque}
-\end{table}
-
-\begin{figure}[h]
-\centering
-\includegraphics[width=0.45\textwidth]{img/tanques_control}
-\caption{Lazo cerrado.}
-\label{fig:}
-\end{figure}
-
-Cuando dentro del texto se invoque el nombre de alguna variable utilizada en el código utilizar el formato \verb=verbatim=. El encabezado de la \textit{S-Function} implementada deberá respetar el siguiente formato:
-\begin{verbatim}
-function [sys,x0,str,ts] = tanque(t,x,u,flag,R,hmax,A,hini)
-\end{verbatim}
-
-En donde haga falta explicar el código de una \textit{S-Function} utilizar extractos del mismo o \textit{snippets}:
-
-\lstset{style = custommatlab}
-
-\begin{lstlisting}
-      xdot = u;
-      if x > xmax && u > 0 % verifica saturacion superior
-          xdot = 0;
-      elseif x < xmin && u < 0 % verifica saturacion inferior
-          xdot = 0;
-      end
-      sys = xdot;
-\end{lstlisting}
-
-\lstset{style = customcpp}
-
-\begin{lstlisting}
-    real_T *p;
-    int_T size,i;
-    const real_T *u = (real_T*) ssGetInputPortRealSignal(S,0);
-    real_T *y = ssGetOutputPortSignal(S,0);
-    size = ssGetInputPortWidth(S,0); 
-    p = mxGetPr(GAIN(S)); // apunta puntero a parametros
-
-    for (i = 0; i < size; i++) {
-        y[i] = *p*u[i];
-    }
-\end{lstlisting}
-
-\section{Validación del modelo}
-\subsection{Casos de prueba}
-En esta sección se proponen distintos casos de prueba para validar el funcionamiento de la implementación del modelo. Los resultados obtenidos se analizan y comparan con los resultados esperados. Es importante resaltar y explicar puntos característicos o de interés de las respuestas como valores máximos, mínimos, estacionarios, puntos de inflexión, puntos de cruce, etc.
-
-
-\section{Implementación del controlador PID}
-En esta sección se explicará la \textit{S-Function} utilizada para realizar el controlador PID.
-
-\subsection{Ajuste del Controlador PID}
-En esta sección deben detallar los ensayos realizados conducentes al ajuste del controlador y justificar la elección de las ganancias y parámetros. Además deben mostrar algún ensayo realizado con el bloque PID aislado para validar su funcionamiento antes de conectarlo a la planta.
-
-\section{Ensayos en lazo cerrado}
-En esta sección se realizará el ensayo en lazo cerrado del controlador del nivel de un único tanque. Se deberán incluir al menos:
-
-\begin{enumerate}[a)] 
-\item La respuesta a escalones de distinta amplitud en la referencia de nivel.
-\item La respuesta a escalones de distinta amplitud en la entrada de perturbación.
-\end{enumerate}
-
-\section{Conclusiones}
-En esta sección van las conclusiones generales que saquen a partir de la realización del Trabajo Práctico. Deben incluir: los problemas encontrados, las soluciones propuestas, las ventajas y desventajas de las herramientas utilizadas, etc.
-
-\section{Formato}
-\subsection{Prolijidad}
-Se evaluará la claridad y prolijidad tanto en la presentación de los resultados, como en la redacción y en la ortografía. \textcolor{red}{Se recomienda releer el informe antes de entregarlo.}
-
-\subsection{Idioma}
-Las palabras en idioma extranjero deben ser indicadas en \textit{itálica} al menos la primera vez que se utilizan. En caso de existir una palabra en castellano con el mismo significado y de uso amplio será preferible su utilización. En la Tabla~\ref{tab:equiv} se pueden ver algunos ejemplos.
-
-\begin{table}[ht!]
-\begin{center}
-\begin{tabular}{cc}
-\toprule
-\multicolumn{2}{c}{\bf Equivalencias}\\
-\midrule
-\textit{Performance} & Desempeño\\
-\textit{Set-Point} & Referencia\\
-\bottomrule
-\end{tabular}
-\end{center}
-\caption{Equivalencias.}
-\label{tab:equiv}
-\end{table}
-
-\subsection{Unidades de medida}
-Todos los valores numéricos deberán estar acompañados por su unidad de medida respectiva dentro del Sistema Internacional de Medida (SI) \cite{NIST-SI-guide}. Entre el número y su unidad debe existir un \textit{espacio duro}. En \LaTeX{} este espacio se logra mediante el carácter $\sim$. Las unidades de medida no deben ir en letra itálica \cite{NIST-SI-guide}. Ejemplo: $10~\textrm{m}$, $5.5~\textrm{s}$, $0.1~\textrm{A}$.
-
-A pesar que el SI admite como separador decimal válido tanto a la ',' como al '.' debe ser utilizado el primero. % Según la Real Academia Española en su Diccionario Prehispánico de Dudas: \begin{quotation} [...] en las expresiones numéricas escritas con cifras, la normativa internacional establece el uso de la coma para separar la parte entera de la parte decimal.\end{quotation}.
-
-\subsection{Figuras}
-Todas las figuras con curvas de respuesta deberán tener identificados a sus ejes, con sus respectivos nombres y unidades de medida, y título de la figura. Asimismo, en caso de existir más de una curva se deberá incluir un cuadro con las leyendas que permitan identificar a cada una de éstas (Figura~\ref{fig:respescalon}). Además se deberá incluir una grilla de fondo.
+En las figuras \ref{fig:CI-esquematico} y \ref{fig:CI-estados} se pueden observar los puertos de entrada/salida y el diagrama de estados respectivamente.
 
 \begin{figure}
-\centering
-\includegraphics[width=0.8\textwidth]{img/respescalon}
-\caption{Respuesta a un escalón.}
-\label{fig:respescalon}
+	\centering
+	\includegraphics{img/fiuba}
+	\caption{Entradas y salidas del modelo control de inventario}
+	\label{fig:CI-esquematico}
 \end{figure}
 
-\section{Formato de referencias}
-\label{sec:referencias}
-Para las referencias se puede utilizar el estilo de referencias de la IEEE, que
-se encuentra en\\
-\url{www.ieee.org/conferences_events/conferences/publishing/templates.html},
-junto con su archivo de bibliografía. O bien pueden ingresarse a mano
-manteniendo el estilo. Ejemplos:
-
-\begin{enumerate}[{[}1{]}]
-  \item G. Eason, B. Noble, and I.N. Sneddon, ``On certain integrals of
-Lipschitz-Hankel type involving products of Bessel functions'', Phil. Trans.
-Roy. Soc. London, vol. A247, pp. 529--551, April 1955. (references)
-  \item J. Clerk Maxwell, A Treatise on Electricity and Magnetism, 3rd ed.,
-vol. 2. Oxford: Clarendon, 1982, pp. 68-73.
-  \item I.S. Jacobs and C.P. Bean, ``Fine particles, thin films and exchange
-anisotropy,'' in Magnetism, vol. III, G.T. Rado and H. Suhl, Eds. New York>
-Academic, 1963, pp. 271-350.
-  \item K. Elissa, ``Title of paper if known,'' unpublished.
-  \item R. Nicole, ``Title of paper with only first word capitalized,'' J. Name
-Stand. Abbrev., in press.
-  \item Y. Yorozu, M. Hirano, K.Oka, and Y. Tagawa, ``Electron spectroscopy
-studis on magneto-optical media and plastic substrate interface,'' IEEE Transl.
-J. Magn. Japan, vol. 2, pp. 740-741, August 1987 [Digests 9th Annual Conf.
-Magnetics Japan, p.301, 1982].
-  \item M. Young, The Technical Writer's Handbook. Mill Valley, CA: University
-Science, 1989
-\end{enumerate}
+\begin{figure}
+	\centering
+	\includegraphics{img/fiuba}
+	\caption{Diagrama de estados para el modelo de control de inventario.}
+	\label{fig:CI-estados}
+\end{figure}
 
 
+\section{Modelado y simulación}
+\subsection{Pruebas parciales}
+\subsubsection{Control de Inventario}
+Para la purueba del bloque de control de inventario se propuso el siguiente estímulo:
 
+\begin{minipage}{0.5\textwidth}
+	\centering
+	\begin{lstlisting}
+	00:00:01:10 invLevel 8
+	00:00:02:10 invLevel 190
+	00:00:03:10 invLevel 49
+	\end{lstlisting}
 
-\pagebreak
+	\caption{Archivo "ev" de estímulo para el modelo de control de inventario}
+\end{minipage}
+
+\subsection{Pruebas de integración}
+.
+\subsection{Reporte y conclusiones}
+
 
 \appendix
 \section{Código Implementado}
-Al final del informe se deberá incluir el código implementado. El mismo debe ir acompañado de comentarios suficientes para entender su funcionamiento.
 
 % Please don't exchange the bibliographystyle style
 \bibliographystyle{IEEEtran.bst}
 % AUTHOR: Include your bib file here
 \bibliography{IEEEexample}
-
-
-
-
 
 \end{document}
 
