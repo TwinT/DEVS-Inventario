@@ -1,5 +1,5 @@
-#ifndef _PROVEEDOR_FIJO_H_
-#define _PROVEEDOR_FIJO_H_
+#ifndef _PROVEEDOR_ENCARGO_H_
+#define _PROVEEDOR_ENCARGO_H_
 
 #include <random>
 #include <vector>
@@ -9,14 +9,16 @@
 #include "real.h"
 #include "Product.h"
 
-#define PROVEEDOR_FIJO_NAME "ProveedorFijo"
+#define PROVEEDOR_ENCARGO_NAME "ProveedorEncargo"
 
-class ProveedorFijo : public Atomic {
+class Distribution;
+
+class ProveedorEncargo : public Atomic {
   public:
     
-    ProveedorFijo(const string &name = PROVEEDOR_FIJO_NAME );
-    virtual string className() const {  return PROVEEDOR_FIJO_NAME ;}
-    ~ProveedorFijo();
+    ProveedorEncargo(const string &name = PROVEEDOR_ENCARGO_NAME );
+    virtual string className() const {  return PROVEEDOR_ENCARGO_NAME ;}
+    ~ProveedorEncargo();
   protected:
     Model &initFunction();
     Model &externalFunction( const ExternalMessage & );
@@ -33,7 +35,11 @@ class ProveedorFijo : public Atomic {
     };
     State state;
 
-    int productos_por_paquete;
+    // Distribution
+    int initial, increment;
+    Distribution *dist;
+    Distribution &distribution() {return *dist;}
+
     // contiene los vencimientos de cada producto en ms
     // Usar VTime::makeFrom() para convertir a VTime
     // Usar VTime::asMsecs() para convertir a float

@@ -1,44 +1,60 @@
-#include "proveedorFijo.h" // base header
+#include "proveedorEncargo.h" // base header
 #include "message.h"            // InternalMessage ....
+#include "distri.h"             // class Distribution 
 #include "strutil.h"            // str2Value( ... )
 #include "parsimu.h"            // class Simulator
 
 /*******************************************************************
-* Function Name: ProveedorFijo
+* Function Name: ProveedorEncargo
 * Description: constructor
 ********************************************************************/
-ProveedorFijo::ProveedorFijo(const string &name)
+ProveedorEncargo::ProveedorEncargo(const string &name)
 : Atomic( name )
  , entrega(addOutputPort( "entrega" ))
  , pedido(addInputPort( "pedido" ))
  , productos(0)
 {
 	try{
-		if( ParallelMainSimulator::Instance().existsParameter(description(), "productos_por_paquete")){
-			productos_por_paquete = str2Int(ParallelMainSimulator::Instance().getParameter( description(), "productos_por_paquete" ));
+		dist = Distribution::create( ParallelMainSimulator::Instance().getParameter( description(), "distribution" ) );
+		MASSERT( dist ) ;
+		for ( register int i = 0; i < dist->varCount(); i++ )
+		{
+			string parameter( ParallelMainSimulator::Instance().getParameter( description(), dist->getVar( i ) ) ) ;
+			dist->setVar( i, str2Value( parameter ) ) ;
 		}
-		else{
-			productos_por_paquete = 40;
-		}
+
+		if( ParallelMainSimulator::Instance().existsParameter( description(), "initial" ) )
+			initial = str2Int( ParallelMainSimulator::Instance().getParameter( description(), "initial" ) );
+		else
+			initial = 0;
+
+		if( ParallelMainSimulator::Instance().existsParameter( description(), "increment" ) )
+			increment = str2Int( ParallelMainSimulator::Instance().getParameter( description(), "increment" ) );
+		else
+			increment = 1;
+
+	} catch(InvalidDistribution &e){
+		e.addText( "The model " + description() + " has distribution problems!" ) ;
+		e.print(cerr);
+		MTHROW( e ) ;
 	} catch(MException &e){
 		MTHROW(e);
 	}
-	cout << "Proveedor Fijo Creado" << endl;
+	cout << "Proveedor por Encargo Creado" << endl;
 	
 }
 
 /*******************************************************************
 * Function Name: initFunction
 ********************************************************************/
-Model &ProveedorFijo::initFunction()
+Model &ProveedorEncargo::initFunction()
 {
 	this->elapsed = VTime::Zero;
     this->timeLeft = VTime::Inf;
     this->sigma = VTime::Inf; // stays in active state until an external event occurs;
     
     state = idle;
-    cout << "Proveedor Fijo - Productos por paquete: " << productos_por_paquete << endl;
-    cout << "Proveedor Fijo - Init finalizado" << endl;
+    cout << "Proveedor por Encargo - Init finalizado" << endl;
 
     holdIn(AtomicState::active, this->sigma);
 	return *this ;
@@ -48,7 +64,7 @@ Model &ProveedorFijo::initFunction()
 * Function Name: externalFunction
 * Description: 
 ********************************************************************/
-Model &ProveedorFijo::externalFunction( const ExternalMessage &msg )
+Model &ProveedorEncargo::externalFunction( const ExternalMessage &msg )
 {
 	this->sigma = nextChange();	
 	this->elapsed = msg.time()-lastChange();	
@@ -57,23 +73,18 @@ Model &ProveedorFijo::externalFunction( const ExternalMessage &msg )
 	if (msg.port() ==  pedido){
 		int	cantidad_pedida = static_cast<int>(Real::from_value(msg.value()).value());
 
-     	cout <<  msg.time() << " Proveedor Fijo - " << "Pedido: " << cantidad_pedida << " productos" << endl;
+     	cout <<  msg.time() << " Proveedor por Encargo - " << "Pedido: " << cantidad_pedida << " productos" << endl;
 
-     	int cantidad = (cantidad_pedida / productos_por_paquete)*productos_por_paquete;
-
-     	if(cantidad_pedida % productos_por_paquete != 0){
-     		cantidad += productos_por_paquete;
-     	}
-     	
-     	cout <<  msg.time() << " Proveedor Fijo - " << "Se entregarán: " << cantidad << " productos" << endl;
-
-		for(int i = 0; i < cantidad; i++){
-			VTime t = VTime::Inf;
+		for(int i = 0; i < cantidad_pedida; i++){
+			float f =  static_cast<float>(fabs(distribution().get()));
+			//cout << "float: " << f << endl;
+			VTime t = VTime(f);
+			//cout << "distribution: " << t << endl;
 			productos.push_back(Real(t.asMsecs()));
 		}
 
 		state = serve;
-		holdIn(AtomicState::active, VTime::Zero);
+		holdIn(AtomicState::active, VTime(0,0,1,0)); // 1 segundo
 	}
 	return *this;
 }
@@ -81,13 +92,13 @@ Model &ProveedorFijo::externalFunction( const ExternalMessage &msg )
 /*******************************************************************
 * Function Name: internalFunction
 ********************************************************************/
-Model &ProveedorFijo::internalFunction(const InternalMessage &msg )
+Model &ProveedorEncargo::internalFunction(const InternalMessage &msg )
 {
 
 	if(state == idle)
 		this->sigma =  VTime::Inf;
 	else
-		this->sigma = VTime::Zero;
+		this->sigma =  VTime(0,0,1,0);
 	
 	state = idle;
 	holdIn(AtomicState::active, this->sigma);
@@ -98,12 +109,12 @@ Model &ProveedorFijo::internalFunction(const InternalMessage &msg )
 /*******************************************************************
 * Function Name: outputFunction
 ********************************************************************/
-Model &ProveedorFijo::outputFunction(const CollectMessage &msg)
+Model &ProveedorEncargo::outputFunction(const CollectMessage &msg)
 {
 	if(state == serve){
 		Tuple<Product> t(&productos);
 		sendOutput(msg.time(), entrega, t);
-		cout << msg.time() << " Proveedor Fijo - " << "Entrega: " << t <<  endl;
+		cout << msg.time() << " Proveedor por Encargo - " << "Entrega: " << t <<  endl;
 		productos.clear(); // limpio vector
 	}
 	
@@ -111,5 +122,7 @@ Model &ProveedorFijo::outputFunction(const CollectMessage &msg)
 
 }
 
-ProveedorFijo::~ProveedorFijo()
-{}
+ProveedorEncargo::~ProveedorEncargo()
+{
+	delete dist;
+}

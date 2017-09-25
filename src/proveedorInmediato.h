@@ -1,5 +1,5 @@
-#ifndef _PROVEEDOR1_H_
-#define _PROVEEDOR1_H_
+#ifndef _PROVEEDOR_INMEDIATO_H_
+#define _PROVEEDOR_INMEDIATO_H_
 
 #include <random>
 #include <vector>

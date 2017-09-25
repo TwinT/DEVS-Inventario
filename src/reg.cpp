@@ -4,6 +4,7 @@
 #include "ControlInventario.h"
 #include "proveedorInmediato.h"
 #include "proveedorFijo.h"
+#include "proveedorEncargo.h"
 
 void register_atomics_on(ParallelModelAdmin &admin)
 {
@@ -13,5 +14,5 @@ void register_atomics_on(ParallelModelAdmin &admin)
 	admin.registerAtomic(NewAtomicFunction<ProveedorInmediato>(), PROVEEDOR_INMEDIATO_NAME);
 	admin.registerAtomic(NewAtomicFunction<ControlInventario>(), CONTROL_INVENTARIO_NAME);
 	admin.registerAtomic(NewAtomicFunction<ProveedorFijo>(), PROVEEDOR_FIJO_NAME);
-
+	admin.registerAtomic(NewAtomicFunction<ProveedorEncargo>(), PROVEEDOR_ENCARGO_NAME);
 }

@@ -5,7 +5,7 @@
 #include "parsimu.h"            // class Simulator
 
 /*******************************************************************
-* Function Name: proveedorInmediato
+* Function Name: ProveedorInmediato
 * Description: constructor
 ********************************************************************/
 ProveedorInmediato::ProveedorInmediato( const string &name )
@@ -54,7 +54,7 @@ Model &ProveedorInmediato::initFunction()
     this->sigma = VTime::Inf; // stays in active state until an external event occurs;
     
     state = idle;
-    cout << "Init finalizado" << endl;
+    cout << "Proveedor Inmediato - Init finalizado" << endl;
 
     holdIn(AtomicState::active, this->sigma);
 	return *this ;
@@ -70,13 +70,14 @@ Model &ProveedorInmediato::externalFunction( const ExternalMessage &msg )
 	this->elapsed = msg.time()-lastChange();	
     this->timeLeft = this->sigma - this->elapsed; 
 	
-	int cantidad;
 
 	if (msg.port() ==  pedido){
-		cantidad = static_cast<int>(Real::from_value(msg.value()).value());
-     	cout << msg.time() << ": Se recibe un pedido de " << cantidad <<  endl;
+		int cantidad_pedida;
 
-		for(int i = 0; i < cantidad; i++){
+		cantidad_pedida = static_cast<int>(Real::from_value(msg.value()).value());
+     	cout <<  msg.time() << " Proveedor Inmediato - " << "Pedido: " << cantidad_pedida << " productos" << endl;
+
+		for(int i = 0; i < cantidad_pedida; i++){
 			float f =  static_cast<float>(fabs(distribution().get()));
 			//cout << "float: " << f << endl;
 			VTime t = VTime(f);
@@ -115,7 +116,7 @@ Model &ProveedorInmediato::outputFunction(const CollectMessage &msg)
 	if(state == serve){
 		Tuple<Product> t(&productos);
 		sendOutput( msg.time(), entrega, t);
-		cout << msg.time() << ": pedido entregado. Entrega:" << t <<  endl;
+		cout << msg.time() << " Proveedor Inmediato - " << "Entrega: " << t <<  endl;
 		productos.clear(); // limpio vector
 	}
 	
