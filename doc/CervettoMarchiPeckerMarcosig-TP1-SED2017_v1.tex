@@ -361,7 +361,7 @@ En la Figura~\ref{fig:fig5} se puede observar el comportamiento del módulo acop
 \label{fig:fig5}
 \end{figure}
 
-\subsubsection{Control de inventario}
+\subsubsection{Control de inventario\label{sec:CI}}
 
 Al comienzo de cada mes, la compañía revisa el nivel de inventario y decide cuántas nuevas unidades pedir a sus proveedores. La compañía ordena $Z$ unidades a todos los proveedores por igual. El costo costo será $K + pZ$, donde $K = 350~\textrm{pesos}$ es el costo fijo del pedido y $p = 25~\textrm{pesos}$ es el costo incremental por unidad. Naturalmente, si $Z = 0$ no se incurre en ningún costo. La compañía usa la siguiente política para decidir cuántas unidades pedir: si $I$ es el nivel de inventario al comienzo del mes, $S$ el inventario máximo posible (capacidad de almacenamiento) y $s$ el parámetro de política de reposición, $Z$ estará dado por:
 
@@ -487,7 +487,7 @@ En la Figura~\ref{fig:pdftiempo} y Figura~\ref{fig:pdfpedidos} se observan los h
 \subsection{Tipo de Cliente C}
 
 \subsection{Control de inventario}
-El modelo atómico correspondiente al bloque de control de inventario queda definido de la siguiente manera:
+El modelo atómico correspondiente al bloque de control de inventario (CI) queda definido de la siguiente manera:
 
 
 \framebox[1\textwidth]{
@@ -509,14 +509,15 @@ El modelo atómico correspondiente al bloque de control de inventario queda defi
 	\hfill \rightarrow \delta_{ext}(S,numProd\_i)=CALC \end{cases}$\\
 	
 	$\lambda:~\lambda(S)\begin{cases}
-	\lambda(WAITING)={queryInventory\_o = 1}\\
-	\lambda(CALC)={querySuppliers\_o = \begin{cases}
-		S-N~si~numProd\_i < s\\
+	\lambda(WAITING)=\{queryInventory\_o = 1\}\\
+	\lambda(CALC)=\{ querySuppliers\_o = \begin{cases}
+		S-N~si~numProd\_i\\
+		\hfill < s\\
 		0~\forall~numProd\_i
-		\end{cases}}
+		\end{cases} \}
 	\end{cases}$\\
 	
-	$t_A=\begin{cases}
+	$t_A(S)=\begin{cases}
 	1~si~S=WAITING\\
 	0~si~S=CALC\\
 	\infty~si~S=QUERY
@@ -526,36 +527,119 @@ El modelo atómico correspondiente al bloque de control de inventario queda defi
 
 En las figuras \ref{fig:CI-esquematico} y \ref{fig:CI-estados} se pueden observar los puertos de entrada/salida y el diagrama de estados respectivamente.
 
-\begin{figure}
+\begin{figure}[h]
 	\centering
 	\includegraphics{img/fiuba}
 	\caption{Entradas y salidas del modelo control de inventario}
 	\label{fig:CI-esquematico}
 \end{figure}
 
-\begin{figure}
+\begin{figure}[h]
 	\centering
 	\includegraphics{img/fiuba}
 	\caption{Diagrama de estados para el modelo de control de inventario.}
 	\label{fig:CI-estados}
 \end{figure}
 
+\subsection{Control de Calidad}
+El modelo atómico correspondiente al bloque de control de calidad (CC) queda definido de la siguiente manera:
+
+
+\framebox[1\textwidth]{
+	\begin{minipage}{0.9\textwidth}
+		$CC=<S,X,Y,\delta_{int},\delta_{ext},\lambda,t_A>$\\
+		
+		$S=\{WAITING, QUERY, INV\_WAIT, CHECK, SEND\}$\\
+		
+		$X=\{prod\_i \in \mathbb{R}^+, queryClient\_i \in \mathbb{N}^+_0 \}$\\
+		
+		$Y=\{prod\_o \in \mathbb{R}^+, queryInventory\_o  \in \mathbb{N}^+_0\}$\\
+		
+		$\delta_{int}: \delta_{int}(S) \begin{cases}
+		\delta_{int}(QUERY)=INV\_WAIT\\
+		\delta_{int}(CHECK)=\begin{cases}
+		QUERY\\
+		\hfill si~(numPassProd <\\
+		\hfill numClientQuery)~\wedge\\
+		\hfill (\neg{invEmpty})\\
+		SEND~\forall~otra~condicion.
+		\end{cases}\\
+		\delta_{int}(SEND)=WAITING
+		\end{cases}$\\
+		
+		$\delta_{ext}:\delta_{ext}(S,X\_i) \begin{cases} Si ~S=WAITING \wedge  queryClient\_i=N\\
+		\hfill \rightarrow \delta_{ext}(QUERY,queryClient\_i)=QUERY\\
+		Si ~S=CHECK \wedge size(prod\_i)=P\\
+		\hfill \rightarrow \delta_{ext}(CHECK,prod\_i)=SEND
+		 \end{cases}$\\
+		
+		$\lambda:~\lambda(S)\begin{cases}
+		\lambda(QUERY)=\{queryInventory\_o = 1\}\\
+		\lambda(CHECK)=\{\O\}\\
+		\lambda(SEND)=\{prod\_o = K\}
+		\end{cases}$\\
+		
+		$t_A(S)=\begin{cases}
+		0~si~S=\{QUERY,CHECK,SEND\}\\
+		\infty~si~S=\{WAITING, INV\_WAIT\}
+		\end{cases}$
+	\end{minipage}
+}\\
+
+Donde:\\
+$numPassProd = $ es el número de productos que pasan el control de calidad (i.e. su fecha de expiración es mayor al tiempo en que se produce el control).
+$numClientQuery = $ es el número de productos que solicitó el cliente
+$invEmpty = $ es un Flag que indica si el inventario está vacío (i.e. devolvió un producto con fecha de expiración $0.0$)\footnote{el símbolo $\neg$ refiere a la condición lógica de negación}
+
+En las figuras \ref{fig:CC-esquematico} y \ref{fig:CC-estados} se pueden observar los puertos de entrada/salida y el diagrama de estados respectivamente.
+
+\begin{figure}[h]
+	\centering
+	\includegraphics{img/fiuba}
+	\caption{Entradas y salidas del modelo control de inventario}
+	\label{fig:CC-esquematico}
+\end{figure}
+
+\begin{figure}[h]
+	\centering
+	\includegraphics{img/fiuba}
+	\caption{Diagrama de estados para el modelo de control de inventario.}
+	\label{fig:CC-estados}
+\end{figure}
 
 \section{Modelado y simulación}
 \subsection{Pruebas parciales}
 \subsubsection{Control de Inventario}
-Para la purueba del bloque de control de inventario se propuso el siguiente estímulo:
+Para la prueba del bloque de control de inventario se propuso el siguiente estímulo:
 
-\begin{minipage}{0.5\textwidth}
+\begin{minipage}{1\textwidth}
 	\centering
 	\begin{lstlisting}
-	00:00:01:10 invLevel 8
-	00:00:02:10 invLevel 190
-	00:00:03:10 invLevel 49
+	00:00:01:10 numProd_i 8
+	00:00:02:10 numProd_i 190
+	00:00:03:10 numProd_i 49
 	\end{lstlisting}
-
-	\caption{Archivo "ev" de estímulo para el modelo de control de inventario}
+	
+	\centering
 \end{minipage}
+
+Dada la política de pedidos, se busca probar las condiciones:
+\begin{itemize}
+\item La cantidad de productos en el inventario es menor al valor requerido por la política de reposición, por lo tanto se debe pedir materiales a los proveedores.
+\item  La cantidad de productos en el inventario es menor al máximo pero no alcanza el mínimo de la política de reposición por lo que no se deben pedir materiales.
+\end{itemize}
+
+La salida de la prueba es la siguiente:
+
+\begin{minipage}{1\textwidth}
+	\centering
+	\begin{lstlisting}
+
+	\end{lstlisting}
+	
+\end{minipage}
+Donde se observa que se cumplen las condiciones mencionadas en la sección \ref{sec:CI}
+
 
 \subsection{Pruebas de integración}
 .

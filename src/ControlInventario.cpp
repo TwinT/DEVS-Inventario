@@ -74,10 +74,10 @@ Model &ControlInventario::outputFunction(const CollectMessage &msg)
 	switch(state)
 	{
 		case State::WAITING:
-			sendOutput(msg.time(), queryInventory_o, 1);
+			sendOutput(msg.time(), queryInventory_o, Real(1));
 			break;
 		default: //CALC
-			sendOutput(msg.time(), querySuppliers_o, quantity);
+			sendOutput(msg.time(), querySuppliers_o, Real(quantity));
 			break;
 	}
 	return *this ;
