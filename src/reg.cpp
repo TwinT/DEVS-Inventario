@@ -3,6 +3,7 @@
 
 #include "ControlInventario.h"
 #include "proveedorInmediato.h"
+#include "proveedorFijo.h"
 
 void register_atomics_on(ParallelModelAdmin &admin)
 {
@@ -11,4 +12,6 @@ void register_atomics_on(ParallelModelAdmin &admin)
 	// dicha clase como valor de retorno del método className().
 	admin.registerAtomic(NewAtomicFunction<ProveedorInmediato>(), PROVEEDOR_INMEDIATO_NAME);
 	admin.registerAtomic(NewAtomicFunction<ControlInventario>(), CONTROL_INVENTARIO_NAME);
+	admin.registerAtomic(NewAtomicFunction<ProveedorFijo>(), PROVEEDOR_FIJO_NAME);
+
 }

@@ -7,6 +7,4 @@ link : entrega@ProveedorInmediato entrega
 
 [ProveedorInmediato]
 distribution : exponential
-mean : 3
-initial : 1
-increment : 5
+mean : 1.5
