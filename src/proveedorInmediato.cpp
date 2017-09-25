@@ -42,7 +42,7 @@ Model &ProveedorInmediato::externalFunction( const ExternalMessage &msg )
     this->timeLeft = this->sigma - this->elapsed; 
 	
 	if (msg.port() ==  pedido){
-		cantidad = Real::from_value(msg.value());
+		cantidad = Real::from_value(msg.value()).value();
 		cout << msg.time() << ": Se recibe un pedido de " << cantidad <<  endl;
 		state = serve;
 		holdIn(AtomicState::active, VTime::Zero);
