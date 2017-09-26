@@ -183,8 +183,12 @@ Model &Inventario::outputFunction(const CollectMessage &msg)
 			break;
 
 		case State::query:
-      sendOutput(msg.time(), query_out, Real(cola.size() - encargos_q));
-      cout << msg.time() << " Inventario - Query out(N - E): " << Real(cola.size() - encargos_q) <<  endl;
+      {
+      int N = static_cast<int>(cola.size());
+      sendOutput(msg.time(), query_out, Real(N - encargos_q));
+      cout << msg.time() << " Inventario - Query out(N - E): " << Real(N - encargos_q) <<  endl;
+      cout << msg.time() << " Inventario - Cola(N): " << Real(N) <<  endl;
+      }
 			break;		
 
 		case State::encargo:

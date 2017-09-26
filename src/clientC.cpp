@@ -51,7 +51,7 @@ ClientC::ClientC(const string &name) :
 	{
 		MTHROW(e);
 	}
-	cout << "Clientes tipo C creados" << endl;
+	cout << "Cliente C creado" << endl;
 }
 
 
@@ -65,7 +65,7 @@ Model &ClientC::initFunction()
 	// arranca en estado StateClient::IDLE
 	query_time = VTime(fabs(this->dist->get()));
 	holdIn(AtomicState::active, this->query_time);
-	cout << "Clientes tipo C inicializados" << endl;
+	cout << "Cliente C - Init finalizado" << endl;
 
 	return *this;
 }
@@ -84,17 +84,17 @@ Model &ClientC::externalFunction(const ExternalMessage &msg)
 			if(inStock >= lastQuery)
 			{
 				stateC = StateClient::ACCEPT;
+	  		cout << msg.time() << " Client C - Peticion aceptada" << endl;
 			}
 			else
 			{
 				stateC = StateClient::DECLINE;
+				cout << msg.time() << " Client C - Peticion rechazada" << endl;
 			}
 			holdIn(AtomicState::active, VTime::Zero);
-			cout << "External Function execution @ " << msg.time() << " en estado QUERY" << endl;
 		}
 		else{ // si llegara un msg cuando stateC != QUERY
 			holdIn(AtomicState::active, timeLeft);
-			cout << "External Function execution @ " << msg.time() << " en estado ACCEPT, DECLINE o IDLE" << endl;
 		}
 	}
 
@@ -110,18 +110,17 @@ Model &ClientC::internalFunction(const InternalMessage &)
 			stateC = StateClient::IDLE;
 			query_time = VTime(fabs(this->dist->get()));
 			holdIn(AtomicState::active, query_time);
-			cout << "Internal Function execution en estado ACCEPT paso a IDLE" << endl;
 			break;
 		case StateClient::DECLINE:
 			stateC = StateClient::IDLE;
 			query_time = VTime(fabs(this->dist->get()));
 			holdIn(AtomicState::active, query_time);
-			cout << "Internal Function execution en estado DECLINE paso a IDLE" << endl;
 			break;
 		case StateClient::IDLE:
 			stateC = StateClient::QUERY;
 			holdIn(AtomicState::passive, VTime::Inf); // equivalente a: passivate();
-			cout << "Internal Function execution en estado IDLE paso a QUERY" << endl;
+			break;
+		case StateClient::QUERY:
 			break;
 	}
 
@@ -136,16 +135,18 @@ Model &ClientC::outputFunction(const CollectMessage &msg)
 		case StateClient::IDLE: // pregunto disponibilidad de productos por puerto query_o 
 			lastQuery = Real(distval(rng)+1);
 			sendOutput(msg.time(), query_o, lastQuery);
-			cout << "Output Function execution en estado IDLE @ " << msg.time() << " pide " << lastQuery << " productos" << endl;
+  		cout << msg.time() << " Client C - " << "pregunta por: " << lastQuery << " productos" << endl;
 			break;
 		case StateClient::ACCEPT: // pido n productos por puerto pedido_o
 			sendOutput(msg.time(), pedido_o, lastQuery);
-			cout << "Output Function execution en estado ACCEPT @ " << msg.time() << " pide " << lastQuery << " productos" << endl;
+  		cout << msg.time() << " Client C - " << "pide: " << lastQuery << " productos" << endl;
 			break;
 		case StateClient::DECLINE: // pido n productos por puerto pedido_o
-			sendOutput(msg.time(), pedido_o, 0.0);
-			cout << "Output Function execution en estado DECLINE @ " << msg.time() << " pide 0 productos" << endl;
+			sendOutput(msg.time(), pedido_o, Real(0.0));
+  		cout << msg.time() << " Client C - No pide nada" << endl;
 			break;
+		case StateClient::QUERY:
+		  break;
 	}
 
 	return *this ;

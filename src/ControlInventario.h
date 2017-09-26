@@ -7,7 +7,7 @@
 
 #define CONTROL_INVENTARIO_NAME "ControlInventario"
 
-#define S 200 // Inventario máximo
+#define S 90 // Inventario máximo
 
 class ControlInventario : public Atomic {
   public:

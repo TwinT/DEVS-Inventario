@@ -316,7 +316,8 @@ Los tiempos entre demandas por tipo de cliente son variables aleatorias exponenc
 \label{tab:tabla1}
 \end{table}
 
-Existen 3 tipos de políticas de demanda: A, B y C. Un cliente tipo A encarga siempre $n$ productos y los retira a principio de mes. Un cliente tipo B pide $n$ productos pero se lleva solamente los que haya disponibles en stock en ese momento y los restantes para completar su pedido quedan encargados. Finalmente un cliente tipo C pide $n$ productos pero solamente compra si están disponibles, sino rechaza la compra.
+Existen 3 tipos de políticas de demanda: A, B y C.
+Un cliente tipo A encarga siempre $n$ productos y los retira a principio de mes. Un cliente tipo B pide $n$ productos pero se lleva solamente los que haya disponibles en stock en ese momento y los restantes para completar su pedido quedan encargados. Finalmente un cliente tipo C pide $n$ productos pero solamente compra si están disponibles, sino rechaza la compra.
 
 El modelo que representa el comportamiento de los clientes tipo A se puede observar en la Figura~\ref{fig:fig2}, donde la salida \texttt{E\_OUT} indica la cantidad de productos encargados.
 
@@ -346,16 +347,18 @@ Finalmente, el modelo del comportamiento de los clientes de tipo C se muestra en
 \end{figure}
 
 \subsubsection{Atención al cliente y control de calidad}
-En la Figura~\ref{fig:fig5} se puede observar el comportamiento del módulo acoplado de Atención al Cliente y Control de Calidad. El departamento de Control de Calidad se encarga de examinar los productos al momento de venta y verificar su fecha de vencimiento. Los insumos con los que se elabora el producto son perecederos, y su vida útil está uniformemente distribuida entre 1,5 y 2,5 meses. Por tanto, la fecha de vencimiento del producto se determina como el mínimo entre las fechas de vencimiento de los insumos con los que se elaboró. La compañía descubre que una unidad no sirve más solamente cuando la examina debido a una venta. Si una unidad no sirve más, se desecha  y se examina la siguiente unidad existente en el inventario. Se computan también las proporciones de unidades que se descartan.
-
+En la Figura~\ref{fig:fig5} se puede observar la interfaz del módulo de Atención al Cliente y Control de Calidad.
+El departamento de Control de Calidad se encarga de examinar los productos al momento de venta y verificar su fecha de vencimiento. Los insumos con los que se elabora el producto son perecederos y la fecha de vencimiento del mismo se calcula con la fecha de vencimiento mínima de los insumos con los que se lo elaboró. La compañía descubre que una unidad no sirve más solamente cuando la examina debido a una venta. Si una unidad no sirve más, se desecha y se examina la siguiente unidad existente en el inventario.
+El departamento de atención al cliente se encarga de realizar la negociación con los distintos tipos de clientes. Es decir, consulta al inventario la cantidad de productos disponibles al recibir una consulta del cliente y le informa dicho dato al mismo. También procesa el pedido de compra de cada cliente.
+             
 \begin{figure}
 \centering
-\includegraphics[scale=0.8]{img/figura5}
+\includegraphics[scale=1]{img/figura5}
 \caption{Atención al cliente.}
 \label{fig:fig5}
 \end{figure}
 
-\subsubsection{Control de inventario\label{sec:CI}}
+\subsubsection{Control de inventario\label{sec:CID}}
 
 Al comienzo de cada mes, la compañía revisa el nivel de inventario y decide cuántas nuevas unidades pedir a sus proveedores. La compañía ordena $Z$ unidades a todos los proveedores por igual. El costo costo será $K + pZ$, donde $K = 350~\textrm{pesos}$ es el costo fijo del pedido y $p = 25~\textrm{pesos}$ es el costo incremental por unidad. Naturalmente, si $Z = 0$ no se incurre en ningún costo. La compañía usa la siguiente política para decidir cuántas unidades pedir: si $I$ es el nivel de inventario al comienzo del mes, $S$ el inventario máximo posible (capacidad de almacenamiento) y $s$ el parámetro de política de reposición, $Z$ estará dado por:
 
@@ -389,8 +392,8 @@ El inventario lleva una lista de unidades disponibles y una de unidades encargad
 \label{fig:fig7}
 \end{figure}
 
-%En la Figura~\ref{fig:fig7} se observa el modelo con que se representa al Inventario. El mismo consiste de una cola FIFO (\textit{first in - first out}). Se denomina $N$ al largo de la cola.
-Suponemos también que la compañía incurre en un costo de mantenimiento del producto $h = 8~\textrm{pesos}$ por unidad por mes mantenido en inventario (positivo). Este costo incluye alquiler del depósito de almacenamiento, seguro, impuestos y mantenimiento, al igual que costo de oportunidad de tener capital inmobilizado en inventario en vez de invertido en otra parte. Supongamos además que hay un costo de \textit{demanda insatisfecha} $n = 50~\textrm{pesos}$ por unidad pedida por cliente y no suministrada y por mes. Este costo contabiliza tanto el costo de mantener registros adicionales para unidades ya asignadas a clientes y aún no suministradas como un cálculo de costo por pérdida de la buena voluntad del cliente.
+En la Figura~\ref{fig:fig7} se observa el modelo con que se representa al Inventario. El mismo consiste de una cola FIFO (\textit{first in - first out}). Se denomina $N$ al largo de la cola.
+Suponemos también que la compañía incurre en un costo de mantenimiento del producto $h = 8~\textrm{pesos}$ por unidad por mes mantenido en inventario (positivo). Este costo incluye alquiler del depósito de almacenamiento, seguro, impuestos y mantenimiento, al igual que costo de oportunidad de tener capital inmovilizado en inventario en vez de invertido en otra parte. Supongamos además que hay un costo de \textit{demanda insatisfecha} $n = 50~\textrm{pesos}$ por unidad pedida por cliente y no suministrada y por mes. Este costo contabiliza tanto el costo de mantener registros adicionales para unidades ya asignadas a clientes y aún no suministradas como un cálculo de costo por pérdida de la buena voluntad del cliente.
 
 
 \subsubsection{Proveedores}
@@ -407,7 +410,7 @@ Los proveedores se comportan de 3 formas diferentes:
 
 \begin{figure}
 \centering
-\includegraphics[scale=0.8]{img/figura8}
+\includegraphics[scale=1]{img/figura8}
 \caption{Proveedor $1$.}
 \label{fig:fig8}
 \end{figure}
@@ -423,7 +426,7 @@ Los productos de este proveedor no tienen vencimiento.
 
 \begin{figure}
 \centering
-\includegraphics[scale=0.8]{img/figura9}
+\includegraphics[scale=1]{img/figura9}
 \caption{Proveedor $2$.}
 \label{fig:fig9}
 \end{figure}
@@ -432,22 +435,21 @@ Los productos de este proveedor no tienen vencimiento.
 
 \begin{figure}
 \centering
-\includegraphics[scale=0.8]{img/figura10}
+\includegraphics[scale=1]{img/figura10}
 \caption{Proveedor $3$.}
 \label{fig:fig10}
 \end{figure}
 \end{enumerate}
 
 \section{Descripción Formal}
+\subsection{Tipo de Cliente A}
 
-\subsection{Top Model\label{sec:TM}}
-El diagrama de bloques correspondiente a cada uno de los atómicos descriptos en la especificación funcional se puede ver en la figura \ref{fig:TM-esquematico}. 
-
-\begin{figure}[htbp]
-	\centering
-	\includegraphics[angle=-90, scale=0.7]{img/bloquestopmodel}
-	\caption{Interconexión de bloques en el \texttt{top model}.}
-	\label{fig:TM-esquematico}
+En la Figura~\ref{fig:pdftiempo} y Figura~\ref{fig:pdfpedidos} se observan los histogramas que representan a la tasa de arribos de pedidos de clientes de tipo A y a la cantidad de unidades pedidas. El eje de tiempos de la Figura~sref{fig:pdftiempo} se utiliza en segundos en lugar de en mesesCT
+\begin{figure}
+\centering
+\includegraphics[scale=1]{img/pdf_tiempo_pedidos}
+\caption{Función de densidad de probabilidadsdel tiempo entre pedidosmodelo del clitipoA.}
+\label{fig:pdftiempo}
 \end{figure}
 
 
@@ -484,15 +486,28 @@ En las figuras \ref{fig:CTA-esquematico} y \ref{fig:CTA-estados} se pueden obser
 	\label{fig:CTA-esquematico}
 \end{figure}
 
-\begin{figure}[htbp]
-	\centering
-	\includegraphics{img/clienteAdevsgraph}
-	\caption{Diagrama de estados para el modelo del cliente tipo A.}
-	\label{fig:CTA-estados}
-\end{figure}
+\begin{footnotesize}
+\begin{minipage}{\textwidth}
+  %\hspace{-1.4cm}
+  \framebox[1\textwidth]{
+  \begin{minipage}[t]{0.459\textwidth}
+    $S:$ \hspace*{1mm} $\left\{\mathbf{phase},\mathbf{sigma},\mathbf{clienteA}\right\}$\\
+    $X:$ \hspace*{1mm} $\left\{\emptyset\right\}$\\
+    $Y:$ \hspace*{1mm} $\left\{n \in \left\{1,2,3,4\right\}\right\}$\\
+    $\delta_{int}(s):$ 
+    \hspace*{1mm} sigma = exp\_var($\mu$) \textbf{// Internal Transition} \\
+    $\delta_{ext}(s,e,x):$  \textbf{// External Transition}
+  \end{minipage}\hspace*{0.05\textwidth}
+  \begin{minipage}[t]{0.459\textwidth}
+    $\lambda(s):$
+    \hspace*{5mm} query\_o = \textbf{eval}(discrete\_var) \textbf{// Output} \\
+    $ta(s):$ \hspace*{4mm} \textbf{return} sigma \textbf{// Time advance}
+  \end{minipage}}
+\end{minipage}
+\end{footnotesize}
 
-\subsection{Tipo de Cliente B\label{sec:CTB}}
-El modelo atómico correspondiente al bloque del cliente tipo B (CTB) queda definido de la siguiente manera:
+\subsection{Tipo de Cl cliente B}
+\subsection{Tipo de Cl cliente C}
 
 \framebox[1\textwidth]{
 	\begin{minipage}{0.9\textwidth}
@@ -960,25 +975,6 @@ En las figuras \ref{fig:PE-esquematico} y \ref{fig:PE-estados} se pueden observa
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \subsection{Pruebas parciales}
-
-\subsubsection{Cliente A}
-
-En la Figura~\ref{fig:pdftiempo} y Figura~\ref{fig:pdfpedidos} se observan los histogramas que representan a la tasa de arribos de pedidos de clientes de tipo A y a la cantidad de unidades pedidas. El eje de tiempos de la Figura~\ref{fig:pdftiempo} se utiliza en segundos en lugar de en meses.
-
-\begin{figure}
-\centering
-\includegraphics[scale=1]{img/pdf_tiempo_pedidos}
-\caption{Función de densidad de probabilidad del tiempo entre pedidos de clientes tipo A.}
-\label{fig:pdftiempo}
-\end{figure}
-
-\begin{figure}
-\centering
-\includegraphics[scale=1]{img/pdf_cantidad_pedidos}
-\caption{Función de densidad de probabilidad del número de unidades pedidas $n$.}
-\label{fig:pdfpedidos}
-\end{figure}
-
 \subsubsection{Control de Inventario}
 Para la prueba del bloque de control de inventario se propuso el siguiente estímulo:
 

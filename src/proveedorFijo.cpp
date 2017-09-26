@@ -69,7 +69,7 @@ Model &ProveedorFijo::externalFunction( const ExternalMessage &msg )
 
 		for(int i = 0; i < cantidad; i++){
 			VTime t = VTime::Inf;
-			productos.push_back(Real(t.asMsecs()));
+			productos.push_back(Real(t.asMsecs()) / Real(1000));
 		}
 
 		state = serve;
