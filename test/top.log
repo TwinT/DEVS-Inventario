@@ -1,0 +1,14 @@
+[logfiles]
+ParallelRoot : ../test/top.log00 
+top : ../test/top.log12 
+clienta : ../test/top.log01 
+clientb : ../test/top.log02 
+clientc : ../test/top.log03 
+pi : ../test/top.log04 
+pe : ../test/top.log05 
+pf : ../test/top.log06 
+industria : ../test/top.log11 
+i : ../test/top.log07 
+ci : ../test/top.log08 
+ac : ../test/top.log09 
+cc : ../test/top.log10 

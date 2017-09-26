@@ -23,7 +23,7 @@ ProveedorFijo::ProveedorFijo(const string &name)
 	} catch(MException &e){
 		MTHROW(e);
 	}
-	cout << "Proveedor Fijo Creado" << endl;
+	cout << "Proveedor Fijo Creado" << " (Productos por paquete = " << productos_por_paquete << ")"<< endl;
 	
 }
 
@@ -37,7 +37,6 @@ Model &ProveedorFijo::initFunction()
     this->sigma = VTime::Inf; // stays in active state until an external event occurs;
     
     state = idle;
-    cout << "Proveedor Fijo - Productos por paquete: " << productos_por_paquete << endl;
     cout << "Proveedor Fijo - Init finalizado" << endl;
 
     holdIn(AtomicState::active, this->sigma);
@@ -65,8 +64,6 @@ Model &ProveedorFijo::externalFunction( const ExternalMessage &msg )
      		cantidad += productos_por_paquete;
      	}
      	
-     	cout <<  msg.time() << " Proveedor Fijo - " << "Se entregarán: " << cantidad << " productos" << endl;
-
 		for(int i = 0; i < cantidad; i++){
 			VTime t = VTime::Inf;
 			productos.push_back(Real(t.asMsecs()) / Real(1000));
@@ -100,7 +97,7 @@ Model &ProveedorFijo::outputFunction(const CollectMessage &msg)
 	if(state == serve){
 		Tuple<Product> t(&productos);
 		sendOutput(msg.time(), entrega, t);
-		cout << msg.time() << " Proveedor Fijo - " << "Entrega: " << t <<  endl;
+		cout << msg.time() << " Proveedor Fijo - " << "Entrega: " << productos.size() << " productos" <<  endl;
 		productos.clear(); // limpio vector
 	}
 	

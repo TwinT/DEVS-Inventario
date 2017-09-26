@@ -17,6 +17,8 @@ ControlCalidad::ControlCalidad(const string &name) :
 	queryInventory_o(addOutputPort("queryInventory_o")), 
 	prod_o(addOutputPort("prod_o"))
 {
+	  cout << "Control de Calidad creado" << endl;
+
 }
 
 
@@ -24,6 +26,8 @@ Model &ControlCalidad::initFunction()
 {
 	holdIn(AtomicState::passive, VTime::Inf);
 	state = State::WAITING;
+  cout << "Control de Calidad - Init finalizado" << endl;
+
 	return *this;
 }
 
@@ -41,6 +45,7 @@ Model &ControlCalidad::externalFunction(const ExternalMessage &msg)
 			{
 				if (products[i].value() == 0)
 					invEmpty = true;
+
 				if (VTime(static_cast<float>(products[i].value())) > msg.time())
 				{
 					passProducts.push_back(products[i]);
@@ -48,6 +53,12 @@ Model &ControlCalidad::externalFunction(const ExternalMessage &msg)
 				}
 			}
 			
+			cout << msg.time() << " Control Calidad - recibe " << tupleSize << " productos" <<  endl;
+			cout << msg.time() << " Control Calidad - se queda con " << numPassProd << " productos" <<  endl;
+
+			if(invEmpty){
+				cout << msg.time() << " Control Calidad - el inventario está vacío!" <<  endl;
+			}
 			// Next State
 			state = State::CHECK;
 			holdIn(AtomicState::active, VTime::Zero);
@@ -59,6 +70,9 @@ Model &ControlCalidad::externalFunction(const ExternalMessage &msg)
 		if (state == State::WAITING)	// Redundant
 		{
 			numClientQuery = (Real::from_value(msg.value())).value();
+		  cout << msg.time() << " Control Calidad - le piden: " << numClientQuery << " productos" <<  endl;
+
+
 			state = State::QUERY;
 			holdIn(AtomicState::active, VTime::Zero);
 		}
@@ -115,11 +129,15 @@ Model &ControlCalidad::outputFunction(const CollectMessage &msg)
 		case State::QUERY:
 			numQueryProds = numClientQuery - numPassProd;
 			sendOutput(msg.time(), queryInventory_o, numQueryProds);
+		  cout << msg.time() << " Control Calidad - pide: " << numQueryProds << " productos" <<  endl;
+
 			break;
 		case State::CHECK:
 			break;
 		case State::SEND:
 			sendOutput(msg.time(), prod_o, Tuple<Real>(&passProducts));
+		  cout << msg.time() << " Control Calidad - envia: " << passProducts.size() << " productos" <<  endl;
+
 			break;
 		default:
 			break;

@@ -82,9 +82,8 @@ Model &ProveedorEncargo::externalFunction( const ExternalMessage &msg )
 			//cout << "distribution: " << t << endl;
 			productos.push_back(Real(t.asMsecs()) / Real(1000));
 		}
-
 		state = serve;
-		holdIn(AtomicState::active, VTime(0,0,1,0)); // 1 segundo
+		holdIn(AtomicState::active, VTime(0,0,0.99,0)); // 0.99 segundos 
 	}
 	return *this;
 }
@@ -113,7 +112,7 @@ Model &ProveedorEncargo::outputFunction(const CollectMessage &msg)
 		}
 		Tuple<Product> t(&productos);
 		sendOutput(msg.time(), entrega, t);
-		cout << msg.time() << " Proveedor por Encargo - " << "Entrega: " << t <<  endl;
+		cout << msg.time() << " Proveedor por Encargo - " << "Entrega: " << productos.size() << " productos" <<  endl;
 		productos.clear(); // limpio vector
 	}
 	

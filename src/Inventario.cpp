@@ -34,7 +34,7 @@ Inventario::Inventario(const string &name)
 	} catch(MException &e){
 		MTHROW(e);
 	}
-	cout << "Inventario Creado" << endl;
+	cout << "Inventario Creado" << " (N = " << N << ")"<< endl;
 	
 }
 
@@ -65,6 +65,8 @@ Model &Inventario::externalFunction( const ExternalMessage &msg )
   this->timeLeft = this->sigma - this->elapsed; 
 	
   state = State::idle;    
+  
+  bool nuevo_push = false;
 
 	if (msg.port() ==  producto_in_A){
 
@@ -73,64 +75,60 @@ Model &Inventario::externalFunction( const ExternalMessage &msg )
 			colaA.push(Real::from_value(t[i]));		
 		}
     this->sigma = VTime::Inf; 
+    nuevo_push = true;
 	}
-
-  if (msg.port() ==  producto_in_B){
+  else if (msg.port() ==  producto_in_B){
     Tuple<Product> t = Tuple<Product>::from_value(msg.value());
     for(int i = 0; i < t.size() ; i++){
       colaB.push(Real::from_value(t[i]));   
     }
     this->sigma = VTime::Inf; 
+    nuevo_push = true;
   }
-
-  if (msg.port() ==  producto_in_C){
+  else if (msg.port() ==  producto_in_C){
     Tuple<Product> t = Tuple<Product>::from_value(msg.value());
     for(int i = 0; i < t.size() ; i++){
       colaC.push(Real::from_value(t[i]));   
     }
     this->sigma = VTime::Inf; 
-  }
-
-  int nuevos = 0;
-  
-  while(!colaA.empty() and !colaB.empty() and !colaC.empty()){
-    vector<Product> partes;
-    partes.push_back(colaA.front());
-    partes.push_back(colaB.front());
-    partes.push_back(colaC.front());
-    colaA.pop();
-    colaB.pop();
-    colaC.pop();
-
-    Product resultante = *std::min_element(partes.begin(),partes.end());
-    cola.push(resultante);
-    nuevos++;
-  }
-
-  if(nuevos){
-    cout << msg.time() << " Inventario - Nuevos: " << nuevos <<  endl;
-    state = State::push;    
-    this->sigma = VTime::Zero; 
-  }
-
-	if (msg.port() ==  query_in){
+    nuevo_push = true;
+  }else if (msg.port() ==  query_in){
     query_q = static_cast<int>(Real::from_value(msg.value()).value());
-		state = State::query;
+    state = State::query;
     this->sigma = VTime::Zero; 
-	}
-
-	if (msg.port() ==  encargo){
+  }else if (msg.port() ==  encargo){
     encargos_q += static_cast<int>(Real::from_value(msg.value()).value());
-		state = State::encargo;
+    state = State::encargo;
     this->sigma = VTime::Zero; 
-	}
-
-	if (msg.port() ==  get){
+  }else if (msg.port() ==  get){
     get_q = static_cast<int>(Real::from_value(msg.value()).value());   
-		state = State::get;
-	  this->sigma = VTime::Zero; 
-	}
+    state = State::get;
+    this->sigma = VTime::Zero; 
+  }
 
+  if(nuevo_push){
+    int nuevos = 0;
+    while(!colaA.empty() and !colaB.empty() and !colaC.empty()){
+      vector<Product> partes;
+      partes.push_back(colaA.front());
+      partes.push_back(colaB.front());
+      partes.push_back(colaC.front());
+      colaA.pop();
+      colaB.pop();
+      colaC.pop();
+
+      Product resultante = *std::min_element(partes.begin(),partes.end());
+      cola.push(resultante);
+      nuevos++;
+    }
+    
+    if(nuevos){
+      cout << msg.time() << " Inventario - Entran " << nuevos << " productos" << endl;
+      state = State::push;   
+      this->sigma = VTime::Zero; 
+    }
+  }  
+  
   holdIn(AtomicState::active, this->sigma); 
 
 	return *this;
@@ -227,8 +225,8 @@ Model &Inventario::outputFunction(const CollectMessage &msg)
 
         Tuple<Product> t(&productos);
         sendOutput(msg.time(), producto_out, t);
-        cout << msg.time() << " Inventario - Encargos despachados:" << productos.size() <<  endl;
-        cout << msg.time() << " Inventario - Encargos en cola:" << encargos_q <<  endl;
+        cout << msg.time() << " Inventario - Encargos entregados:" << productos.size() <<  endl;
+        cout << msg.time() << " Inventario - Encargos restantes:" << encargos_q <<  endl;
       }
       cout << msg.time() << " Inventario - Hay en cola N:" << cola.size() <<  endl;
       }

@@ -18,6 +18,7 @@ AtencionAlCliente::AtencionAlCliente(const string &name) :
 	prodInventory_o(addOutputPort("prodInventory_o")),
 	queryClient_o(addOutputPort("queryClient_o"))
 {
+  cout << "Atención al Cliente creado" << endl;
 }
 
 
@@ -25,6 +26,8 @@ Model &AtencionAlCliente::initFunction()
 {
 	holdIn(AtomicState::passive, VTime::Inf);
 	state = State::WAITING;
+  cout << "Atención al Cliente - Init finalizado" << endl;
+
 	return *this;
 }
 
@@ -36,6 +39,8 @@ Model &AtencionAlCliente::externalFunction(const ExternalMessage &msg)
 		{
 			queryClient = Real::from_value(msg.value()).value();
 			state = State::QUERY;
+			cout << msg.time() << " Atencion al cliente - le piden " << queryClient << " productos" <<  endl;
+
 			holdIn(AtomicState::active, VTime::Zero);
 		}
 	
@@ -43,6 +48,8 @@ Model &AtencionAlCliente::externalFunction(const ExternalMessage &msg)
 		if (state == State::INV_WAIT)
 		{
 			inventoryStock = Real::from_value(msg.value()).value();
+			cout << msg.time() << " Atencion al cliente - le dicen que hay " << inventoryStock << " stock" <<  endl;			
+
 			state = State::CLI_RPLY;
 			holdIn(AtomicState::active, VTime::Zero);
 		}
@@ -51,7 +58,7 @@ Model &AtencionAlCliente::externalFunction(const ExternalMessage &msg)
 		if (state == State::CLI_WAIT)
 		{
 			productsBuyed = Real::from_value(msg.value()).value();
-			cout<<"Ext func prodBuyed: "<<productsBuyed<<endl;
+			cout << msg.time() << " Atencion al cliente - cliente pide " << productsBuyed << " productos" <<  endl;			
 			if (productsBuyed != 0)
 			{
 				state = State::INV_GET;
@@ -102,15 +109,15 @@ Model &AtencionAlCliente::outputFunction(const CollectMessage &msg)
 	{
 		case State::QUERY:
 			sendOutput(msg.time(), queryInventory_o, queryClient);
-			cout<<"Inv query: "<< queryClient<<endl;
+			cout << msg.time() << " Atencion al cliente - pregunta por " << queryClient << " productos" <<  endl;			
 			break;
 		case State::CLI_RPLY:
 			sendOutput(msg.time(), queryClient_o, inventoryStock);
-			cout<<"To clientreply: "<< inventoryStock<<endl;
+			cout << msg.time() << " Atencion al cliente - informa a cliente que hay " << inventoryStock << " stock" <<  endl;			
 			break;
 		case State::INV_GET:
 			sendOutput(msg.time(), prodInventory_o, productsBuyed);
-			cout<<"Inv get: "<< productsBuyed<<endl;
+			cout << msg.time() << " Atencion al cliente - pide al inventario " << productsBuyed << " productos" <<  endl;			
 			break;
 		default:
 			break;
