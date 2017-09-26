@@ -52,7 +52,7 @@ ClientB::ClientB(const string &name) :
 	{
 		MTHROW(e);
 	}
-	cout << "Clientes tipo B creados" << endl;
+	cout << "Cliente B creado" << endl;
 }
 
 
@@ -66,7 +66,7 @@ Model &ClientB::initFunction()
 	// arranca en estado StateClient::IDLE
 	this->query_time = VTime(fabs(this->dist->get()));
 	holdIn(AtomicState::active, this->query_time );
-	cout << "Clientes tipo B inicializados" << endl;
+	cout << "Cliente B - Init finalizado" << endl;
 
 	return *this;
 }
@@ -83,14 +83,14 @@ Model &ClientB::externalFunction(const ExternalMessage &msg)
 		if(stateC == StateClient::QUERY)
 		{
 			inStock = Real::from_value(msg.value()).value();
-			stateC = StateClient::CALC;
+  		cout << msg.time() << " Client B - " << "le dicen que hay: " << inStock << " productos" << endl;
+
+  		stateC = StateClient::CALC;
 			holdIn(AtomicState::active, VTime::Zero);
-			cout << "External Function execution @ " << msg.time() << " en estado QUERY" << endl;
 		}
 		else
 		{ // si llegara un msg cuando stateC != QUERY
-			holdIn(AtomicState::active, nextChange() - (msg.time() - lastChange()) );
-			cout << "External Function execution @ " << msg.time() << " en estado CALC o IDLE" << endl;
+			holdIn(AtomicState::active, this->timeLeft);
 		}
 	}
 
@@ -106,13 +106,13 @@ Model &ClientB::internalFunction(const InternalMessage &)
 			this->stateC = StateClient::IDLE;
 			this->query_time = VTime(fabs(this->dist->get()));
 			holdIn(AtomicState::active, this->query_time);
-			cout << "Internal Function execution en estado CALC paso a IDLE" << endl;
 			break;
 		case StateClient::IDLE:
 			this->stateC = StateClient::QUERY;
 			holdIn(AtomicState::passive, VTime::Inf); // equivalente a: passivate();
-			cout << "Internal Function execution en estado IDLE paso a QUERY" << endl;
 			break;
+		case StateClient::QUERY:	
+		  break;
 	}
 
 
@@ -127,12 +127,18 @@ Model &ClientB::outputFunction(const CollectMessage &msg)
 		case StateClient::IDLE: // pregunto disponibilidad de productos por puerto query_o 
 			lastQuery = Real(distval(rng)+1);
 			sendOutput(msg.time(), query_o, lastQuery);
-			cout << "Output Function execution en estado IDLE @ " << msg.time() << " pide " << lastQuery << " productos" << endl;
+  		cout << msg.time() << " Client B - " << "pregunta por: " << lastQuery << " productos" << endl;
 			break;
 		case StateClient::CALC: // pido n productos por puerto pedido_o
 			sendOutput(msg.time(), pedido_o, inStock);
-			cout << "Output Function execution en estado CALC @ " << msg.time() << " pide " << inStock << " productos" << endl;
+			sendOutput(msg.time(), encargado_o, lastQuery - inStock);
+
+  		cout << msg.time() << " Client B - " << "pide: " << inStock << endl;
+  		cout << msg.time() << " Client B - " << "encarga: " << lastQuery - inStock << endl;
+   
 			break;
+		case StateClient::QUERY:
+		  break;	
 	}
 
 

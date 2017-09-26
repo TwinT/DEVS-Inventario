@@ -80,7 +80,7 @@ Model &ProveedorEncargo::externalFunction( const ExternalMessage &msg )
 			//cout << "float: " << f << endl;
 			VTime t = VTime(f);
 			//cout << "distribution: " << t << endl;
-			productos.push_back(Real(t.asMsecs()));
+			productos.push_back(Real(t.asMsecs()) / Real(1000));
 		}
 
 		state = serve;
@@ -109,7 +109,7 @@ Model &ProveedorEncargo::outputFunction(const CollectMessage &msg)
 {
 	if(state == serve){
 		for(int i = 0; i < productos.size(); i++){
-			productos[i] = productos[i] + Real(msg.time().asMsecs());
+			productos[i] = productos[i] + (Real(msg.time().asMsecs()) / Real(1000));
 		}
 		Tuple<Product> t(&productos);
 		sendOutput(msg.time(), entrega, t);

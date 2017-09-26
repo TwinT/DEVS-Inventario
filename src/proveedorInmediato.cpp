@@ -78,10 +78,9 @@ Model &ProveedorInmediato::externalFunction( const ExternalMessage &msg )
 
 		for(int i = 0; i < cantidad_pedida; i++){
 			float f =  static_cast<float>(fabs(distribution().get()));
-			//cout << "float: " << f << endl;
 			VTime t = VTime(f);
-			//cout << "distribution: " << t << endl;
-			productos.push_back(Real(t.asMsecs()) + Real(msg.time().asMsecs()));
+			// se guarda vencimiento en segundos
+			productos.push_back((Real(t.asMsecs()) + Real(msg.time().asMsecs())) / Real(1000));
 		}
 
 		state = serve;
@@ -93,7 +92,7 @@ Model &ProveedorInmediato::externalFunction( const ExternalMessage &msg )
 /*******************************************************************
 * Function Name: internalFunction
 ********************************************************************/
-Model &ProveedorInmediato::internalFunction( const InternalMessage &msg )
+Model &ProveedorInmediato::internalFunction( const InternalMessage &msg)
 {
 	this->sigma = VTime::Inf;
   state = idle;
