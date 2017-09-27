@@ -110,7 +110,7 @@ Model &ProveedorInmediato::outputFunction(const CollectMessage &msg)
 	if(state == serve){
 		Tuple<Product> t(&productos);
 		sendOutput( msg.time(), entrega, t);
-		cout << msg.time() << " Proveedor Inmediato - " << "Entrega: " << t <<  endl;
+		cout << msg.time() << " Proveedor Inmediato - " << "Entrega: " << productos.size() << " productos" <<  endl;
 		productos.clear(); // limpio vector
 	}
 	

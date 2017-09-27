@@ -16,6 +16,18 @@ ControlInventario::ControlInventario(const string &name) :
 	querySuppliers_o(addOutputPort("querySuppliers_o")),
 	query_time(0,0,1,0)
 {
+try{
+		if( ParallelMainSimulator::Instance().existsParameter(description(), "N")){
+			N = str2Int(ParallelMainSimulator::Instance().getParameter( description(), "N" ));
+		}
+		else{
+			N = 100;
+		}
+	} catch(MException &e){
+		MTHROW(e);
+	}
+
+	cout << "Control de Inventario Creado" << " (N = " << N << ")"<< endl;
 }
 
 
@@ -23,6 +35,8 @@ Model &ControlInventario::initFunction()
 {
 	holdIn(AtomicState::active, query_time);
 	state = State::WAITING;
+  cout << "Control de Inventario - Init finalizado" << endl;
+
 	return *this;
 }
 
@@ -31,19 +45,20 @@ Model &ControlInventario::externalFunction(const ExternalMessage &msg)
 {
 	// Tiene un puerto solo de entrada, sino hay que preguntar por el puerto.
 	double invStock = (Real::from_value(msg.value())).value();
+  cout << msg.time() << " Control Inventario - Inventario responde: " << invStock <<  endl;
 
 	if(state == State::QUERY)
 	{
 		quantity = 0;
-		if (invStock < s)
-			quantity = S - invStock;
+		if (invStock < n)
+			quantity = N - invStock;
 
 		state = State::CALC;
 		holdIn(AtomicState::active, VTime::Zero);
 	}
 	else
 		// TODO: ver timeLeft()
-		holdIn(AtomicState::active, nextChange() - (msg.time() - lastChange()));
+		holdIn(AtomicState::active, nextChange());
 		
 	return *this;
 }
@@ -75,9 +90,11 @@ Model &ControlInventario::outputFunction(const CollectMessage &msg)
 	{
 		case State::WAITING:
 			sendOutput(msg.time(), queryInventory_o, Real(1));
+			cout << msg.time() << " Control Inventario - Consulta a Inventario" <<  endl;
 			break;
 		default: //CALC
 			sendOutput(msg.time(), querySuppliers_o, Real(quantity));
+			cout << msg.time() << " Control Inventario - Pedido a proveedores: " << quantity <<  endl;
 			break;
 	}
 	return *this ;

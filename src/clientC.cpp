@@ -65,6 +65,7 @@ Model &ClientC::initFunction()
 	// arranca en estado StateClient::IDLE
 	query_time = VTime(fabs(this->dist->get()));
 	holdIn(AtomicState::active, this->query_time);
+  //cout << "query_time C: " << query_time << endl;
 	cout << "Cliente C - Init finalizado" << endl;
 
 	return *this;
@@ -73,9 +74,9 @@ Model &ClientC::initFunction()
 
 Model &ClientC::externalFunction(const ExternalMessage &msg)
 {
-	sigma    = nextChange();
-	elapsed  = msg.time() - lastChange();
-	timeLeft = sigma - elapsed;
+	this->sigma    = nextChange();
+	this->elapsed  = msg.time() - lastChange();
+	//this->timeLeft = this->sigma - this->elapsed;
 
 	if(msg.port() == disponibles_i){
 		if(stateC == StateClient::QUERY)
@@ -94,7 +95,9 @@ Model &ClientC::externalFunction(const ExternalMessage &msg)
 			holdIn(AtomicState::active, VTime::Zero);
 		}
 		else{ // si llegara un msg cuando stateC != QUERY
-			holdIn(AtomicState::active, timeLeft);
+
+			holdIn(AtomicState::active, this->sigma);
+
 		}
 	}
 
@@ -109,11 +112,13 @@ Model &ClientC::internalFunction(const InternalMessage &)
 		case StateClient::ACCEPT:
 			stateC = StateClient::IDLE;
 			query_time = VTime(fabs(this->dist->get()));
+      //cout << "query_time C: " << query_time << endl;
 			holdIn(AtomicState::active, query_time);
 			break;
 		case StateClient::DECLINE:
 			stateC = StateClient::IDLE;
 			query_time = VTime(fabs(this->dist->get()));
+      //cout << "query_time C: " << query_time << endl;   			
 			holdIn(AtomicState::active, query_time);
 			break;
 		case StateClient::IDLE:

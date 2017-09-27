@@ -7,8 +7,6 @@
 
 #define CONTROL_INVENTARIO_NAME "ControlInventario"
 
-#define S 90 // Inventario máximo
-
 class ControlInventario : public Atomic {
   public:
     ControlInventario(const string &name = CONTROL_INVENTARIO_NAME );
@@ -29,8 +27,9 @@ class ControlInventario : public Atomic {
     VTime query_time;
     int quantity{0};
     int invStock{0};
-    int s{50};     // Parámetro de la política de pedidos
+    int n{50};     // Parámetro de la política de pedidos
     State state{State::WAITING};
+    int N;
 };
 
 #endif
