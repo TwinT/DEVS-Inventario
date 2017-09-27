@@ -34,7 +34,7 @@ Model &AtencionAlCliente::initFunction()
 
 Model &AtencionAlCliente::externalFunction(const ExternalMessage &msg)
 {
-	if (msg.port() == queryClient_i)
+	if (msg.port() == queryClient_i){
 		if (state == State::WAITING)
 		{
 			queryClient = Real::from_value(msg.value()).value();
@@ -43,8 +43,8 @@ Model &AtencionAlCliente::externalFunction(const ExternalMessage &msg)
 
 			holdIn(AtomicState::active, VTime::Zero);
 		}
-	
-	if (msg.port() == queryInventory_i)
+	}
+	else if (msg.port() == queryInventory_i){
 		if (state == State::INV_WAIT)
 		{
 			inventoryStock = Real::from_value(msg.value()).value();
@@ -53,8 +53,8 @@ Model &AtencionAlCliente::externalFunction(const ExternalMessage &msg)
 			state = State::CLI_RPLY;
 			holdIn(AtomicState::active, VTime::Zero);
 		}
-		
-	if (msg.port() == numProdClient_i){
+  }		
+	else if (msg.port() == numProdClient_i){
 		if (state == State::CLI_WAIT)
 		{
 			productsBuyed = Real::from_value(msg.value()).value();
@@ -70,9 +70,9 @@ Model &AtencionAlCliente::externalFunction(const ExternalMessage &msg)
 				holdIn(AtomicState::passive, VTime::Inf);
 			}
 		}
-	}
-	else
+	}else{
 		holdIn(AtomicState::passive,VTime::Inf);
+	}
 		
 	return *this;
 }
@@ -112,9 +112,15 @@ Model &AtencionAlCliente::outputFunction(const CollectMessage &msg)
 			cout << msg.time() << " Atencion al cliente - pregunta por " << queryClient << " productos" <<  endl;			
 			break;
 		case State::CLI_RPLY:
-			sendOutput(msg.time(), queryClient_o, inventoryStock);
-			cout << msg.time() << " Atencion al cliente - informa a cliente que hay " << inventoryStock << " stock" <<  endl;			
+		  {
+		  int disponibles = static_cast<int>(inventoryStock);
+		  if(disponibles < 0){
+		    disponibles = 0;	
+		  }
+			sendOutput(msg.time(), queryClient_o, Real(disponibles));
+			cout << msg.time() << " Atencion al cliente - informa a cliente que hay " << Real(disponibles) << " stock" <<  endl;			
 			break;
+		  }
 		case State::INV_GET:
 			sendOutput(msg.time(), prodInventory_o, productsBuyed);
 			cout << msg.time() << " Atencion al cliente - pide al inventario " << productsBuyed << " productos" <<  endl;			

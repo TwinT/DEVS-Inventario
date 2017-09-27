@@ -66,6 +66,7 @@ Model &ClientB::initFunction()
 	// arranca en estado StateClient::IDLE
 	this->query_time = VTime(fabs(this->dist->get()));
 	holdIn(AtomicState::active, this->query_time );
+	//cout << "query_time B: " << query_time << endl;
 	cout << "Cliente B - Init finalizado" << endl;
 
 	return *this;
@@ -76,7 +77,7 @@ Model &ClientB::externalFunction(const ExternalMessage &msg)
 {
 	this->sigma    = nextChange();
 	this->elapsed  = msg.time() - lastChange();
-	this->timeLeft = this->sigma - this->elapsed;
+	//this->timeLeft = this->sigma - this->elapsed;
 
 	if(msg.port() == disponibles_i)
 	{
@@ -90,7 +91,17 @@ Model &ClientB::externalFunction(const ExternalMessage &msg)
 		}
 		else
 		{ // si llegara un msg cuando stateC != QUERY
-			holdIn(AtomicState::active, this->timeLeft);
+			// cout << endl;
+			// cout << "================ B ======================" << endl;
+			// cout << "LLEGA MENSAJE NO PARA MI - ACA ESTAN MIS TIEMPOS" << endl;
+			// cout << "nextChange():" << nextChange() << endl;
+			// cout << "lastChange():" << lastChange() << endl;
+			// cout << msg.time() << " timeLeft: " << this->timeLeft << endl;
+			// cout << msg.time() << " sigma: " << this->sigma << endl;
+			// cout << msg.time() << " elapsed: " << this->elapsed << endl;
+			// cout << endl;
+			holdIn(AtomicState::active, this->sigma);
+
 		}
 	}
 
@@ -106,6 +117,7 @@ Model &ClientB::internalFunction(const InternalMessage &)
 			this->stateC = StateClient::IDLE;
 			this->query_time = VTime(fabs(this->dist->get()));
 			holdIn(AtomicState::active, this->query_time);
+			//cout << "query_time B: " << query_time << endl;
 			break;
 		case StateClient::IDLE:
 			this->stateC = StateClient::QUERY;
@@ -130,12 +142,17 @@ Model &ClientB::outputFunction(const CollectMessage &msg)
   		cout << msg.time() << " Client B - " << "pregunta por: " << lastQuery << " productos" << endl;
 			break;
 		case StateClient::CALC: // pido n productos por puerto pedido_o
-			sendOutput(msg.time(), pedido_o, inStock);
-			sendOutput(msg.time(), encargado_o, lastQuery - inStock);
-
-  		cout << msg.time() << " Client B - " << "pide: " << inStock << endl;
-  		cout << msg.time() << " Client B - " << "encarga: " << lastQuery - inStock << endl;
-   
+		  if(lastQuery <= inStock){
+				sendOutput(msg.time(), pedido_o, lastQuery);
+				cout << msg.time() << " Client B - " << "pide: " << lastQuery << endl;
+			}
+		  else{
+		  	sendOutput(msg.time(), pedido_o, inStock);
+		  	sendOutput(msg.time(), encargado_o, lastQuery - inStock);
+				cout << msg.time() << " Client B - " << "pide: " << inStock << endl;
+  		  cout << msg.time() << " Client B - " << "encarga: " << lastQuery - inStock << endl;
+		  } 
+  		
 			break;
 		case StateClient::QUERY:
 		  break;	

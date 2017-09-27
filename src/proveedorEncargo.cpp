@@ -83,7 +83,7 @@ Model &ProveedorEncargo::externalFunction( const ExternalMessage &msg )
 			productos.push_back(Real(t.asMsecs()) / Real(1000));
 		}
 		state = serve;
-		holdIn(AtomicState::active, VTime(0,0,0.99,0)); // 0.99 segundos 
+		holdIn(AtomicState::active, VTime(0,0,0,999)); // 0.99 segundos 
 	}
 	return *this;
 }

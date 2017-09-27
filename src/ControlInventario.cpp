@@ -58,7 +58,7 @@ Model &ControlInventario::externalFunction(const ExternalMessage &msg)
 	}
 	else
 		// TODO: ver timeLeft()
-		holdIn(AtomicState::active, nextChange() - (msg.time() - lastChange()));
+		holdIn(AtomicState::active, nextChange());
 		
 	return *this;
 }
