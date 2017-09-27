@@ -40,3 +40,4 @@ doc/CervettoMarchiPeckerMarcosig-TP1-SED2017_v1\.log
 *.aux
 
 *.toc
+*.log*
