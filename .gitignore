@@ -43,3 +43,4 @@ doc/CervettoMarchiPeckerMarcosig-TP1-SED2017_v1\.log
 
 # logs
 test/*.log[0-9][0-9]
+test/*.log
