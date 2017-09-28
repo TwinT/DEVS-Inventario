@@ -25,9 +25,9 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="1.6009889"
-     inkscape:cx="497.16386"
-     inkscape:cy="746.6959"
+     inkscape:zoom="1.4915463"
+     inkscape:cx="414.34196"
+     inkscape:cy="687.46995"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="false"
@@ -569,38 +569,38 @@
     <text
        xml:space="preserve"
        style="font-style:normal;font-weight:normal;font-size:11.25px;line-height:125%;font-family:Sans;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-       x="218.78416"
-       y="164.84132"
+       x="214.78416"
+       y="166.84132"
        id="text4301"
        sodipodi:linespacing="125%"><tspan
          sodipodi:role="line"
          id="tspan4303"
-         x="218.78416"
-         y="164.84132"
-         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Ubuntu;-inkscape-font-specification:Ubuntu">A</tspan></text>
+         x="214.78416"
+         y="166.84132"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:20px;font-family:Ubuntu;-inkscape-font-specification:Ubuntu">A</tspan></text>
     <text
        xml:space="preserve"
        style="font-style:normal;font-weight:normal;font-size:11.25px;line-height:125%;font-family:Sans;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-       x="217.90666"
-       y="254.63153"
+       x="213.90666"
+       y="258.63153"
        id="text4301-7"
        sodipodi:linespacing="125%"><tspan
          sodipodi:role="line"
          id="tspan4303-0"
-         x="217.90666"
-         y="254.63153"
-         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Ubuntu;-inkscape-font-specification:Ubuntu">B</tspan></text>
+         x="213.90666"
+         y="258.63153"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:20px;font-family:Ubuntu;-inkscape-font-specification:Ubuntu">B</tspan></text>
     <text
        xml:space="preserve"
        style="font-style:normal;font-weight:normal;font-size:11.25px;line-height:125%;font-family:Sans;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-       x="218.22166"
-       y="349.5903"
+       x="214.22166"
+       y="351.5903"
        id="text4301-9"
        sodipodi:linespacing="125%"><tspan
          sodipodi:role="line"
          id="tspan4303-3"
-         x="218.22166"
-         y="349.5903"
-         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Ubuntu;-inkscape-font-specification:Ubuntu">C</tspan></text>
+         x="214.22166"
+         y="351.5903"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:20px;font-family:Ubuntu;-inkscape-font-specification:Ubuntu">C</tspan></text>
   </g>
 </svg>

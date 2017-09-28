@@ -1,4 +1,4 @@
-Desde la carpeta test:
+Desde la carpeta src:
 
 1. make
 2. bin/cd++ -m../test/top.ma |grep INVENTARIO > ../test/inventario.out
