@@ -1,0 +1,12 @@
+Desde la carpeta test:
+
+1. make
+2. bin/cd++ -m../test/top.ma |grep INVENTARIO > ../test/inventario.out
+
+   ctrl + c para terminar
+   Acondicionar la última línea
+
+3. spyder -> analisis.py
+
+
+

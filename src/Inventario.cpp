@@ -191,6 +191,13 @@ Model &Inventario::outputFunction(const CollectMessage &msg)
 
 		case State::encargo:
       cout << msg.time() << " Inventario - Encargos(E): " << encargos_q <<  endl;
+      cout << "INVENTARIO , " << msg.time() 
+           << " , " << cola.size() 
+           << " , " << colaA.size()
+           << " , " << colaB.size()
+           << " , " << colaC.size()
+           << " , " << encargos_q
+           << endl; 
 			break;
 
 		case State::get:
@@ -210,6 +217,15 @@ Model &Inventario::outputFunction(const CollectMessage &msg)
       Tuple<Product> t(&productos);
       sendOutput(msg.time(), producto_out, t);
       cout << msg.time() << " Inventario - " << "Entrega: " << t <<  endl;
+      cout << "INVENTARIO , " << msg.time() 
+           << " , " << cola.size() 
+           << " , " << colaA.size()
+           << " , " << colaB.size()
+           << " , " << colaC.size()
+           << " , " << encargos_q
+           << endl; 
+
+
       }
 			break;		
 
@@ -229,6 +245,13 @@ Model &Inventario::outputFunction(const CollectMessage &msg)
         cout << msg.time() << " Inventario - Encargos restantes:" << encargos_q <<  endl;
       }
       cout << msg.time() << " Inventario - Hay en cola N:" << cola.size() <<  endl;
+      cout << "INVENTARIO , " << msg.time() 
+           << " , " << cola.size() 
+           << " , " << colaA.size()
+           << " , " << colaB.size()
+           << " , " << colaC.size()
+           << " , " << encargos_q
+           << endl; 
       }
 			break;	
 
