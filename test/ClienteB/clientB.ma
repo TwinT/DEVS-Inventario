@@ -9,4 +9,5 @@ link : encargado_o@CB eout_port
 
 [CB]
 distribution : Exponential
-mean : 0.12 
+mean : 0.12
+

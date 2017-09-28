@@ -1017,7 +1017,7 @@ En las figuras \ref{fig:PE-esquematico} y \ref{fig:PE-estados} se pueden observa
 
 
  
-\subsubsection{Clientes} 
+\subsubsection{Demandas de los Clientes} 
  
 En la Figura~\ref{fig:pdftiempo} y Figura~\ref{fig:pdfpedidos} se observan los histogramas que representan la tasa de arribos de pedidos de clientes y la cantidad de unidades pedidas. Se puede notar que la distribución de los tiempos de arribos sigue una distribución de probabilidad exponencial y el valor medio del tiempo entre arribos es de alrededor de $0.12$. La distribución de probbilidad de la cantidad de unidades pedidas corresponde a la mencionada en la sección \ref{sec:CLI}. 
 
@@ -1037,6 +1037,108 @@ En ambas figuras el tiempo se mide en segundos, aunque cada segundo representa u
 \label{fig:pdfpedidos} 
 \end{figure}
 \FloatBarrier
+
+\subsubsection{Cliente A}
+Para la prueba del bloque de clientes tipo A no se necesitan eventos de entrada porque este tipo de cliente encarga productos sin importar si están disponibles. La salida de la prueba es la siguiente:
+
+\begin{minipage}{1\textwidth}
+	\centering
+	\begin{lstlisting}
+00:00:00:073:0.401741 Client A - encargo: 1
+00:00:00:101:0.768183 Client A - encargo: 4
+00:00:00:322:0.663614 Client A - encargo: 4
+00:00:00:385:0.395575 Client A - encargo: 2
+00:00:00:585:0.052725 Client A - encargo: 2
+00:00:00:604:0.393726 Client A - encargo: 3
+	\end{lstlisting}
+	
+\end{minipage}
+Con trazas como ésta se obtuvieron la Figura~\ref{fig:pdftiempo} y Figura~\ref{fig:pdfpedidos}. 
+
+\subsubsection{Cliente B}
+Para la prueba del bloque de clientes tipo B se propuso el siguiente estímulo:
+
+\begin{minipage}{1\textwidth}
+	\centering
+	\begin{lstlisting}
+00:00:05:00 in_port 1
+00:00:30:00 in_port 0
+00:00:45:00 in_port 10
+00:01:20:00 in_port 1
+	\end{lstlisting}
+\end{minipage}
+
+Dada la política de pedidos, se busca probar las condiciones:
+\begin{itemize}
+\item La cantidad de productos disponibles en el inventario es menor al valor consultado por el cliente, por lo tanto se piden las unidades disponibles y se encargan las restantes.
+\item La cantidad de productos en el inventario es mayor o igual al valor consultado por el cliente, por lo tanto piden todas las unidades por las que se consultó.
+\end{itemize}
+
+La salida de la prueba es la siguiente:
+
+\begin{minipage}{1\textwidth}
+	\centering
+	\begin{lstlisting}
+00:00:00:073:0.401741 Client B - pregunta por: 1 productos
+00:00:05:000:0 Client B - le dicen que hay: 1 productos
+00:00:05:000:0 Client B - pide: 1
+00:00:05:119:0.451668 Client B - pregunta por: 4 productos
+00:00:30:000:0 Client B - le dicen que hay: 0 productos
+00:00:30:000:0 Client B - pide: 0
+00:00:30:000:0 Client B - encarga: 4
+00:00:30:009:0.329481 Client B - pregunta por: 4 productos
+00:00:45:000:0 Client B - le dicen que hay: 10 productos
+00:00:45:000:0 Client B - pide: 4
+00:00:45:003:0.96502 Client B - pregunta por: 2 productos
+00:01:20:000:0 Client B - le dicen que hay: 1 productos
+00:01:20:000:0 Client B - pide: 1
+00:01:20:000:0 Client B - encarga: 1
+	\end{lstlisting}
+	
+\end{minipage}
+Donde se observa que se cumplen las condiciones mencionadas en la sección \ref{sec:CTB}, ya que si el número de unidades disponibles para entrega inmediata es menor a la cantidad consultada la compra se realiza igual.
+
+\subsubsection{Cliente C}
+Para la prueba del bloque de clientes de tipo C se propuso el siguiente estímulo:
+
+\begin{minipage}{1\textwidth}
+	\centering
+	\begin{lstlisting}
+00:00:05:00 in_port 1
+00:00:30:00 in_port 0
+00:00:45:00 in_port 10
+00:01:20:00 in_port 1
+	\end{lstlisting}
+\end{minipage}
+
+Dada la política de pedidos, se busca probar las condiciones:
+\begin{itemize}
+\item La cantidad de productos disponibles en el inventario es menor al valor consultado por el cliente, por lo tanto se rechaza la compra.
+\item La cantidad de productos en el inventario es mayor o igual al valor consultado por el cliente, por lo tanto piden todas las unidades por las que se consultó.
+\end{itemize}
+
+La salida de la prueba es la siguiente:
+
+\begin{minipage}{1\textwidth}
+	\centering
+	\begin{lstlisting}
+00:00:00:073:0.401741 Client C - pregunta por: 1 productos
+00:00:05:000:0 Client C - Peticion aceptada
+00:00:05:000:0 Client C - pide: 1 productos
+00:00:05:119:0.451668 Client C - pregunta por: 4 productos
+00:00:30:000:0 Client C - Peticion rechazada
+00:00:30:000:0 Client C - No pide nada
+00:00:30:009:0.329481 Client C - pregunta por: 4 productos
+00:00:45:000:0 Client C - Peticion aceptada
+00:00:45:000:0 Client C - pide: 4 productos
+00:00:45:003:0.96502 Client C - pregunta por: 2 productos
+00:01:20:000:0 Client C - Peticion rechazada
+00:01:20:000:0 Client C - No pide nada
+	\end{lstlisting}
+	
+\end{minipage}
+
+Donde se observa que se cumplen las condiciones mencionadas en la sección \ref{sec:CTC}, ya que si el número de unidades disponibles para entrega inmediata es menor a la cantidad consultada entonces la compra no se realiza.
 
 \subsubsection{Control de Inventario}
 Para la prueba del bloque de control de inventario se propuso el siguiente estímulo:
@@ -1058,7 +1160,6 @@ Dada la política de pedidos, se busca probar las condiciones:
 
 La salida de la prueba es la siguiente:
 
-\centering
 \begin{minipage}{1\textwidth}
 	\centering
 	\begin{lstlisting}
@@ -1102,7 +1203,6 @@ Se busca probar las condiciones:
 
 La salida de la prueba es la siguiente:
 
-\centering
 \begin{minipage}{1\textwidth}
 	\centering
 	\begin{lstlisting}
@@ -1133,7 +1233,6 @@ Donde se observa que se cumplen las condiciones mencionadas en la sección \ref{
 \subsubsection{Atención al cliente}
 Para la prueba del bloque de atención al cliente se propuso el siguiente estímulo:
 
-\centering
 \begin{minipage}{1\textwidth}
 	\centering
 	\begin{lstlisting}
@@ -1153,7 +1252,7 @@ Se busca probar las condiciones:
 \begin{itemize}
 	\item Un cliente solicita $N$ productos y el inventario devuelve una cantidad $> N$ que se le informa al cliente. Por lo tanto el cliente compra N productos.
 	\item Un cliente solicita $N$ productos. El inventario responde con $P < N$ y el cliente decide comprar $P$ productos.
-	\item Un solicita $N$ productos. El inventario responde con $P < N$ y el cliente decide no comprar ningún producto.
+	\item Un cliente solicita $N$ productos. El inventario responde con $P < N$ y el cliente decide no comprar ningún producto.
 \end{itemize}
 
 La salida de la prueba es la siguiente:
@@ -1183,6 +1282,187 @@ La salida de la prueba es la siguiente:
 	
 \end{minipage}
 Donde se observa que se cumplen las condiciones mencionadas en la sección \ref{sec:AC}
+
+\subsubsection{Inventario}
+Para la prueba del bloque de inventario se propuso el siguiente estímulo:
+
+\begin{minipage}{1\textwidth}
+	\centering
+	\begin{lstlisting}
+00:00:05:00 query_in 1
+00:00:09:00 producto_in_A [1.5,1.2,0.9]
+00:00:51:00 producto_in_B [0.9,0.9,0.9]
+00:00:54:00 query_in 1
+00:00:55:00 producto_in_C [0.9,0.9,0.9]
+00:00:58:00 query_in 1
+00:00:59:00 get 2
+00:00:60:00 encargo 1
+00:00:61:00 query_in 1
+00:00:62:00 producto_in_C [0.9,0.9,0.9]
+00:00:63:00 producto_in_A [1.5,1.2,0.9]
+00:00:64:00 producto_in_B [0.9,0.9,0.9]
+00:00:65:00 query_in 1
+00:00:66:00 get 2
+00:00:67:00 get 2
+	\end{lstlisting}
+\end{minipage}
+
+Se busca probar las condiciones:
+\begin{itemize}
+	\item Un proveedor entrega unidades de un insumo. El inventario lo almacena en la cola de insumo correspondiente. Cuando haya unidades de todos los insumos se obtendrán productos automáticamente.
+	\item Un cliente encarga $Ne$ productos. El inventario incrementa la cantidad de unidades encargadas $E$.
+	\item Un cliente consulta la disponibilidad de $Nq$ productos. El inventario responde con $N-E$, siendo $N$ la cantidad de productos disponibles y $E$ la cantidad de productos previamente encargados.
+	\item Un cliente consulta la disponibilidad de $Nq$ productos. El inventario responde con $N \geq Nq$ y el cliente compra $M > Nq$, si están disponibles se le entregan las $M$ unidades y sino se le entregan $Nq$. 
+\end{itemize}
+
+La salida de la prueba es la siguiente:
+
+\begin{minipage}{1\textwidth}
+	\centering
+	\begin{lstlisting}
+00:00:05:000:0 Inventario - Query out(N - E): 0
+00:00:05:000:0 Inventario - Cola(N): 0
+00:00:54:000:0 Inventario - Query out(N - E): 0
+00:00:54:000:0 Inventario - Cola(N): 0
+00:00:55:000:0 Inventario - Entran 3 productos
+00:00:55:000:0 Inventario - Hay en cola N:3
+INVENTARIO , 00:00:55:000:0 , 3 , 0 , 0 , 0 , 0
+00:00:58:000:0 Inventario - Query out(N - E): 3
+00:00:58:000:0 Inventario - Cola(N): 3
+00:00:59:000:0 Inventario - Entrega: [0.9, 0.9]
+INVENTARIO , 00:00:59:000:0 , 1 , 0 , 0 , 0 , 0
+00:01:00:000:0 Inventario - Encargos(E): 1
+INVENTARIO , 00:01:00:000:0 , 1 , 0 , 0 , 0 , 1
+00:01:01:000:0 Inventario - Query out(N - E): 0
+00:01:01:000:0 Inventario - Cola(N): 1
+00:01:04:000:0 Inventario - Entran 3 productos
+00:01:04:000:0 Inventario - Encargos entregados:1
+00:01:04:000:0 Inventario - Encargos restantes:0
+00:01:04:000:0 Inventario - Hay en cola N:3
+INVENTARIO , 00:01:04:000:0 , 3 , 0 , 0 , 0 , 0
+00:01:05:000:0 Inventario - Query out(N - E): 3
+00:01:05:000:0 Inventario - Cola(N): 3
+00:01:06:000:0 Inventario - Entrega: [0.9, 0.9]
+INVENTARIO , 00:01:06:000:0 , 1 , 0 , 0 , 0 , 0
+00:01:07:000:0 Inventario - Entrega: [0.9, 0]
+INVENTARIO , 00:01:07:000:0 , 0 , 0 , 0 , 0 , 0
+	\end{lstlisting}
+	
+\end{minipage}
+Donde se observa que se cumplen las condiciones mencionadas en la sección \ref{sec:I}. Se puede notar que hasta que no haya disponibles unidades de los insumos A, B y C no se pueden producir productos y que en caso contrario se producen instantáneamente.
+Se puede notar que cuando se solicita una cantidad de productos mayor a la que se había consultado previamente se entregan unidades con fecha de vencimiento $0$, que representan que ese producto no está disponible al momento de la compra y no se va a encargar.
+
+
+\subsubsection{Proveedor Inmediato}
+Para la prueba del bloque proveedor inmediato se propuso el siguiente estímulo:
+
+\begin{minipage}{1\textwidth}
+	\centering
+	\begin{lstlisting}
+00:00:05:00 pedido 1 
+00:00:09:00 pedido 4
+00:00:17:00 pedido 3
+00:00:50:00 pedido 2
+	\end{lstlisting}
+\end{minipage}
+
+Se busca probar las condiciones:
+\begin{itemize}
+	\item El control de inventario solicita $N$ unidades de insumo y el proveedor responde instantáneamente. 
+\end{itemize}
+
+La salida de la prueba es la siguiente:
+
+\begin{minipage}{1\textwidth}
+	\centering
+	\begin{lstlisting}
+00:00:05:000:0 Proveedor Inmediato - Pedido: 1 productos
+00:00:05:000:0 Proveedor Inmediato - Entrega: 1 productos
+00:00:09:000:0 Proveedor Inmediato - Pedido: 4 productos
+00:00:09:000:0 Proveedor Inmediato - Entrega: 4 productos
+00:00:17:000:0 Proveedor Inmediato - Pedido: 3 productos
+00:00:17:000:0 Proveedor Inmediato - Entrega: 3 productos
+00:00:50:000:0 Proveedor Inmediato - Pedido: 2 productos
+00:00:50:000:0 Proveedor Inmediato - Entrega: 2 productos
+	\end{lstlisting}
+	
+\end{minipage}
+
+Donde se observa que se cumplen las condiciones mencionadas en la sección \ref{sec:PI}.
+
+\subsubsection{Proveedor por Múltiplo Fijo}
+Para la prueba del bloque proveedor por múltiplo fijo se propuso el siguiente estímulo:
+
+\begin{minipage}{1\textwidth}
+	\centering
+	\begin{lstlisting}
+00:00:05:00 pedido 100
+00:00:09:00 pedido 40
+00:00:17:00 pedido 30
+00:00:50:00 pedido 200
+	\end{lstlisting}
+\end{minipage}
+
+Se busca probar las condiciones:
+\begin{itemize}
+	\item El control de inventario solicita $N$ unidades de insumo. El proveedor entrega instantáneamente con una cantidad múltiplo del número de unidades por paquete. 
+\end{itemize}
+
+La salida de la prueba es la siguiente:
+
+\begin{minipage}{1\textwidth}
+	\centering
+	\begin{lstlisting}
+00:00:05:000:0 Proveedor Fijo - Pedido: 100 productos
+00:00:05:000:0 Proveedor Fijo - Entrega: 120 productos
+00:00:09:000:0 Proveedor Fijo - Pedido: 40 productos
+00:00:09:000:0 Proveedor Fijo - Entrega: 60 productos
+00:00:17:000:0 Proveedor Fijo - Pedido: 30 productos
+00:00:17:000:0 Proveedor Fijo - Entrega: 30 productos
+00:00:50:000:0 Proveedor Fijo - Pedido: 200 productos
+00:00:50:000:0 Proveedor Fijo - Entrega: 210 productos
+	\end{lstlisting}
+	
+\end{minipage}
+
+Donde se observa que se cumplen las condiciones mencionadas en la sección \ref{sec:PF}. La cantidad de unidades de insumo por paquete se fijó en $30$.
+
+\subsubsection{Proveedor por Encargo}
+Para la prueba del bloque proveedor por encargo se propuso el siguiente estímulo:
+
+\begin{minipage}{1\textwidth}
+	\centering
+	\begin{lstlisting}
+00:00:05:00 pedido 100
+00:00:06:00 pedido 40
+00:00:07:00 pedido 30
+00:00:50:00 pedido 200
+	\end{lstlisting}
+\end{minipage}
+
+Se busca probar las condiciones:
+\begin{itemize}
+	\item El control de inventario solicita $N$ unidades de insumo. El proveedor entrega la cantidad pedida un mes después. 
+\end{itemize}
+
+La salida de la prueba es la siguiente:
+
+\begin{minipage}{1\textwidth}
+	\centering
+	\begin{lstlisting}
+00:00:05:000:0 Proveedor por Encargo - Pedido: 100 productos
+00:00:05:999:0 Proveedor por Encargo - Entrega: 100 productos
+00:00:06:000:0 Proveedor por Encargo - Pedido: 40 productos
+00:00:06:999:0 Proveedor por Encargo - Entrega: 40 productos
+00:00:07:000:0 Proveedor por Encargo - Pedido: 30 productos
+00:00:07:999:0 Proveedor por Encargo - Entrega: 30 productos
+00:00:50:000:0 Proveedor por Encargo - Pedido: 200 productos
+00:00:50:999:0 Proveedor por Encargo - Entrega: 200 productos
+	\end{lstlisting}
+	
+\end{minipage}
+
+Donde se observa que se cumplen las condiciones mencionadas en la sección \ref{sec:PE}.
 
 \subsection{Pruebas de integración}
 .
