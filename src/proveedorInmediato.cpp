@@ -57,6 +57,7 @@ Model &ProveedorInmediato::initFunction()
     cout << "Proveedor Inmediato - Init finalizado" << endl;
 
     holdIn(AtomicState::active, this->sigma);
+
 	return *this ;
 }
 

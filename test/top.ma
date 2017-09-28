@@ -67,10 +67,12 @@ distribution : exponential
 mean : 0.12
 
 [pf]
-productos_por_paquete : 20
+productos_por_paquete : 5
 
 [I]
 N : 100
 
 [CI]
 N : 85
+K : 350
+p : 25

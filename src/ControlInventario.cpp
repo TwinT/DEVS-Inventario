@@ -23,6 +23,21 @@ try{
 		else{
 			N = 100;
 		}
+
+		if( ParallelMainSimulator::Instance().existsParameter(description(), "K")){
+			K = str2Int(ParallelMainSimulator::Instance().getParameter( description(), "K" ));
+		}
+		else{
+			K = 350;
+		}
+
+		if( ParallelMainSimulator::Instance().existsParameter(description(), "p")){
+			p = str2Int(ParallelMainSimulator::Instance().getParameter( description(), "p" ));
+		}
+		else{
+			p = 25;
+		}
+
 	} catch(MException &e){
 		MTHROW(e);
 	}
@@ -95,6 +110,9 @@ Model &ControlInventario::outputFunction(const CollectMessage &msg)
 		default: //CALC
 			sendOutput(msg.time(), querySuppliers_o, Real(quantity));
 			cout << msg.time() << " Control Inventario - Pedido a proveedores: " << quantity <<  endl;
+			cout << "CONTROLDEINV , " << msg.time()
+			     << " , " << (K + p * quantity)
+			     << endl;
 			break;
 	}
 	return *this ;

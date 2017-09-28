@@ -302,7 +302,7 @@ Una pregunta adicional que surge a partir de la anterior es:
 \subsection{Descripción funcional}
 A continuación se describen cada uno de los bloques de la Figura \ref{fig:esquema-del-problema}.
 
-\subsubsection{Demanda (cliente)}
+\subsubsection{Demanda (cliente)\label{sec:CLI}}
 Los tiempos entre demandas por tipo de cliente son variables aleatorias exponenciales e independientemente distribuidas con una media de 0,12 mes. Los tamaños de las demandas (que pueden ir de uno a cuatro unidades del producto), D, son variables aleatorias independientemente distribuidas e independientes, cuya probabilidad de ocurrencia se muestra en la Tabla~\ref{tab:tabla1}.
 
 \begin{table}[ht]
@@ -419,7 +419,7 @@ Los proveedores se comportan de 3 formas diferentes:
 \begin{figure}
 \centering
 \includegraphics[scale=0.8]{img/figura8}
-\caption{Proveedor $1$.}
+\caption{Proveedor Inmediato.}
 \label{fig:fig8}
 \end{figure}
 
@@ -435,7 +435,7 @@ Los productos de este proveedor no tienen vencimiento.
 \begin{figure}
 \centering
 \includegraphics[scale=0.8]{img/figura9}
-\caption{Proveedor $2$.}
+\caption{Proveedor por múltiplo de cantidad fija.}
 \label{fig:fig9}
 \end{figure}
 
@@ -444,7 +444,7 @@ Los productos de este proveedor no tienen vencimiento.
 \begin{figure}
 \centering
 \includegraphics[scale=0.8]{img/figura10}
-\caption{Proveedor $3$.}
+\caption{Proveedor por encargo.}
 \label{fig:fig10}
 \end{figure}
 \end{enumerate}
@@ -1017,14 +1017,16 @@ En las figuras \ref{fig:PE-esquematico} y \ref{fig:PE-estados} se pueden observa
 
 
  
-\subsubsection{Cliente A} 
+\subsubsection{Clientes} 
  
-En la Figura~\ref{fig:pdftiempo} y Figura~\ref{fig:pdfpedidos} se observan los histogramas que representan a la tasa de arribos de pedidos de clientes de tipo A y a la cantidad de unidades pedidas. El eje de tiempos de la Figura~\ref{fig:pdftiempo} se utiliza en segundos en lugar de en meses. 
+En la Figura~\ref{fig:pdftiempo} y Figura~\ref{fig:pdfpedidos} se observan los histogramas que representan la tasa de arribos de pedidos de clientes y la cantidad de unidades pedidas. Se puede notar que la distribución de los tiempos de arribos sigue una distribución de probabilidad exponencial y el valor medio del tiempo entre arribos es de alrededor de $0.12$. La distribución de probbilidad de la cantidad de unidades pedidas corresponde a la mencionada en la sección \ref{sec:CLI}. 
+
+En ambas figuras el tiempo se mide en segundos, aunque cada segundo representa un mes. 
  
 \begin{figure} 
 \centering 
 \includegraphics[width=0.6\textwidth]{img/pdf_tiempo_pedidos} 
-\caption{Función de densidad de probabilidad del tiempo entre pedidos de clientes tipo A.} 
+\caption{Función de densidad de probabilidad del tiempo entre pedidos de clientes.} 
 \label{fig:pdftiempo} 
 \end{figure} 
  

@@ -55,6 +55,7 @@ Model &ControlCalidad::externalFunction(const ExternalMessage &msg)
 			
 			cout << msg.time() << " Control Calidad - recibe " << tupleSize << " productos" <<  endl;
 			cout << msg.time() << " Control Calidad - se queda con " << numPassProd << " productos" <<  endl;
+			numRejectProd = tupleSize - numPassProd;
 
 			if(invEmpty){
 				cout << msg.time() << " Control Calidad - el inventario está vacío!" <<  endl;
@@ -133,6 +134,9 @@ Model &ControlCalidad::outputFunction(const CollectMessage &msg)
 
 			break;
 		case State::CHECK:
+      			cout << "CONTROLDECALIDAD , " << msg.time() 
+           		<< " , " << numRejectProd 
+           		<< endl; 
 			break;
 		case State::SEND:
 			sendOutput(msg.time(), prod_o, Tuple<Real>(&passProducts));

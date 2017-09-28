@@ -31,6 +31,7 @@ class ControlCalidad : public Atomic {
 	std::vector<Real> passProducts;
     State state = {State::WAITING};
     bool invEmpty{false};	//Flag to inform when invetory is empty
+    int numRejectProd{0};
 };
 
 #endif

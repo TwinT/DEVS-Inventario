@@ -40,6 +40,7 @@ Model &ProveedorFijo::initFunction()
     cout << "Proveedor Fijo - Init finalizado" << endl;
 
     holdIn(AtomicState::active, this->sigma);
+ 	
 	return *this ;
 }
 

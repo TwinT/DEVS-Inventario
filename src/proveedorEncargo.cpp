@@ -57,6 +57,7 @@ Model &ProveedorEncargo::initFunction()
   cout << "Proveedor por Encargo - Init finalizado" << endl;
 
   holdIn(AtomicState::active, this->sigma);
+ 	
 	return *this;
 }
 

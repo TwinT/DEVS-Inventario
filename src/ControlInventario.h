@@ -30,6 +30,9 @@ class ControlInventario : public Atomic {
     int n{50};     // Parámetro de la política de pedidos
     State state{State::WAITING};
     int N;
+    
+    int K; // costo fijo del pedido
+    int p; // costo incremental por unidad
 };
 
 #endif
