@@ -17,11 +17,18 @@ ControlInventario::ControlInventario(const string &name) :
 	query_time(0,0,1,0)
 {
 try{
-		if( ParallelMainSimulator::Instance().existsParameter(description(), "N")){
-			N = str2Int(ParallelMainSimulator::Instance().getParameter( description(), "N" ));
+		if( ParallelMainSimulator::Instance().existsParameter(description(), "S")){
+			S = str2Int(ParallelMainSimulator::Instance().getParameter( description(), "S" ));
 		}
 		else{
-			N = 100;
+			S = 100;
+		}
+
+		if( ParallelMainSimulator::Instance().existsParameter(description(), "n")){
+			n = str2Int(ParallelMainSimulator::Instance().getParameter( description(), "n" ));
+		}
+		else{
+			n = 50;
 		}
 
 		if( ParallelMainSimulator::Instance().existsParameter(description(), "K")){
@@ -38,11 +45,25 @@ try{
 			p = 25;
 		}
 
+		if( ParallelMainSimulator::Instance().existsParameter(description(), "h")){
+			h = str2Int(ParallelMainSimulator::Instance().getParameter( description(), "h" ));
+		}
+		else{
+			h = 8;
+		}
+
+		if( ParallelMainSimulator::Instance().existsParameter(description(), "r")){
+			r = str2Int(ParallelMainSimulator::Instance().getParameter( description(), "r" ));
+		}
+		else{
+			r = 50;
+		}
+
 	} catch(MException &e){
 		MTHROW(e);
 	}
 
-	cout << "Control de Inventario Creado" << " (N = " << N << ")"<< endl;
+	cout << "Control de Inventario Creado" << " (S = " << S << ")"<< endl;
 }
 
 
@@ -66,7 +87,12 @@ Model &ControlInventario::externalFunction(const ExternalMessage &msg)
 	{
 		quantity = 0;
 		if (invStock < n)
-			quantity = N - invStock;
+			quantity = S - invStock;
+
+		if (invStock <= 0)
+			costo = 3 * (K + p * quantity) + r * (-invStock);
+		else
+			costo = 3 * (K + p * quantity) + h * invStock;
 
 		state = State::CALC;
 		holdIn(AtomicState::active, VTime::Zero);
@@ -111,7 +137,7 @@ Model &ControlInventario::outputFunction(const CollectMessage &msg)
 			sendOutput(msg.time(), querySuppliers_o, Real(quantity));
 			cout << msg.time() << " Control Inventario - Pedido a proveedores: " << quantity <<  endl;
 			cout << "CONTROLDEINV , " << msg.time()
-			     << " , " << (K + p * quantity)
+			     << " , " << costo
 			     << endl;
 			break;
 	}

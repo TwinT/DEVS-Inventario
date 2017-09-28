@@ -70,9 +70,12 @@ mean : 0.12
 productos_por_paquete : 5
 
 [I]
-N : 100
+N : 0
 
 [CI]
-N : 85
+n : 50
+S : 85
 K : 350
 p : 25
+h : 8
+r : 50

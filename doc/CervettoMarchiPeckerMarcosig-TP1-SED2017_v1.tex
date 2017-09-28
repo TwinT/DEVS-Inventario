@@ -274,7 +274,7 @@ Se deberá identificar un sistema del mundo real que pueda ser representado usan
 Finalmente se ejecutarán simulaciones del sistema analizado. El sistema estudiado puede ser natural o artificial, y puede existir en la realidad o no.
 
 \section{Modelo Conceptual}
-\subsection{Motivación}
+\subsection{Motivación\label{sec:motivacion}}
 
 Una compañía que vende un único producto está interesada en estimar cuántas unidades del mismo debería tener en inventario en los próximos $n$ meses ($n$ es un parámetro de entrada fijo).
 
@@ -368,12 +368,12 @@ El departamento de atención al cliente se encarga de realizar la negociación c
 
 \subsubsection{Control de inventario\label{sec:CID}}
 
-Al comienzo de cada mes, la compañía revisa el nivel de inventario y decide cuántas nuevas unidades pedir a sus proveedores. La compañía ordena $Z$ unidades a todos los proveedores por igual. El costo costo será $K + pZ$, donde $K = 350~\textrm{pesos}$ es el costo fijo del pedido y $p = 25~\textrm{pesos}$ es el costo incremental por unidad. Naturalmente, si $Z = 0$ no se incurre en ningún costo. La compañía usa la siguiente política para decidir cuántas unidades pedir: si $I$ es el nivel de inventario al comienzo del mes, $S$ el inventario máximo posible (capacidad de almacenamiento) y $s$ el parámetro de política de reposición, $Z$ estará dado por:
+Al comienzo de cada mes, la compañía revisa el nivel de inventario y decide cuántas nuevas unidades pedir a sus proveedores. La compañía ordena $Z$ unidades a todos los proveedores por igual. El costo costo será $K + pZ$, donde $K = 350~\textrm{pesos}$ es el costo fijo del pedido y $p = 25~\textrm{pesos}$ es el costo incremental por unidad. Naturalmente, si $Z = 0$ no se incurre en ningún costo. La compañía usa la siguiente política para decidir cuántas unidades pedir: si $I$ es el nivel de inventario al comienzo del mes, $S$ el inventario máximo posible (capacidad de almacenamiento) y $n$ el parámetro de política de reposición, $Z$ estará dado por:
 
 \begin{equation}
 Z=\left\{\begin{array}{lr}
-		S – I & \textrm{si}\qquad I < s\\
-		0 & \textrm{si} \qquad I \geq s
+		S – I & \textrm{si}\qquad I < n\\
+		0 & \textrm{si} \qquad I \geq n
 	\end{array}\right.
 \label{eq:ctrlinv}
 \end{equation}
@@ -452,7 +452,7 @@ Los productos de este proveedor no tienen vencimiento.
 
 \section{Descripción Formal}
 
-\subsection{Top Model\label{sec:TM}} 
+\subsection{\textit{Top Model}\label{sec:TM}} 
 El diagrama de bloques correspondiente a cada uno de los atómicos descriptos en la especificación funcional se puede ver en la figura \ref{fig:TM-esquematico}.  
  
 \begin{figure}[h] 
@@ -1013,7 +1013,7 @@ En las figuras \ref{fig:PE-esquematico} y \ref{fig:PE-estados} se pueden observa
 \section{Modelado y simulación}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\subsection{Pruebas parciales}
+\subsection{Pruebas parciales\label{sec:PP}}
 
 
  
@@ -1465,8 +1465,35 @@ La salida de la prueba es la siguiente:
 Donde se observa que se cumplen las condiciones mencionadas en la sección \ref{sec:PE}.
 
 \subsection{Pruebas de integración}
-.
+Una vez que se validaron los bloques con las pruebas realizadas en la Sección~\ref{sec:PP} se procedió a su interconexión como se muestra en la Figura~\ref{fig:TM-esquematico}.
+
+Para responder a las preguntas de la Sección~\ref{sec:motivacion} se realizaron una serie de simulaciones para distintas políticas de reposición de inventario. Para cada una se analizaron los costos de reposición y la satisfacción del cliente, siendo esta última proporcional a la inversa de la cantidad de unidades encargadas.
+
+Para la elaboración de una unidad de producto es necesario que haya disponibles una unidad de cada insumo. Cada uno de los insumos de los que se compone el producto es provisto por un tipo de proveedor distinto, i.e. el insumo A es provisto por un proveedor inmediato, el insumo B por un proveedor por múltiplo de cantidad fija y el insumo C por un proveedor por encargo que entrega al mes siguiente de efectuado el pedido. En las simulaciones se puede observar que cada vez que arriba el insumo C se consume al instante en la elaboración de productos pues los insumos A y B ya estaban disponibles para ellos. Por este motivo, en todo momento la cola C de la Figura~\ref{fig:esquema-del-problema} tiene largo $0$. También se puede notar que debido a la política de entrega del proveedor por múltiplo de cantidad fija, en la cola del insumo B siempre quedan remanentes de los pedidos anteriores y por lo tanto el tamaño de esta cola crece sostenidamente.
+
+
+
 \subsection{Reporte y conclusiones}
+Se comprobó la utilidad del formalismo DEVS y en particular de la herramienta CD++ para el modelado y simulación de sistemas con dinámicas por eventos. Al producirse eventos de manera aleatoria no es posible modelizarlos utilizando simuladores basados en una base de tiempo discreta, pues la ocurrencia de un evento de entrada es impredecible y por lo tanto el paso de simulación debería ser lo suficientemente pequeño como para coincidir con los eventos. En caso de adaptar el paso de simulación a la aparición de eventos hace que el tiempo necesario para realizar una simulación crezca exponencialmente.
+
+Se simuló el comportamiento de un sistema de inventario de una industria considerando distintos clientes y proveedores con distintos comportamientos y cuyos ... fueron modelizados como eventos que se producen de manera aleatoria. Para este trabajo se consideraron tasas de arribo exponencial y una distribución probabilística de cantidad de unidades por pedido.
+
+Se descompuso al problema en tres niveles jerárquicos. Un nivel superior o \textit{top model} donde se encuentran la industria, los clientes y los proveedores, un segundo nivel dentro de la industria compuesto por el inventario, el control de inventario y la atención del cliente. Por último, un tercer nivel de atención al cliente conformado por la atención al cliente y el control de calidad.
+
+Para validar el comportamiento del sistema, se verificó el comportamiento de cada bloque de forma independiente en la sección~\ref{sec:PP} excitándolos con entradas conocidas y analizando si los resultados obtenidos correspondían con los esperados.
+
+Durante el desarrollo del trabajo nos encontramos con un problema de simultaneidad de eventos. Por un lado, el control de inventario realiza un pedido a sus proveedores a principio de cada mes. Por otro lado, el proveedor por encargo entrega en ese mismo momento los insumos que le encargaron al inicio del mes pasado. Esta simultaneidad fue evitada haciendo que el proveedor entregue cada $0.999~\textrm{mes}$. 
+
+A lo largo del desarrollo del las simulaciones con la herramienta CD++ se encotraron algunos problemas: a) \texttt{nextChange()}, b) el archivo .ma no distingue parámetros en mayúsculas y minúsculas y c) el archivo de salida. Por este último motivo, en las funciones de salida de los atómicos se agregaron a continuación de las instrucciones ... mensajes propios que utilizamos para analizar el comportamiento de la simulación.
+
+
+
+
+
+
+
+
+
 
 
 \appendix

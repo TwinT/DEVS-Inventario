@@ -38,31 +38,31 @@ for i,t in enumerate(data_inv):
   encargos[i] = t[6]
   
 plt.figure()
-plt.plot(tiempo,cola)
+plt.plot(tiempo/1e3,cola)
 plt.title("Evolucion del tamano de la cola de productos")
 plt.xlabel("tiempo")
 plt.ylabel("size(cola)")
 
 plt.figure()
-plt.plot(tiempo,colaA,'g--')
+plt.plot(tiempo/1e3,colaA,'g--')
 plt.title("Evolucion de la cola del insumo A")
 plt.xlabel("tiempo")
 plt.ylabel("size(cola A)")
 
 plt.figure()
-plt.plot(tiempo,colaB,'g--')
+plt.plot(tiempo/1e3,colaB,'g--')
 plt.title("Evolucion de la cola del insumo B")
 plt.xlabel("tiempo")
 plt.ylabel("size(cola B)")
 
 plt.figure()
-plt.plot(tiempo,colaC,'g--')
+plt.plot(tiempo/1e3,colaC,'g--')
 plt.title("Evolucion de la cola del insumo C")
 plt.xlabel("tiempo")
 plt.ylabel("size(cola C)")
 
 plt.figure()
-plt.plot(tiempo,encargos,'r-')
+plt.plot(tiempo/1e3,encargos,'r-')
 plt.title("Evolucion de la # encargos")
 plt.xlabel("tiempo")
 plt.ylabel("encargos")
@@ -79,7 +79,7 @@ for i,t in enumerate(data_inv):
   vencidas[i] = t[2]
   
 plt.figure()
-plt.plot(tiempo,vencidas)
+plt.plot(tiempo/1e3,vencidas)
 plt.title("Evolucion de la cantidad de unidades vencidas")
 plt.xlabel("tiempo")
 plt.ylabel("vencidas")
@@ -96,7 +96,7 @@ for i,t in enumerate(data_inv):
   costo[i] = t[2]
   
 plt.figure()
-plt.plot(tiempo,costo)
+plt.plot(tiempo/1e3,costo)
 plt.title("Evolucion del costo de reposicion de inventario")
 plt.xlabel("tiempo")
 plt.ylabel("costo [$]")

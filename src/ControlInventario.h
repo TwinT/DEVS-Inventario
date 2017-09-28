@@ -29,10 +29,13 @@ class ControlInventario : public Atomic {
     int invStock{0};
     int n{50};     // Parámetro de la política de pedidos
     State state{State::WAITING};
-    int N;
-    
+    int S{100};
+   
+    int costo{0}; // costo total de pedido y de stock 
     int K; // costo fijo del pedido
     int p; // costo incremental por unidad
+    int h; // costo por stock
+    int r; // costo por encargos (demanda no satisfecha)
 };
 
 #endif
