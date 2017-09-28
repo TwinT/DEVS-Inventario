@@ -59,6 +59,11 @@
 \usepackage{fancyhdr}
 
 %
+% Para poder controla mejor la poscición de las figuras
+%
+\usepackage{float}
+\usepackage{placeins}
+%
 % Para poner el texto "Figura X" en negrita:
 % (Si no tenés el paquete 'caption2', probá con 'caption').
 %
@@ -280,9 +285,9 @@ La planta está compuesta por un departamento de control de inventario, un depar
 En la Figura \ref{fig:esquema-del-problema} se propone un esquema del proceso. Se puede observar que el top-model consiste de tres jerarquías. En la jerarquía top se encuentran: los tres proveedores, los tres clientes y la industria en sí. En la siguiente se encuentran el inventario, el departamento de atención al cliente y el departamento de control de inventario. Finalmente, en el último nivel (dentro de Atención al Cliente) se encuentran la ventanilla de atención al cliente y el departamento de Control de Calidad del producto.
 Cada cliente consiste de un modelo atómico distinto para representar tres comportamientos distintos. De la misma manera se utilizan tres modelos atómicos para modelizar cada tipo de proveedor. Finalmente, para los departamentos de control de calidad, ventanilla de atención al cliente y control de inventario se utilizarán tres modelos atómicos.
 
-\begin{figure}
+\begin{figure}[h]
 \centering
-\includegraphics[scale=0.7]{img/figura1}
+\includegraphics[width=\textwidth]{img/figura1}
 \caption{Esquema del problema planteado.}
 \label{fig:esquema-del-problema}
 \end{figure}
@@ -292,6 +297,7 @@ La pregunta a responder mediante simulaciones es:
 
 Una pregunta adicional que surge a partir de la anterior es:
 \textit{¿Cómo ponderar adecuadamente ambos requisitos en conflicto?}
+\FloatBarrier
 
 \subsection{Descripción funcional}
 A continuación se describen cada uno de los bloques de la Figura \ref{fig:esquema-del-problema}.
@@ -299,7 +305,7 @@ A continuación se describen cada uno de los bloques de la Figura \ref{fig:esque
 \subsubsection{Demanda (cliente)}
 Los tiempos entre demandas por tipo de cliente son variables aleatorias exponenciales e independientemente distribuidas con una media de 0,12 mes. Los tamaños de las demandas (que pueden ir de uno a cuatro unidades del producto), D, son variables aleatorias independientemente distribuidas e independientes, cuya probabilidad de ocurrencia se muestra en la Tabla~\ref{tab:tabla1}.
 
-\begin{table}[t]
+\begin{table}[ht]
 \begin{center}
 \begin{tabular}{cc}
 \toprule
@@ -321,7 +327,7 @@ Un cliente tipo A encarga siempre $n$ productos y los retira a principio de mes.
 
 El modelo que representa el comportamiento de los clientes tipo A se puede observar en la Figura~\ref{fig:fig2}, donde la salida \texttt{E\_OUT} indica la cantidad de productos encargados.
 
-\begin{figure}
+\begin{figure}[h]
 \centering
 \includegraphics[scale=1]{img/figura2}
 \caption{Modelo de cliente tipo A.}
@@ -330,7 +336,7 @@ El modelo que representa el comportamiento de los clientes tipo A se puede obser
 
 El modelo utilizado para el comportamiento de los clientes de tipo B se muestra en la Figura~\ref{fig:fig3}. Las salidas \texttt{P\_OUT}, \texttt{E\_OUT} y \texttt{Q\_OUT} indican respectivamente la cantidad de productos retirados, la cantidad de productos encargados y la cantidad de productos pedidos.
 
-\begin{figure}
+\begin{figure}[H]
 \centering
 \includegraphics[scale=1]{img/figura3}
 \caption{Modelo de cliente tipo B.}
@@ -339,24 +345,26 @@ El modelo utilizado para el comportamiento de los clientes de tipo B se muestra 
 
 Finalmente, el modelo del comportamiento de los clientes de tipo C se muestra en la Figura~\ref{fig:fig4}.
 
-\begin{figure}
+\begin{figure}[h]
 \centering
 \includegraphics[scale=1]{img/figura4}
 \caption{Modelo de cliente tipo C.}
 \label{fig:fig4}
 \end{figure}
+\FloatBarrier
 
 \subsubsection{Atención al cliente y control de calidad}
 En la Figura~\ref{fig:fig5} se puede observar la interfaz del módulo de Atención al Cliente y Control de Calidad.
 El departamento de Control de Calidad se encarga de examinar los productos al momento de venta y verificar su fecha de vencimiento. Los insumos con los que se elabora el producto son perecederos y la fecha de vencimiento del mismo se calcula con la fecha de vencimiento mínima de los insumos con los que se lo elaboró. La compañía descubre que una unidad no sirve más solamente cuando la examina debido a una venta. Si una unidad no sirve más, se desecha y se examina la siguiente unidad existente en el inventario.
 El departamento de atención al cliente se encarga de realizar la negociación con los distintos tipos de clientes. Es decir, consulta al inventario la cantidad de productos disponibles al recibir una consulta del cliente y le informa dicho dato al mismo. También procesa el pedido de compra de cada cliente.
              
-\begin{figure}
+\begin{figure}[h]
 \centering
 \includegraphics[scale=0.8]{img/figura5}
 \caption{Atención al cliente.}
 \label{fig:fig5}
 \end{figure}
+\FloatBarrier
 
 \subsubsection{Control de inventario\label{sec:CID}}
 
@@ -372,20 +380,20 @@ Z=\left\{\begin{array}{lr}
 
 El modelo está dado por la Figura~\ref{fig:fig6}, donde se observa que hay tres estados: Query, Calc y Wait.
 
-\begin{figure}
+\begin{figure}[h]
 \centering
 \includegraphics[scale=1]{img/figura6}
 \caption{Esquema del control de inventario.}
 \label{fig:fig6}
 \end{figure}
-
+\FloatBarrier
 
 \subsubsection{Inventario}
 
 Ante una consulta de un cliente el inventario responde con la cantidad de unidades disponibles en ese momento. En base a esto y a la política de cada cliente, al inventario se le pide una cantidad determinada de unidades para retiro y/ó encargue.
 El inventario lleva una lista de unidades disponibles y una de unidades encargadas. Cuando una reposición llega, se usa primero para eliminar todos los pedidos pendientes (si hay) posibles; el resto de la reposición (si queda) se suma al inventario. 
 
-\begin{figure}
+\begin{figure}[h]
 \centering
 \includegraphics[scale=1]{img/figura7}
 \caption{Inventario.}
@@ -394,7 +402,7 @@ El inventario lleva una lista de unidades disponibles y una de unidades encargad
 
 En la Figura~\ref{fig:fig7} se observa el modelo con que se representa al Inventario. El mismo consiste de una cola FIFO (\textit{first in - first out}). Se denomina $N$ al largo de la cola.
 Suponemos también que la compañía incurre en un costo de mantenimiento del producto $h = 8~\textrm{pesos}$ por unidad por mes mantenido en inventario (positivo). Este costo incluye alquiler del depósito de almacenamiento, seguro, impuestos y mantenimiento, al igual que costo de oportunidad de tener capital inmovilizado en inventario en vez de invertido en otra parte. Supongamos además que hay un costo de \textit{demanda insatisfecha} $n = 50~\textrm{pesos}$ por unidad pedida por cliente y no suministrada y por mes. Este costo contabiliza tanto el costo de mantener registros adicionales para unidades ya asignadas a clientes y aún no suministradas como un cálculo de costo por pérdida de la buena voluntad del cliente.
-
+\FloatBarrier
 
 \subsubsection{Proveedores}
 
@@ -440,24 +448,26 @@ Los productos de este proveedor no tienen vencimiento.
 \label{fig:fig10}
 \end{figure}
 \end{enumerate}
+\FloatBarrier
 
 \section{Descripción Formal}
 
 \subsection{Top Model\label{sec:TM}} 
 El diagrama de bloques correspondiente a cada uno de los atómicos descriptos en la especificación funcional se puede ver en la figura \ref{fig:TM-esquematico}.  
  
-\begin{figure}[htbp] 
+\begin{figure}[h] 
   \centering 
-  \includegraphics[angle=-90, scale=0.7]{img/bloquestopmodel} 
+  \includegraphics[angle=-90, width=\textwidth]{img/bloquestopmodel} 
   \caption{Interconexión de bloques en el \texttt{top model}.} 
   \label{fig:TM-esquematico} 
 \end{figure}
+\FloatBarrier
 
 \subsection{Tipo de Cliente A\label{sec:CTA}}
 
 El modelo atómico correspondiente al bloque del cliente tipo A (CTA) queda definido de la siguiente manera:
 
-\framebox[1\textwidth]{
+\framebox[0.95\textwidth]{
 	\begin{minipage}{0.9\textwidth}
 		$CTA=<S,X,Y,\delta_{int},\delta_{ext},\lambda,t_A>$\\
 		
@@ -479,25 +489,25 @@ El modelo atómico correspondiente al bloque del cliente tipo A (CTA) queda defi
 
 En las figuras \ref{fig:CTA-esquematico} y \ref{fig:CTA-estados} se pueden observar los puertos de entrada/salida y el diagrama de estados respectivamente.
 
-\begin{figure}[htbp]
+\begin{figure}[h]
 	\centering
 	\includegraphics{img/CTA-esquematico}
 	\caption{Entradas y salidas del modelo del cliente tipo A.}
 	\label{fig:CTA-esquematico}
 \end{figure}
 
-\begin{figure}[htbp] 
+\begin{figure}[h] 
   \centering 
   \includegraphics{img/clienteAdevsgraph} 
   \caption{Diagrama de estados para el modelo del cliente tipo A.} 
   \label{fig:CTA-estados} 
 \end{figure} 
-
+\FloatBarrier
 
 \subsection{Tipo de Cliente B\label{sec:CTB}} 
 El modelo atómico correspondiente al bloque del cliente tipo B (CTB) queda definido de la siguiente manera: 
 
-\framebox[1\textwidth]{
+\framebox[0.95\textwidth]{
 	\begin{minipage}{0.9\textwidth}
 		$CTB=<S,X,Y,\delta_{int},\delta_{ext},\lambda,t_A>$\\
 		
@@ -531,25 +541,26 @@ El modelo atómico correspondiente al bloque del cliente tipo B (CTB) queda defi
 
 En las figuras \ref{fig:CTB-esquematico} y \ref{fig:CTB-estados} se pueden observar los puertos de entrada/salida y el diagrama de estados respectivamente.
 
-\begin{figure}[htbp]
+\begin{figure}[h]
 	\centering
 	\includegraphics{img/CTB-esquematico}
 	\caption{Entradas y salidas del modelo del cliente tipo B.}
 	\label{fig:CTB-esquematico}
 \end{figure}
 
-\begin{figure}[htbp]
+\begin{figure}[h]
 	\centering
 	\includegraphics{img/clienteBdevsgraph}
 	\caption{Diagrama de estados para el modelo del cliente tipo B.}
 	\label{fig:CTB-estados}
 \end{figure}
+\FloatBarrier
 
 \subsection{Tipo de Cliente C\label{sec:CTC}}
 
 El modelo atómico correspondiente al bloque del cliente tipo C (CTC) queda definido de la siguiente manera:
 
-\framebox[1\textwidth]{
+\framebox[0.95\textwidth]{
 	\begin{minipage}{0.9\textwidth}
 		$CTC=<S,X,Y,\delta_{int},\delta_{ext},\lambda,t_A>$\\
 		
@@ -587,27 +598,27 @@ El modelo atómico correspondiente al bloque del cliente tipo C (CTC) queda defi
 
 En las figuras \ref{fig:CTC-esquematico} y \ref{fig:CTC-estados} se pueden observar los puertos de entrada/salida y el diagrama de estados respectivamente.
 
-\begin{figure}[htbp]
+\begin{figure}[h]
 	\centering
 	\includegraphics{img/CTC-esquematico}
 	\caption{Entradas y salidas del modelo del cliente tipo C.}
 	\label{fig:CTC-esquematico}
 \end{figure}
 
-\begin{figure}[htbp]
+\begin{figure}[h]
 	\centering
 	\includegraphics{img/clienteCdevsgraph}
 	\caption{Diagrama de estados para el modelo del cliente tipo C.}
 	\label{fig:CTC-estados}
 \end{figure}
-
+\FloatBarrier
 
 
 \subsection{Control de inventario\label{sec:CI}}
 El modelo atómico correspondiente al bloque de control de inventario (CI) queda definido de la siguiente manera:
 
 
-\framebox[1\textwidth]{
+\framebox[0.95\textwidth]{
 \begin{minipage}{0.9\textwidth}
 	$CI=<S,X,Y,\delta_{int},\delta_{ext},\lambda,t_A>$\\
 	
@@ -644,25 +655,25 @@ El modelo atómico correspondiente al bloque de control de inventario (CI) queda
 
 En las figuras \ref{fig:CI-esquematico} y \ref{fig:CI-estados} se pueden observar los puertos de entrada/salida y el diagrama de estados respectivamente.
 
-\begin{figure}[htbp]
+\begin{figure}[h]
 	\centering
 	\includegraphics{img/CI-esquematico}
 	\caption{Entradas y salidas del modelo control de inventario}
 	\label{fig:CI-esquematico}
 \end{figure}
 
-\begin{figure}[htbp]
+\begin{figure}[h]
 	\centering
 	\includegraphics{img/controlInventariodevsgraph}
 	\caption{Diagrama de estados para el modelo de control de inventario.}
 	\label{fig:CI-estados}
 \end{figure}
+\FloatBarrier
 
 \subsection{Control de Calidad\label{sec:CC}}
 El modelo atómico correspondiente al bloque de control de calidad (CC) queda definido de la siguiente manera:
 
-
-\framebox[1\textwidth]{
+\framebox[0.95\textwidth]{
 	\begin{minipage}{0.9\textwidth}
 		$CC=<S,X,Y,\delta_{int},\delta_{ext},\lambda,t_A>$\\
 		
@@ -710,25 +721,26 @@ $invEmpty = $ es un Flag que indica si el inventario está vacío (i.e. devolvi�
 
 En las figuras \ref{fig:CC-esquematico} y \ref{fig:CC-estados} se pueden observar los puertos de entrada/salida y el diagrama de estados respectivamente.
 
-\begin{figure}[htbp]
+\begin{figure}[h]
 	\centering
 	\includegraphics{img/CC-esquematico}
 	\caption{Entradas y salidas del modelo control de calidad.}
 	\label{fig:CC-esquematico}
 \end{figure}
 
-\begin{figure}[htbp]
+\begin{figure}[h]
 	\centering
 	\includegraphics{img/controlCalidaddevsgraph}
 	\caption{Diagrama de estados para el modelo de control de calidad.}
 	\label{fig:CC-estados}
 \end{figure}
+\FloatBarrier
 
 \subsection{Atención al cliente\label{sec:AC}}
 El modelo atómico correspondiente al bloque de atención al cliente (AC) queda definido de la siguiente manera:
 
-\framebox[1\textwidth]{
-	\begin{minipage}{0.9\textwidth}
+\framebox[0.95\textwidth]{
+	\begin{minipage}{0.94\textwidth}%
 		$AC=<S,X,Y,\delta_{int},\delta_{ext},\lambda,t_A>$\\
 		
 		$S=\{WAITING, QUERY, INV\_WAIT,\\
@@ -762,24 +774,25 @@ El modelo atómico correspondiente al bloque de atención al cliente (AC) queda 
 		0~si~S=\{QUERY,CLI\_RPLY,INV\_GET\}\\
 		\infty~si~S=\{WAITING, INV\_WAIT, CLI\_WAIT\}
 		\end{cases}$
-	\end{minipage}
+	\end{minipage}%
 }\\
 
 En las figuras \ref{fig:AC-esquematico} y \ref{fig:AC-estados} se pueden observar los puertos de entrada/salida y el diagrama de estados respectivamente.
 
-\begin{figure}[htbp]
+\begin{figure}[h]
 	\centering
 	\includegraphics{img/AC-esquematico}
 	\caption{Entradas y salidas del modelo atención al cliente.}
 	\label{fig:AC-esquematico}
 \end{figure}
 
-\begin{figure}[htbp]
+\begin{figure}[h]
 	\centering
 	\includegraphics{img/atencionClientedevsgraph}
 	\caption{Diagrama de estados para el modelo de atención al cliente.}
 	\label{fig:AC-estados}
 \end{figure}
+\FloatBarrier
 
 \subsection{Inventario\label{sec:I}}
 El modelo atómico correspondiente al bloque de inventario (I) queda definido de la siguiente manera:
@@ -897,7 +910,7 @@ En las figuras \ref{fig:PI-esquematico} y \ref{fig:PI-estados} se pueden observa
 	\caption{Diagrama de estados para el modelo del proveedor inmediato.}
 	\label{fig:PI-estados}
 \end{figure}
-
+\FloatBarrier
 
 \subsection{Proveedor por múltiplo de cantidad fija\label{sec:PF}}
 El modelo atómico correspondiente al bloque del proveedor por múltiplo de cantidad fija (PF) queda definido de la siguiente manera:
@@ -949,6 +962,7 @@ En las figuras \ref{fig:PF-esquematico} y \ref{fig:PF-estados} se pueden observa
 	\caption{Diagrama de estados para el modelo del proveedor por múltiplo de cantidad fija.}
 	\label{fig:PF-estados}
 \end{figure}
+\FloatBarrier
 
 \subsection{Proveedor por Encargo\label{sec:PE}}
 El modelo atómico correspondiente al bloque del proveedor por encargo (PE) queda definido de la siguiente manera:
@@ -993,10 +1007,7 @@ En las figuras \ref{fig:PE-esquematico} y \ref{fig:PE-estados} se pueden observa
 	\caption{Diagrama de estados para el modelo del proveedor por encargo.}
 	\label{fig:PE-estados}
 \end{figure}
-
-
-
-
+\FloatBarrier
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Modelado y simulación}
@@ -1012,18 +1023,18 @@ En la Figura~\ref{fig:pdftiempo} y Figura~\ref{fig:pdfpedidos} se observan los h
  
 \begin{figure} 
 \centering 
-\includegraphics[scale=0.8]{img/pdf_tiempo_pedidos} 
+\includegraphics[width=0.6\textwidth]{img/pdf_tiempo_pedidos} 
 \caption{Función de densidad de probabilidad del tiempo entre pedidos de clientes tipo A.} 
 \label{fig:pdftiempo} 
 \end{figure} 
  
 \begin{figure} 
 \centering 
-\includegraphics[scale=0.8]{img/pdf_cantidad_pedidos} 
+\includegraphics[width=0.6\textwidth]{img/pdf_cantidad_pedidos} 
 \caption{Función de densidad de probabilidad del número de unidades pedidas $n$.} 
 \label{fig:pdfpedidos} 
-\end{figure} 
-
+\end{figure}
+\FloatBarrier
 
 \subsubsection{Control de Inventario}
 Para la prueba del bloque de control de inventario se propuso el siguiente estímulo:
@@ -1031,12 +1042,10 @@ Para la prueba del bloque de control de inventario se propuso el siguiente estí
 \begin{minipage}{1\textwidth}
 	\centering
 	\begin{lstlisting}
-	00:00:01:10 numProd_i 8
-	00:00:02:10 numProd_i 190
-	00:00:03:10 numProd_i 49
+00:00:01:10 numProd_i 8
+00:00:02:10 numProd_i 190
+00:00:03:10 numProd_i 49
 	\end{lstlisting}
-	
-	\centering
 \end{minipage}
 
 Dada la política de pedidos, se busca probar las condiciones:
@@ -1047,14 +1056,24 @@ Dada la política de pedidos, se busca probar las condiciones:
 
 La salida de la prueba es la siguiente:
 
+\centering
 \begin{minipage}{1\textwidth}
 	\centering
 	\begin{lstlisting}
-
+00:00:01:000:0 Control Inventario - Consulta a Inventario
+00:00:01:010:0 Control Inventario - Inventario responde: 8
+00:00:01:010:0 Control Inventario - Pedido a proveedores: 92
+00:00:02:010:0 Control Inventario - Consulta a Inventario
+00:00:02:010:0 Control Inventario - Inventario responde: 190
+00:00:02:010:0 Control Inventario - Pedido a proveedores: 0
+00:00:03:010:0 Control Inventario - Consulta a Inventario
+00:00:03:010:0 Control Inventario - Inventario responde: 49
+00:00:03:010:0 Control Inventario - Pedido a proveedores: 51
+00:00:04:010:0 Control Inventario - Consulta a Inventario
 	\end{lstlisting}
 	
 \end{minipage}
-Donde se observa que se cumplen las condiciones mencionadas en la sección \ref{sec:CI}
+Donde se observa que se cumplen las condiciones mencionadas en la sección \ref{sec:CI}, ya que si el número de unidades se encuentra por debajo del umbral de política, el bloque pide, y de lo contrario no. 
 
 \subsubsection{Control de Calidad}
 Para la prueba del bloque de control de calidad se propuso el siguiente estímulo:
@@ -1062,16 +1081,14 @@ Para la prueba del bloque de control de calidad se propuso el siguiente estímul
 \begin{minipage}{1\textwidth}
 	\centering
 	\begin{lstlisting}
-	00:00:01:00 queryClient_i 2
-	00:00:01:10 prod_i [1.2,1.3]
-	00:00:02:00 queryClient_i 3
-	00:00:02:10 prod_i [1.5,2.2,2.3]
-	00:00:02:20 prod_i [2.3]
-	00:00:03:00 queryClient_i 3
-	00:00:03:10 prod_i [3.2,3.3,0]
+00:00:01:00 queryClient_i 2
+00:00:01:10 prod_i [1.2,1.3]
+00:00:02:00 queryClient_i 3
+00:00:02:10 prod_i [1.5,2.2,2.3]
+00:00:02:20 prod_i [2.3]
+00:00:03:00 queryClient_i 3
+00:00:03:10 prod_i [3.2,3.3,0]
 	\end{lstlisting}
-	
-	\centering
 \end{minipage}
 
 Se busca probar las condiciones:
@@ -1083,32 +1100,51 @@ Se busca probar las condiciones:
 
 La salida de la prueba es la siguiente:
 
+\centering
 \begin{minipage}{1\textwidth}
 	\centering
 	\begin{lstlisting}
-	
+00:00:01:000:0 Control Calidad - le piden: 2 productos
+00:00:01:000:0 Control Calidad - pide: 2 productos
+00:00:01:010:0 Control Calidad - recibe 2 productos
+00:00:01:010:0 Control Calidad - se queda con 2 productos
+00:00:01:010:0 Control Calidad - envia: 2 productos
+00:00:02:000:0 Control Calidad - le piden: 3 productos
+00:00:02:000:0 Control Calidad - pide: 3 productos
+00:00:02:010:0 Control Calidad - recibe 3 productos
+00:00:02:010:0 Control Calidad - se queda con 2 productos
+00:00:02:010:0 Control Calidad - pide: 1 productos
+00:00:02:020:0 Control Calidad - recibe 1 productos
+00:00:02:020:0 Control Calidad - se queda con 3 productos
+00:00:02:020:0 Control Calidad - envia: 3 productos
+00:00:03:000:0 Control Calidad - le piden: 3 productos
+00:00:03:000:0 Control Calidad - pide: 3 productos
+00:00:03:010:0 Control Calidad - recibe 3 productos
+00:00:03:010:0 Control Calidad - se queda con 2 productos
+00:00:03:010:0 Control Calidad - el inventario esta vacio
+00:00:03:010:0 Control Calidad - envia: 2 productos
 	\end{lstlisting}
 	
 \end{minipage}
-Donde se observa que se cumplen las condiciones mencionadas en la sección \ref{sec:CC}
+Donde se observa que se cumplen las condiciones mencionadas en la sección \ref{sec:CC}.
 
 \subsubsection{Atención al cliente}
 Para la prueba del bloque de atención al cliente se propuso el siguiente estímulo:
 
+\centering
 \begin{minipage}{1\textwidth}
 	\centering
 	\begin{lstlisting}
-	00:00:01:00	queryClient_i 1
-	00:00:01:10 queryInventory_i 2
-	00:00:01:15 numProdClient_i 1
-	00:00:02:00	queryClient_i 3
-	00:00:02:10 queryInventory_i 2
-	00:00:02:15 numProdClient_i 2
-	00:00:03:00	queryClient_i 3
-	00:00:03:10 queryInventory_i 2
-	00:00:03:15 numProdClient_i 0
+00:00:01:00	queryClient_i 1
+00:00:01:10 queryInventory_i 2
+00:00:01:15 numProdClient_i 1
+00:00:02:00	queryClient_i 3
+00:00:02:10 queryInventory_i 2
+00:00:02:15 numProdClient_i 2
+00:00:03:00	queryClient_i 3
+00:00:03:10 queryInventory_i 2
+00:00:03:15 numProdClient_i 0
 	\end{lstlisting}
-	
 \end{minipage}
 
 Se busca probar las condiciones:
@@ -1123,7 +1159,24 @@ La salida de la prueba es la siguiente:
 \begin{minipage}{1\textwidth}
 	\centering
 	\begin{lstlisting}
-	
+00:00:01:000:0 Atencion al cliente - le piden 1 productos
+00:00:01:000:0 Atencion al cliente - pregunta por 1 productos
+00:00:01:010:0 Atencion al cliente - le dicen que hay 2 stock
+00:00:01:010:0 Atencion al cliente - informa a cliente que hay 2 stock
+00:00:01:015:0 Atencion al cliente - cliente pide 1 productos
+00:00:01:015:0 Atencion al cliente - pide al inventario 1 productos
+00:00:02:000:0 Atencion al cliente - le piden 3 productos
+00:00:02:000:0 Atencion al cliente - pregunta por 3 productos
+00:00:02:010:0 Atencion al cliente - le dicen que hay 2 stock
+00:00:02:010:0 Atencion al cliente - informa a cliente que hay 2 stock
+00:00:02:015:0 Atencion al cliente - cliente pide 2 productos
+00:00:02:015:0 Atencion al cliente - pide al inventario 2 productos
+00:00:03:000:0 Atencion al cliente - le piden 3 productos
+00:00:03:000:0 Atencion al cliente - pregunta por 3 productos
+00:00:03:010:0 Atencion al cliente - le dicen que hay 2 stock
+00:00:03:010:0 Atencion al cliente - informa a cliente que hay 2 stock
+00:00:03:015:0 Atencion al cliente - cliente pide 0 productos
+
 	\end{lstlisting}
 	
 \end{minipage}
@@ -1136,6 +1189,8 @@ Donde se observa que se cumplen las condiciones mencionadas en la sección \ref{
 
 \appendix
 \section{Código Implementado}
+
+\url{https://github.com/TwinT/DEVS-Inventario}
 
 % Please don't exchange the bibliographystyle style
 \bibliographystyle{IEEEtran.bst}
