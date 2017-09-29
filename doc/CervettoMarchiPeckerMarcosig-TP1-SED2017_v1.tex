@@ -1506,7 +1506,7 @@ Una vez que se validaron los bloques con las pruebas realizadas en la Sección~\
 Para responder a las preguntas de la Sección~\ref{sec:motivacion} se realizaron una serie de simulaciones para distintas políticas de reposición de inventario. Para cada una se analizaron los costos de reposición y la satisfacción del cliente, siendo esta última proporcional a la inversa de la cantidad de unidades encargadas.
 Los datos devueltos por la simulación se \textit{parsearon} con un script de python para su presentación en pantalla.
 
-A continuación se muestran las los gráficos de evolución de tamaño del inventario, costo de reposición y cantidad de encargos para un parámetro $n=50$ (política de reposición).
+A continuación se muestran los gráficos de evolución de tamaño del inventario, costo de reposición y mantenimiento de unidades en stock, y de cantidad de encargos para un parámetro $n=50$ y $S=85$ correspondientes a la política de reposición (Sección~\ref{sec:CID}). En estos gráficos el tiempo está expresado en segundos, donde cada segundo representa un mes.
 
 \begin{figure}[h]
 	\centering 
@@ -1530,7 +1530,7 @@ A continuación se muestran las los gráficos de evolución de tamaño del inven
 \end{figure}
 \FloatBarrier
 
-Como siguiente análisis se procedió a disminuir la política de reposición a $n=10$, con el objeto de evaluar la evolución de los parámetros anteriores. Se espera que el costo baje si el inventario está sobredimensionado o que se produzca una mayor cantidad de encargos si por el contrario estaba subdimensionado.
+Como siguiente análisis se procedió a disminuir la política de reposición a $n=10$, con el objeto de evaluar la evolución de los parámetros anteriores. A diferencia del caso anterior se realizarán encargos de materia prima a los proveedores sólo en caso que el nivel del inventario sea menor a $10$. Se espera que el costo baje si el inventario estaba sobredimensionado para la política de reposición anterior o que se produzca una menor cantidad de encargos si por el contrario estaba subdimensionado.
 
 \begin{figure}[h]
 	\centering 
@@ -1553,25 +1553,25 @@ Como siguiente análisis se procedió a disminuir la política de reposición a 
 	\label{fig:EvolucionEncargos10} 
 \end{figure}
 \FloatBarrier
-Se observa que el costo por reposición se torna mucho más inestable, aumentando levemente en promedio. También se observa un aumento de la cantidad de encargos como así también una mayor variabilidad de la cantidad de productos en el inventario.
+Se observa que el costo por reposición y mantenimiento de unidades en el inventario se torna mucho más inestable, aumentando levemente en promedio. También se observa un aumento de la cantidad de encargos como así también una mayor variabilidad de la cantidad de productos en el inventario. Estos últimos dos comportamientos justifican el aumento en el costo.
 De esto se puede concluir que una política de reposición con un parámetro $n$ tan bajo no resulta eficiente.
 
-Para la elaboración de una unidad de producto es necesario que haya disponibles una unidad de cada insumo. Cada uno de los insumos de los que se compone el producto es provisto por un tipo de proveedor distinto, i.e. el insumo A es provisto por un proveedor inmediato, el insumo B por un proveedor por múltiplo de cantidad fija y el insumo C por un proveedor por encargo que entrega al mes siguiente de efectuado el pedido. En las simulaciones se puede observar que cada vez que arriba el insumo C se consume al instante en la elaboración de productos pues los insumos A y B ya estaban disponibles para ellos. Por este motivo, en todo momento la cola C de la Figura~\ref{fig:esquema-del-problema} tiene largo $0$. También se puede notar que debido a la política de entrega del proveedor por múltiplo de cantidad fija, en la cola del insumo B siempre quedan remanentes de los pedidos anteriores y por lo tanto el tamaño de esta cola crece sostenidamente.
+Para la elaboración de una unidad de producto es necesario que haya disponibles una unidad de cada insumo. Cada uno de los insumos de los que se compone el producto es provisto por un tipo de proveedor distinto, i.e. el insumo A es provisto por un proveedor inmediato, el insumo B por un proveedor por múltiplo de cantidad fija y el insumo C por un proveedor por encargo que entrega al mes siguiente de efectuado el pedido. En las simulaciones se pudo observar que cada vez que arriba el insumo C se consume al instante en la elaboración de productos pues los insumos A y B ya estaban previamente disponibles para ellos. Por este motivo, en todo momento la cola C de la Figura~\ref{fig:esquema-del-problema} tiene largo $0$. También se puede notar que debido a la política de entrega del proveedor por múltiplo de cantidad fija, en la cola del insumo B siempre quedan remanentes de los pedidos anteriores y por lo tanto el tamaño de esta cola crece sostenidamente.
 %%%%%%%%%%%%%%%%
 % Figuras aquí %
 %%%%%%%%%%%%%%%%
 \subsubsection{Conclusiones}
 Se comprobó la utilidad del formalismo DEVS y en particular de la herramienta CD++ para el modelado y simulación de sistemas con dinámicas por eventos. Al producirse eventos de manera aleatoria no es posible modelizarlos utilizando simuladores basados en una base de tiempo discreta, pues la ocurrencia de un evento de entrada es impredecible y por lo tanto el paso de simulación debería ser lo suficientemente pequeño como para coincidir con los eventos. En caso de adaptar el paso de simulación a la aparición de eventos hace que el tiempo necesario para realizar una simulación crezca exponencialmente.
 
-Se simuló el comportamiento de un sistema de inventario de una industria considerando distintos clientes y proveedores con distintos comportamientos y cuyos ... fueron modelizados como eventos que se producen de manera aleatoria. Para este trabajo se consideraron tasas de arribo exponencial y una distribución probabilística de cantidad de unidades por pedido.
+Se simuló el comportamiento de un sistema de inventario de una industria considerando clientes de distinto tipo y proveedores con distintos comportamientos. Los insumos entregados por los proveedores se utilizan para elaborar el único producto de esta industria. Cada insumo y cada producto se representa a partir de su fecha de vencimiento. Los instantes en los que los clientes realizan pedidos, como la cantidad de unidades que piden y las fechas de vencimiento de los insumos y los productos responden a variables aleatorias con determinadas distribuciones de probabilidad.y cuyos. En particular, para este trabajo se consideraron tasas de arribo de pedidos de clientes que siguen una distribuciones exponenciales.
 
-Se descompuso al problema en tres niveles jerárquicos. Un nivel superior o \textit{top model} donde se encuentran la industria, los clientes y los proveedores, un segundo nivel dentro de la industria compuesto por el inventario, el control de inventario y la atención del cliente. Por último, un tercer nivel de atención al cliente conformado por la atención al cliente y el control de calidad.
+Se descompuso al problema en tres niveles jerárquicos: a) un nivel superior o \textit{top model} donde se encuentran la industria, los clientes y los proveedores, b) un segundo nivel dentro de la industria compuesto por el inventario, el control de inventario y la atención del cliente, y c) un tercer nivel de atención al cliente conformado por la atención al cliente y el control de calidad.
 
-Para validar el comportamiento del sistema, se verificó el comportamiento de cada bloque de forma independiente en la sección~\ref{sec:PP} excitándolos con entradas conocidas y analizando si los resultados obtenidos correspondían con los esperados.
+Para validar el comportamiento del sistema, en la sección~\ref{sec:PP} se verificó de forma independiente el comportamiento de cada bloque excitándolos con entradas conocidas y analizando si los resultados obtenidos correspondían con los esperados.
 
-Durante el desarrollo del trabajo nos encontramos con un problema de simultaneidad de eventos. Por un lado, el control de inventario realiza un pedido a sus proveedores a principio de cada mes. Por otro lado, el proveedor por encargo entrega en ese mismo momento los insumos que le encargaron al inicio del mes pasado. Esta simultaneidad fue evitada haciendo que el proveedor entregue cada $0.999~\textrm{mes}$. 
+Durante el desarrollo del trabajo nos encontramos con un problema de simultaneidad de eventos. Por un lado, el control de inventario realiza un pedido a sus proveedores a principio de cada mes. Por el otro lado, el proveedor por encargo entrega en ese mismo momento los insumos que le fueron encargados al inicio del mes. Esta simultaneidad fue \textit{evitada} haciendo que el proveedor entregue cada $0.999~\textrm{mes}$. 
 
-A lo largo del desarrollo del las simulaciones con la herramienta CD++ se encotraron algunos problemas: a) \texttt{nextChange()}, b) el archivo .ma no distingue parámetros en mayúsculas y minúsculas y c) el archivo de salida. Por este último motivo, en las funciones de salida de los atómicos se agregaron a continuación de las instrucciones mensajes propios que utilizamos para analizar el comportamiento de la simulación.
+Por último, a lo largo del desarrollo de las simulaciones con la herramienta CD++ se encotraron algunos inconvenientes: a) la variable \texttt{nextChange()} no representa el tiempo entre la última transición interna y la próxima sino el tiempo que falta hasta dicha transición, b) el archivo \texttt{.ma} no distingue parámetros en mayúsculas y minúsculas (no es \textit{case-sensitive}) y c) el archivo de salida de la simulación no guarda toda la información de los mensajes intercambiados por los bloques a lo largo de la simulación. Por este último motivo, en las funciones de salida de los atómicos se agregaron mensajes propios que utilizamos para analizar el comportamiento de la simulación y filtrar información que luego procesamos con un script de python. Para este trabajo práctico se utilizó el simulador CD++ en su versión \textit{standalone} por consola.
 
 
 
