@@ -1413,16 +1413,16 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="0.125"
-     inkscape:cx="-3283.7937"
-     inkscape:cy="1546.451"
+     inkscape:zoom="2"
+     inkscape:cx="-4607.8445"
+     inkscape:cy="1774.6455"
      inkscape:document-units="mm"
      inkscape:current-layer="layer1"
      showgrid="false"
-     inkscape:window-width="1360"
-     inkscape:window-height="704"
+     inkscape:window-width="2560"
+     inkscape:window-height="1330"
      inkscape:window-x="0"
-     inkscape:window-y="27"
+     inkscape:window-y="54"
      inkscape:window-maximized="1"
      inkscape:object-paths="true"
      inkscape:snap-intersection-paths="true"
@@ -1440,7 +1440,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -3716,17 +3716,6 @@
        inkscape:export-ydpi="300" />
     <rect
        transform="scale(-1)"
-       y="149.09657"
-       x="1207.8981"
-       height="16.081779"
-       width="16.260012"
-       id="rect20180"
-       style="color:#000000;clip-rule:nonzero;display:inline;overflow:visible;visibility:visible;opacity:1;isolation:auto;mix-blend-mode:normal;color-interpolation:sRGB;color-interpolation-filters:linearRGB;solid-color:#000000;solid-opacity:1;fill:#888888;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:0.90000004;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;color-rendering:auto;image-rendering:auto;shape-rendering:auto;text-rendering:auto;enable-background:accumulate"
-       inkscape:export-filename="/home/marcos/Documents/facu/doctorado/SED/dev/inventario/doc/TP2/img/vecindario.png"
-       inkscape:export-xdpi="300"
-       inkscape:export-ydpi="300" />
-    <rect
-       transform="scale(-1)"
        y="168.34088"
        x="1194.2189"
        height="10.175086"
@@ -3736,5 +3725,16 @@
        inkscape:export-filename="/home/marcos/Documents/facu/doctorado/SED/dev/inventario/doc/TP2/img/vecindario.png"
        inkscape:export-xdpi="300"
        inkscape:export-ydpi="300" />
+    <rect
+       inkscape:export-ydpi="300"
+       inkscape:export-xdpi="300"
+       inkscape:export-filename="/home/marcos/Documents/facu/doctorado/SED/dev/inventario/doc/TP2/img/vecindario.png"
+       style="color:#000000;clip-rule:nonzero;display:inline;overflow:visible;visibility:visible;opacity:1;isolation:auto;mix-blend-mode:normal;color-interpolation:sRGB;color-interpolation-filters:linearRGB;solid-color:#000000;solid-opacity:1;fill:#888888;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:0.90000004;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;color-rendering:auto;image-rendering:auto;shape-rendering:auto;text-rendering:auto;enable-background:accumulate"
+       id="rect4396"
+       width="16.260012"
+       height="16.081779"
+       x="1191.4937"
+       y="181.46931"
+       transform="scale(-1)" />
   </g>
 </svg>
