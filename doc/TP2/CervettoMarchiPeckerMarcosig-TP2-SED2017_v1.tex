@@ -1,0 +1,354 @@
+%
+% Carátula NO-oficial para 86.22 aboratorio de Control Automático.
+%
+% Basado en el template realizado por Diego Essaya, disponible en
+%                                                         http://lug.fi.uba.ar
+% Modificado por Patricio Moreno y Michel Peterson.
+% Modificado por Sebastián Santisi.
+% Abril 2014: Modificado por Patricio Moreno.
+% Septiembre 2017: Modificado por Patricio Moreno.
+% Septiembre 2017: Modificado por Ezequiel Pecker Marcosig.
+
+%
+% Acá se define el tamaño de letra principal:
+% Para utilizar los estilos de KOMA-script, descomentar la línea siguiente y
+% comentar la que le sigue (dejar sin comentar un único documentclass)
+%\documentclass[10pt]{scrartcl}
+\documentclass[10pt]{article}
+
+%
+% Título y autor(es):
+%
+\title{Trabajo Práctico N\b o 2}
+\author{CERVETTO, Marcos\\MARCHI, Edgardo\\PECKER MARCOSIG, Ezequiel}
+
+%------------------------- Carga de paquetes ---------------------------
+%
+% Si no necesitás algún paquete, comentalo.
+%
+
+%
+% Definición del tamaño de página y los márgenes:
+% Si preferís menos márgenes, descomentá la línea anterior
+%\usepackage[a4paper,headheight=16pt,scale={0.7,0.8},hoffset=0.5cm]{geometry}
+
+%
+% Vamos a escribir en castellano:
+%
+\usepackage[spanish,es-tabla]{babel}
+\usepackage[utf8x]{inputenc}
+
+%
+% Para escribir fórmulas matemáticas utilizamos:
+%
+\usepackage{amsmath}
+\usepackage{amssymb}
+%
+% El paquete amsmath agrega algunas funcionalidades extra a las fórmulas.
+% Además defino la numeración de las tablas y figuras al estilo "Figura 2.3",
+% en lugar de "Figura 7". (Por lo tanto, aunque no uses fórmulas, si querés
+% este tipo de numeración dejá el paquete amsmath descomentado).
+%
+% \numberwithin{equation}{section}
+% \numberwithin{figure}{section}
+% \numberwithin{table}{section}
+
+%
+% Para tener cabecera y pie de página con un estilo personalizado:
+%
+\usepackage{fancyhdr}
+
+%
+% Para poder controla mejor la poscición de las figuras
+%
+\usepackage{float}
+\usepackage{placeins}
+%
+% Para poner el texto "Figura X" en negrita:
+% (Si no tenés el paquete 'caption2', probá con 'caption').
+%
+\usepackage[hang,bf]{caption2}
+
+%
+% Para poner hipervínculos en el pdf
+%
+\usepackage[colorlinks=true,linkcolor=black, urlcolor=blue]{hyperref}
+
+%
+% Para poder modificar los items de las listas (IEEE style refs.)
+%
+\usepackage{enumerate}
+
+%
+% Para poder usar subfiguras: (al estilo Figura 2.3(b) )
+%
+%\usepackage{subfig}
+
+%
+% Para poder armar tablas con formato
+%
+\usepackage{booktabs}
+
+%
+% Para poder agregar notas al pie en tablas:
+%
+%\usepackage{threeparttable}
+
+%------------------------------ graphicx ----------------------------------
+%
+% Para incluir imágenes, el siguiente código carga el paquete graphicx
+% según se esté generando un archivo dvi o un pdf (con pdflatex).
+
+% Para generar dvi, descomentá la linea siguiente:
+%\usepackage[dvips]{graphicx}
+
+% Para generar pdf, descomentá las dos lineas seguientes:
+\usepackage[pdftex]{graphicx}
+\pdfcompresslevel=9
+
+%
+% Todas las imágenes están en el directorio imgs:
+%
+\newcommand{\imgdir}{imgs}
+\graphicspath{{\imgdir/}}
+%
+%------------------------------ graphicx ----------------------------------
+
+% Necesitas este paquete si haces los diagrámas de flujo en el prográma Dia
+% y exportás a latex
+%\usepackage{tikz}
+
+%------------------------------ color -------------------------------------
+% Necesitas este paquete para definir tus propios colores
+\usepackage{color}
+\definecolor{mygreen}{rgb}{0,0.6,0}
+\definecolor{mygray}{rgb}{0.5,0.5,0.5}
+\definecolor{mymauve}{rgb}{0.58,0,0.82}
+%------------------------------ color -------------------------------------
+
+
+%----------------------------- listings -----------------------------------
+% Necesitas este paquete para mostrar el código.
+\usepackage{listings}
+\lstdefinestyle{customcpp}{
+  backgroundcolor=\color{white},   % choose the background color; you must add \usepackage{color} or \usepackage{xcolor}; should come as last argument
+  basicstyle=\small,        % the size of the fonts that are used for the code
+  breakatwhitespace=false,         % sets if automatic breaks should only happen at whitespace
+  breaklines=true,                 % sets automatic line breaking
+  captionpos=b,                    % sets the caption-position to bottom
+  commentstyle=\color{mygreen},    % comment style
+  deletekeywords={...},            % if you want to delete keywords from the given language
+%  escapeinside={\%*}{*)},          % if you want to add LaTeX within your code
+  extendedchars=true,              % lets you use non-ASCII characters; for 8-bits encodings only, does not work with UTF-8
+  frame=single,	                   % adds a frame around the code
+  keepspaces=true,                 % keeps spaces in text, useful for keeping indentation of code (possibly needs columns=flexible)
+  keywordstyle=\color{blue},       % keyword style
+  language=C++,                 % the language of the code
+  morekeywords={*,...},           % if you want to add more keywords to the set
+%  numbers=left,                    % where to put the line-numbers; possible values are (none, left, right)
+%  numbersep=5pt,                   % how far the line-numbers are from the code
+%  numberstyle=\tiny\color{mygray}, % the style that is used for the line-numbers
+  rulecolor=\color{black},         % if not set, the frame-color may be changed on line-breaks within not-black text (e.g. comments (green here))
+  showspaces=false,                % show spaces everywhere adding particular underscores; it overrides 'showstringspaces'
+  showstringspaces=false,          % underline spaces within strings only
+  showtabs=false,                  % show tabs within strings adding particular underscores
+  stepnumber=2,                    % the step between two line-numbers. If it's 1, each line will be numbered
+  stringstyle=\color{mymauve},     % string literal style
+  tabsize=2,	                   % sets default tabsize to 2 spaces
+  title=\lstname                   % show the filename of files included with \lstinputlisting; also try caption instead of title
+}
+
+\lstdefinestyle{custommatlab}{
+  backgroundcolor=\color{white},   % choose the background color; you must add \usepackage{color} or \usepackage{xcolor}; should come as last argument
+  basicstyle=\small,        % the size of the fonts that are used for the code
+  breakatwhitespace=false,         % sets if automatic breaks should only happen at whitespace
+  breaklines=true,                 % sets automatic line breaking
+  captionpos=b,                    % sets the caption-position to bottom
+  commentstyle=\color{mygreen},    % comment style
+  deletekeywords={...},            % if you want to delete keywords from the given language
+%  escapeinside={\%*}{*)},          % if you want to add LaTeX within your code
+  extendedchars=true,              % lets you use non-ASCII characters; for 8-bits encodings only, does not work with UTF-8
+  frame=single,	                   % adds a frame around the code
+  keepspaces=true,                 % keeps spaces in text, useful for keeping indentation of code (possibly needs columns=flexible)
+  keywordstyle=\color{blue},       % keyword style
+  language=Matlab,                 % the language of the code
+  morekeywords={*,...},           % if you want to add more keywords to the set
+%  numbers=left,                    % where to put the line-numbers; possible values are (none, left, right)
+%  numbersep=5pt,                   % how far the line-numbers are from the code
+%  numberstyle=\tiny\color{mygray}, % the style that is used for the line-numbers
+  rulecolor=\color{black},         % if not set, the frame-color may be changed on line-breaks within not-black text (e.g. comments (green here))
+  showspaces=false,                % show spaces everywhere adding particular underscores; it overrides 'showstringspaces'
+  showstringspaces=false,          % underline spaces within strings only
+  showtabs=false,                  % show tabs within strings adding particular underscores
+  stepnumber=2,                    % the step between two line-numbers. If it's 1, each line will be numbered
+  stringstyle=\color{mymauve},     % string literal style
+  tabsize=2,	                   % sets default tabsize to 2 spaces
+  title=\lstname                   % show the filename of files included with \lstinputlisting; also try caption instead of title
+}
+%----------------------------- listings -----------------------------------
+
+
+
+%------------------------- Inicio del documento ---------------------------
+
+\begin{document}
+
+%
+% Hago que en la cabecera de página se muestre a la derecha la sección,
+% y en el pie, en número de página a la derecha:
+%
+\pagestyle{fancy}
+\lhead{\sc TP Nº2 - \sc 2º Cuat. 2017}
+\chead{}
+\rhead{CERVETTO, MARCHI, PECKER MARCOSIG}
+\lfoot{}
+\cfoot{}
+\rfoot{\thepage}
+
+%
+% Carátula:
+%
+\begin{titlepage}
+
+\thispagestyle{empty}
+
+\begin{center}
+\includegraphics[scale=0.3]{img/fiuba}\\
+\large{\textsc{Universidad de Buenos Aires}}\\
+\large{\textsc{Facultad De Ciencias Exactas y Naturales}}\\
+\large{\textsc{Departamento de Computación}}\\
+% Modificar año y cuatrimestre
+\small{Año 2017 - 2\textsuperscript{do} Cuatrimestre}
+\end{center}
+
+\vfill
+
+\begin{center} % Modificar el código de ser necesario
+\Large{\underline{\textsc{Simulación de Eventos Discretos}}}
+\end{center}
+
+\vfill
+
+\begin{tabbing}
+\hspace{2cm}\=\+TRABAJO PRÁCTICO Nº \textless{}2\textgreater{}\\
+	TEMA:\textless{}Manejo del Inventario de una Industria\textgreater{}\\
+	FECHA:\textless{\today}\textgreater{}\\
+\\
+	INTEGRANTES:\hspace{-1cm}\=\+\hspace{1cm}\=\hspace{6cm}\=\\
+		CERVETTO, Marcos	\>\>- \#FIUBA\\
+			\>\footnotesize{\verb!<cervettomarcos@gmail.com>!}\\
+		MARCHI, Marcos	\>\>- \#FIUBA\\
+			\>\footnotesize{\verb!<edgardo.marchi@gmail.com>!}\\
+		PECKER MARCOSIG, Ezequiel	\>\>- \#FIUBA\\
+			\>\footnotesize{\verb!<ezepecker@gmail.com>!}\\
+\end{tabbing}
+
+\vfill
+
+\hrule
+\vspace{0.2cm}
+
+% Modificar código de ser necesario
+\noindent\small{Simulación de Eventos Discretos}
+
+\end{titlepage}
+
+%
+% Hago que las páginas se comiencen a contar a partir de aquí:
+%
+\setcounter{page}{1}
+
+%
+% Pongo el índice en una página aparte:
+%
+\tableofcontents
+\newpage
+
+%
+% Inicio del TP:
+%
+
+\section{Objetivo y Enunciado}
+%El objetivo de este Trabajo Práctico es demostrar la comprensión del modelado y simulación utilizando el formalismo DEVS, junto a la aplicación de las técnicas mediante la herramienta CD++.
+%Se deberá identificar un sistema del mundo real que pueda ser representado usando DEVS y construir luego un modelo del mismo.
+%Finalmente se ejecutarán simulaciones del sistema analizado. El sistema estudiado puede ser natural o artificial, y puede existir en la realidad o no.
+
+\section{Modelo Conceptual}
+\subsection{Motivación\label{sec:motivacion}}
+
+Una compañía que vende un único producto está interesada en estudiar la forma óptima de ordenamiento de las unidades producidas en el almacen.
+
+La planta está compuesta por un departamento de control de inventario, un departamento de atención al cliente y control de calidad de producto (ya que los productos son perecederos), un stock de productos finalizados y tres stocks de materias primas (uno para cada material). Las demandas de la clientela se producen aleatoriamente en pedidos de 1 a 4 unidades (también aleatorios). Existen 3 tipos diferentes de demanda.
+
+La compañía cuenta básicamente con tres proveedores de diferentes materias primas. Cada producto se fabrica usando 1 unidad de cada materia prima. Los insumos con los que se elabora el producto son perecederos y la fecha de vencimiento del mismo se calcula con la fecha de vencimiento mínima de los insumos con los que se lo elaboró. Las fechas de vencimiento de los insumos siguen una distribución exponencial negativa. La compañía descubre que una unidad no sirve más solamente cuando la examina debido a una venta. Si una unidad no sirve más, se desecha y se examina la siguiente unidad existente en el inventario.
+
+En la Figura \ref{fig:esquema-del-problema} se muestra un esquema del proceso. Se puede observar que el top-model consiste de tres jerarquías. En la jerarquía top se encuentran: los tres proveedores, los tres clientes y la industria en sí. En la siguiente se encuentran el inventario, el departamento de atención al cliente y el departamento de control de inventario. Finalmente, en el último nivel (dentro de Atención al Cliente) se encuentran la ventanilla de atención al cliente y el departamento de Control de Calidad del producto.
+Cada cliente consiste de un modelo atómico distinto para representar tres comportamientos distintos. De la misma manera se utilizan tres modelos atómicos para modelizar cada tipo de proveedor. Finalmente, para los departamentos de control de calidad, ventanilla de atención al cliente y control de inventario se utilizarán tres modelos atómicos.
+
+Para este trabajo, el bloque Inventario se va a modelizar con un autómata celular.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{img/figura1}
+\caption{Esquema del problema planteado.}
+\label{fig:esquema-del-problema}
+\end{figure}
+ 
+
+\subsection{Autómata Celular\label{sec:AC}} 
+
+En esta sección se describe el funcionamiento del autómata celular que representa al almacen de productos. El bloque atómico DEVS correspondiente al Inventario que se indica en la Figura~\ref{fig:AC-esquematico} va a ser reemplazado por un bloque atómico cell-DEVS.
+
+\begin{figure}[h] 
+  \centering 
+  \includegraphics[angle=-90, width=\textwidth]{img/bloquestopmodel} 
+  \caption{Interconexión de bloques en el \texttt{top model}.} 
+  \label{fig:AC-esquematico} 
+\end{figure}
+
+El autómata tiene un puerto de entrada ubicado arriba a la izquierda arriba y un puerto de salida ubicado en la esquina inferior derecha. Una de las dimensiones representa la altura de las pilas de productos y la otra dimensión representa la distancia al puerto de entrada y de salida. Cada pila puede tener una altura diferente dependiendo de la cantidad de unidades estibadas en esa estanteria. En la Figura~\ref{fig:AC-inventario} se muestra el autómata celular que representa al inventario.
+
+\begin{figure}[h] 
+  \centering 
+  \includegraphics[width=0.5\textwidth]{img/fiuba} 
+  \caption{Autómata celular del inventario.} 
+  \label{fig:AC-inventario} 
+\end{figure}
+
+El objetivo del autómata celular es ordenar los productos en el almacén de modo que aquellos con fecha de vencimiento más próxima queden ubicados espacialmente más cerca del puerto de salida de modo de ser despachados más pronto. De esta manera se busca reducir la cantidad de productos vencidos dentro del almacen. Para esto, periódicamente se revisan las fechas de vencimiento de los productos estampadas en un código de barras en cada unidad. Si la misma es menor a 1 semana entonces se remueve de su ubicación y se desplaza lo más cerca posible del puerto de salida. Su ubicación definitiva depende del valor de su fecha de vencimiento. Los productos sólo pueden ser movidos dependiendo de si tienen productos encima y de las fechas de vencimiento de estos, i.e. si un producto de acuerdo con fecha de vencimiento debería ser movido cerca del puerto de salida pero tiene otros productos encima con fecha de vencimiento más lejana entonces no se puede mover.
+
+Cada celda en el autómara ejecuta las siguientes reglas de modo de determinar su propio valor:
+\begin{enumerate}
+\item
+\item
+\item
+\end{enumerate}
+\noindent El vecindario utilizado se puede ver en la Figura~\ref{fig:AC-vecindario}.
+
+\begin{figure}[h] 
+  \centering 
+  \includegraphics[width=0.5\textwidth]{img/fiuba} 
+  \caption{Vecindario.} 
+  \label{fig:AC-vecindario} 
+\end{figure}
+
+Las preguntas a responder mediante simulaciones son:
+\begin{itemize}
+\item \textit{¿Qué política de ordenamiento es óptima para minimizar la cantidad de unidades vencidas mientras están almacenadas?}
+\item Y conectada con la pregunta anterior, \textit{¿qué política de ordenamiento permite minimizar el tiempo necesario para despachar una unidad?}
+\end{itemize}
+% \FloatBarrier
+
+
+\appendix
+\section{Código Implementado}
+
+\url{https://github.com/TwinT/DEVS-Inventario}
+
+% Please don't exchange the bibliographystyle style
+\bibliographystyle{IEEEtran.bst}
+% AUTHOR: Include your bib file here
+\bibliography{IEEEexample}
+
+\end{document}
+
