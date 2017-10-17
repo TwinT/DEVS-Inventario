@@ -111,6 +111,8 @@
 %
 \newcommand{\imgdir}{img}
 \graphicspath{{\imgdir/}}
+
+\usepackage{subfigure}
 %
 %------------------------------ graphicx ----------------------------------
 
@@ -295,9 +297,9 @@ Para este trabajo, el bloque Inventario se va a modelizar con autómata celular.
  El bloque atómico DEVS correspondiente al Inventario que se indica en la Figura \ref{fig:esquema-del-problema} va a ser reemplazado por tres bloques cell-DEVS, según la Figura \ref{fig:AC-esquematico}.
  
  \begin{figure}[h] 
- 	\centering 
- 	\includegraphics[angle=-90, width=\textwidth]{bloquestopmodel} 
- 	\caption{Interconexión de bloques en el \texttt{top model}.} 
+ 	\centering
+ 	\includegraphics[width=0.5\textwidth]{grilla} 
+ 	\caption{Inventario con cell-DEVS.} 
  	\label{fig:AC-esquematico} 
  \end{figure}
  \FloatBarrier
@@ -306,41 +308,49 @@ Para este trabajo, el bloque Inventario se va a modelizar con autómata celular.
  
  \begin{figure}[h] 
  	\centering 
- 	\includegraphics{fiuba} 
+ 	\includegraphics[width=0.5\textwidth]{entrada} 
  	\caption{Ingreso de productos al inventario.} 
  	\label{fig:AC-ingreso-de-productos} 
  \end{figure}
  \FloatBarrier
  
- El segundo bloque será el inventario propiamente dicho. Es una grilla donde las columnas representan posiciones de apilamiento de productos. Las entradas de productos se realizan por la parte superior de cada columna, de forma de ir apilándolos. La salida de productos se realiza por la parte inferior de cada columna. Periódicamente se chequea la fecha de vencimiento de cada producto, y si cumple la condición de la columna siguiente a la derecha \( ejemplo que falte menos de N semanas para que perezca.\) el producto se intenta mover a esa columna. La figura \ref{fig:AC-inventario} muestra el esquema del inventario.
+ El segundo bloque será el inventario propiamente dicho. Es una grilla donde las columnas representan posiciones de apilamiento de productos. Las entradas de productos se realizan por la parte superior de cada columna, de forma de ir apilándolos. La salida de productos se realiza por la parte inferior de cada columna. Periódicamente se chequea la fecha de vencimiento de cada producto, y si cumple la condición de la columna siguiente a la derecha, por ejemplo que falte menos de N semanas para que perezca, el producto se intenta mover a esa columna.
+ 
+ La salida de productos está físicamente cercana a la columna derecha (la que contiene a los productos más próximos a vencer). El encargado de retirar productos demora un tiempo hasta llegar a la columna N por lo que idealmente se prefiere retirar los productos de la columna 0. Sin embargo si no hay productos con una fecha de vencimiento tan próxima, deberá recorrer las columnas hasta llegar a un producto. Este proceso de retiro de elementos se modela con el tercer bloque cell-DEVS, en este caso también de una sola fila.
+ Todo este proceso se puede observar en la figura en la Figura \ref{fig:AC-inventario}. La fecha de vencimiento se grafica según el esquema de colores de la Figura \ref{fig:AC-colores}.
  
  \begin{figure}[h] 
  	\centering 
- 	\includegraphics[width=0.5\textwidth]{fiuba} 
+ 	\includegraphics[width=0.3\textwidth]{colores} 
+ 	\caption{Codificación de colores por fecha de vencimiento.} 
+ 	\label{fig:AC-colores} 
+ \end{figure}
+ 
+ \begin{figure}[h] 
+ \centering
+ 
+ 	\begin{tabular}{cc}
+ 		\multicolumn{2}{c}{\includegraphics[width=0.4\linewidth]{pedido1}}\\[5mm]
+ 		\includegraphics[width=0.3\linewidth]{pedido2} &
+ 		\includegraphics[width=0.3\linewidth]{pedido3} \\[5mm]
+ 		\includegraphics[width=0.3\linewidth]{pedido4} &
+ 		\includegraphics[width=0.3\linewidth]{pedido5} \\
+ 	\end{tabular}
+ 	
  	\caption{Autómata celular del inventario.} 
  	\label{fig:AC-inventario} 
  \end{figure}
  \FloatBarrier
  
- La salida de productos está físicamente cercana a la columna derecha (la que contiene a los productos más próximos a vencer). El encargado de retirar productos demora un tiempo hasta llegar a la columna N por lo que idealmente se prefiere retirar los productos de la columna 0. Sin embargo si no hay productos con una fecha de vencimiento tan próxima, deberá recorrer las columnas hasta llegar a un producto. Este proceso de retiro de elementos se modela con el tercer bloque cell-DEVS, en este caso también de una sola fila, según la Figura \ref{fig:AC-entrega}.
- 
- \begin{figure}[h] 
-	\centering 
-	\includegraphics[width=0.5\textwidth]{fiuba} 
-	\caption{Entrega de productos.} 
-	\label{fig:AC-entrega} 
- \end{figure}
-
-\FloatBarrier
 \subsection{Celdas}
 
-El objetivo del autómata celular es ordenar los productos en el almacén de modo que aquellos con fecha de vencimiento más próxima queden ubicados espacialmente más cerca de la salida, de modo de ser despachados más rápido. De esta manera se busca reducir la cantidad de productos vencidos dentro del almacén Para esto, periódicamente se revisan las fechas de vencimiento de los productos estampadas en un código de barras en cada unidad. Su ubicación depende del valor de su fecha de vencimiento. Los productos sólo pueden ser movidos si no tienen otros productos encima y si la columna adyacente a la derecha tiene una ubicación disponible hasta un nivel por encima de la altura de ubicación del producto.
+El objetivo del autómata celular es ordenar los productos en el almacén de modo que aquellos con fecha de vencimiento más próxima queden ubicados espacialmente más cerca de la salida, de modo de ser despachados más rápido. De esta manera se busca reducir la cantidad de productos vencidos dentro del almacén. Para esto, periódicamente se revisan las fechas de vencimiento de los productos estampadas en un código de barras en cada unidad. Su ubicación depende del valor de su fecha de vencimiento. Los productos sólo pueden ser movidos si la columna adyacente a la derecha tiene una ubicación disponible hasta un nivel por encima de la altura de ubicación del producto.
 Cabe destacar que si la ubicación inferior a donde se encuentra un producto está libre, el producto baja hasta estar apoyado sobre otro producto o sobre el suelo del depósito.
 Por estos motivos (y por la preferencia de movimiento hacia la derecha) el vecindario propuesto se puede ver en la Figura~\ref{fig:AC-vecindario}.
 
 \begin{figure}[h] 
   \centering 
-  \includegraphics[width=0.5\textwidth]{fiuba} 
+  \includegraphics[width=0.3\textwidth]{vecindario} 
   \caption{Vecindario.} 
   \label{fig:AC-vecindario} 
 \end{figure}
@@ -348,7 +358,7 @@ Por estos motivos (y por la preferencia de movimiento hacia la derecha) el vecin
 
 Las preguntas a responder mediante simulaciones son:
 \begin{itemize}
-\item \textit{¿Qué política de ordenamiento es óptima para minimizar la cantidad de unidades vencidas mientras están almacenadas?}
+\item \textit{¿Qué política de ordenamiento es óptima para minimizar la cantidad de unidades vencidas al momento del despacho?}
 \item Y conectada con la pregunta anterior, \textit{¿qué política de ordenamiento permite minimizar el tiempo necesario para despachar una unidad?}
 \end{itemize}
 % \FloatBarrier

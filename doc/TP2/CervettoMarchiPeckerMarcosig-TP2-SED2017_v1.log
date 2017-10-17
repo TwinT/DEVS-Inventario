@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=pdflatex 2017.9.24)  11 OCT 2017 16:39
+This is pdfTeX, Version 3.14159265-2.6-1.40.17 (TeX Live 2016/Debian) (preloaded format=pdflatex 2017.9.27)  11 OCT 2017 16:23
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -598,15 +598,7 @@ Package babel Info: Redefining spanish shorthand "!
 Package babel Info: Redefining spanish shorthand "?
 (babel)             in language append on input line 293.
 
-
-LaTeX Warning: Reference `fig:esquema-del-problema' on page 2 undefined on inpu
-t line 295.
-
-
-LaTeX Warning: Reference `fig:AC-esquematico' on page 2 undefined on input line
- 295.
-
-<img/bloquestopmodel.pdf, id=25, 941.38664pt x 547.64598pt>
+<img/bloquestopmodel.pdf, id=59, 941.38664pt x 547.64598pt>
 File: img/bloquestopmodel.pdf Graphic file (type pdf)
 
 <use img/bloquestopmodel.pdf>
@@ -669,12 +661,8 @@ Package babel Info: Redefining spanish shorthand "!
 Package babel Info: Redefining spanish shorthand "?
 (babel)             in language append on input line 303.
  [3 <./img/bloquestopmodel.pdf>]
-
-LaTeX Warning: Reference `fig:AC-ingreso-de-productos' on page 4 undefined on i
-nput line 305.
-
 File: img/fiuba.pdf Graphic file (type pdf)
-<use img/fiuba.pdf>
+ <use img/fiuba.pdf>
 Package pdftex.def Info: img/fiuba.pdf used on input line 309.
 (pdftex.def)             Requested size: 241.90315pt x 472.76509pt.
 
@@ -733,21 +721,12 @@ Package babel Info: Redefining spanish shorthand "!
 Package babel Info: Redefining spanish shorthand "?
 (babel)             in language append on input line 313.
  [5]
-
-LaTeX Warning: Reference `fig:AC-inventario' on page 6 undefined on input line 
-315.
-
 File: img/fiuba.pdf Graphic file (type pdf)
-<use img/fiuba.pdf>
+ <use img/fiuba.pdf>
 Package pdftex.def Info: img/fiuba.pdf used on input line 319.
 (pdftex.def)             Requested size: 172.5pt x 337.138pt.
-
-
-LaTeX Warning: Reference `fig:AC-entrega' on page 6 undefined on input line 325
-.
-
 File: img/fiuba.pdf Graphic file (type pdf)
-<use img/fiuba.pdf>
+ <use img/fiuba.pdf>
 Package pdftex.def Info: img/fiuba.pdf used on input line 329.
 (pdftex.def)             Requested size: 172.5pt x 337.138pt.
 Package babel Info: Redefining spanish shorthand <<
@@ -789,11 +768,6 @@ Package babel Info: Redefining spanish shorthand "!
 (babel)             in language append on input line 335.
 Package babel Info: Redefining spanish shorthand "?
 (babel)             in language append on input line 335.
-
-
-LaTeX Warning: Reference `fig:AC-vecindario' on page 7 undefined on input line 
-339.
-
 Package babel Info: Redefining spanish shorthand <<
 (babel)             in language append on input line 340.
 Package babel Info: Redefining spanish shorthand >>
@@ -818,7 +792,7 @@ Package babel Info: Redefining spanish shorthand "!
 (babel)             in language append on input line 340.
 Package babel Info: Redefining spanish shorthand "?
 (babel)             in language append on input line 340.
-[7]
+ [7]
 File: img/fiuba.pdf Graphic file (type pdf)
  <use img/fiuba.pdf>
 Package pdftex.def Info: img/fiuba.pdf used on input line 343.
@@ -915,10 +889,10 @@ LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right.
 Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 367.
  ) 
 Here is how much of TeX's memory you used:
- 9886 strings out of 494891
- 142129 string characters out of 6179039
- 233809 words of memory out of 5000000
- 13029 multiletter control sequences out of 15000+600000
+ 9930 strings out of 494883
+ 143167 string characters out of 6179094
+ 235676 words of memory out of 5000000
+ 13074 multiletter control sequences out of 15000+600000
  13391 words of font info for 52 fonts, out of 8000000 for 9000
  40 hyphenation exceptions out of 8191
  36i,15n,43p,793b,610s stack positions out of 5000i,500n,10000p,200000b,80000s
@@ -933,11 +907,11 @@ ublic/amsfonts/cm/cmr9.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/am
 sfonts/cm/cmti10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts
 /cm/cmtt10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cm
 tt8.pfb>
-Output written on CervettoMarchiPeckerMarcosig-TP2-SED2017_v1.pdf (10 pages, 35
-8601 bytes).
+Output written on CervettoMarchiPeckerMarcosig-TP2-SED2017_v1.pdf (10 pages, 36
+3688 bytes).
 PDF statistics:
- 127 PDF objects out of 1000 (max. 8388607)
- 98 compressed objects within 1 object stream
+ 160 PDF objects out of 1000 (max. 8388607)
+ 130 compressed objects within 2 object streams
  23 named destinations out of 1000 (max. 500000)
- 16 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 64 words of extra memory for PDF output out of 10000 (max. 10000000)
 
