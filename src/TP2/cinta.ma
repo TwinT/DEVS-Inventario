@@ -33,8 +33,8 @@ localtransition : cinta-reglas
 [cinta-reglas]
 % celda: (y_celda,x_celda)!idx_tupla=val
 % tupla: [idx_0,idx_1,...] -> sin espacios
-rule : { [(0,0)!0,0] } { 100 } { (0,0)!1=0 AND (0,0)!1>(0,0)!0 AND (0,1)!1=0 } 
-rule : { [(0,0)!0,(0,-1)!1] } { 100 } { NOT isUndefined((0,-1)!1) AND (0,-1)!1!=0 AND (0,-1)!1>(0,-1)!0 }
+rule : { [(0,0)!0,(0,1)!1] } { 100 } { NOT isUndefined((0,1)!1) AND (0,1)!1!=0 AND (0,1)!1>(0,1)!0 }
+rule : { [(0,0)!0,0] } { 100 } { NOT isUndefined((0,-1)!1) AND (0,0)!1!=0 AND (0,0)!1>(0,0)!0 AND (0,-1)!1=0 } 
 % rule : { (0,0)!1 + send(out6,(0,0)!1) } { 100 } { (0,0)!1!=0 AND (0,0)!1<=(0,0)!0 }
-rule : { [(0,0)!0,(0,0)!1+send(out,32)] } { 100 } { (0,0)!1=0 AND (0,0)!1<=(0,0)!0 }
+rule : { [(0,0)!0,0+send(out,32)] } { 100 } { (0,0)!1=0 AND (0,0)!1<=(0,0)!0 }
 rule : { (0,0) } 0 { t } % always true (condicion default)
