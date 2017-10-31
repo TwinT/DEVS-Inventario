@@ -1,5 +1,5 @@
 [top]
-components : cinta
+components : cinta %productos@Generator
 in :  in in1 in2 in3 in4 in5 in6
 out : out1 out2 out3 out4 out5 out6
 link : in in@cinta
@@ -15,6 +15,10 @@ link : out3@cinta out3
 link : out4@cinta out4
 link : out5@cinta out5
 link : out6@cinta out6
+
+%[productos]
+%distribution : Exponential
+%mean : 0.12
 
 [cinta]
 type : cell
@@ -41,19 +45,21 @@ link : output@cinta(0,2) out4
 link : output@cinta(0,1) out5
 link : output@cinta(0,0) out6
 portintransition : in@cinta(0,5) in-regla
+% portintransition : in1@cinta(0,0) in1-regla
+% portintransition : in2@cinta(0,1) in2-regla
+% portintransition : in3@cinta(0,2) in3-regla
+% portintransition : in4@cinta(0,3) in4-regla
+% portintransition : in5@cinta(0,4) in5-regla
+% portintransition : in6@cinta(0,5) in6-regla
 localtransition : cinta-reglas
 
 [cinta-reglas]
 % celda: (y_celda,x_celda)!idx_tupla=val
 % tupla: [idx_0,idx_1,...] -> sin espacios
-rule : { [(0,0)!0,(0,1)!1] } { 100 } { NOT isUndefined((0,1)!1) AND (0,1)!1!=0 AND (0,1)!1>(0,1)!0+time }
-rule : { [(0,0)!0,0] } { 100 } { NOT isUndefined((0,-1)!1) AND (0,0)!1!=0 AND (0,0)!1>(0,0)!0 AND (0,-1)!1=0 } 
-rule : { [(0,0)!0,0+send(output,(0,0)!1)] } { 100 } { (0,0)!1!=0 AND (0,0)!1<=(0,0)!0 }
+rule : { [(0,0)!0,(0,1)!1] } { 100 } { NOT isUndefined((0,1)!1) AND (0,1)!1!=0 AND (0,1)!1>(0,1)!0+time/1000 }
+rule : { [(0,0)!0,0] } { 100 } { NOT isUndefined((0,-1)!1) AND (0,0)!1!=0 AND (0,0)!1>(0,0)!0+time/1000 AND (0,-1)!1=0 } 
+rule : { [(0,0)!0,0+send(output,(0,0)!1)] } { 100 } { (0,0)!1!=0 AND (0,0)!1<=(0,0)!0+time/1000 }
 rule : { (0,0) } 0 { t } % always true (condicion default)
 
 [in-regla]
 rule : { [(0,0)!0,portValue(thisPort)] } 1 { t }
-
-% [productos]
-% distribution : Exponential
-% mean : 0.12
