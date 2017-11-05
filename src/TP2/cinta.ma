@@ -59,8 +59,9 @@ localtransition : cinta-reglas
 rule : { [(0,0)!0,(0,1)!1,0] } { 100 } { NOT isUndefined((0,1)!1) AND (0,1)!1!=0 AND (0,1)!1>(0,1)!0+time/1000 }
 rule : { [(0,0)!0,0,0] } { 100 } { NOT isUndefined((0,-1)!1) AND (0,0)!1!=0 AND (0,0)!1>(0,0)!0+time/1000 AND (0,-1)!1=0 } 
 rule : { [(0,0)!0,(0,1)!1,0] } { 100 } { (0,1)!2=1 }
-rule : { [(0,0)!0,0,0] } { 100 } { (0,0)!2=1 }
-rule : { [(0,0)!0,(0,0)!1+send(output,-1),0] } { 100 } { (0,0)!1!=0 AND (0,0)!1<=(0,0)!0+time/1000 } % con -1 pregunta al inventario si hay lugar
+rule : { [(0,0)!0,0,0] } { 100 } { (0,0)!2=1 AND NOT isUndefined((0,-1)!1) AND (0,-1)!1=0 }
+rule : { [(0,0)!0,(0,0)!1,2] } { 100 } { (0,0)!2=1 AND (isUndefined((0,-1)!1) OR (0,-1)!1!=0) }
+rule : { [(0,0)!0,(0,0)!1+send(output,-1),0] } { 100 } { (0,0)!2!=2 AND (0,0)!1!=0 AND (0,0)!1<=(0,0)!0+time/1000 } % con -1 pregunta al inventario si hay lugar
 rule : { (0,0) } 0 { t } % always true
 
 [in-regla]
