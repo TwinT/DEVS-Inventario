@@ -15,6 +15,7 @@ link : out4@despacho out4
 link : out5@despacho out5
 link : pedidosOut@despacho pedidosOut
 
+
 [despacho]
 type : cell
 dim : (1,6)
@@ -46,27 +47,30 @@ portintransition : in@despacho(0,1) ins-regla
 portintransition : in@despacho(0,0) ins-regla
 localtransition : despacho-reglas
 
+
 [despacho-reglas]
 % celda: (y_celda,x_celda)!idx_tupla=val
 % tupla: [idx_0,idx_1,...] -> sin espacios
 % con -1 pregunta al inventario si hay lugar
+
+% Movimiento del producto sacado del inventario
+% Todas las reglas a continuación preguntan por >0 para no actuar con el pedido.
 rule : { (0,-1) } 1 { not isUndefined((0,-1)!0) and (0,-1)!0>0 and (0,0)!0=0 }
 rule : { [0,0] } 1 { not isUndefined((0,1)!0) and (0,1)!0>0 }
 rule : { [0+send(output,(0,0)!0),0] } 1 { cellPos(1)=5 and (0,0)!0>0 }
-rule : { (0,0) } 0 { t } % always true (condicion default)
+
+% Movimiento del despachante buscando el producto
+rule : {[-1+send(output,-1),0]} 1 { not isUndefined((0,1)!0) and (0,1)=[0,-1] and (0,0)!0=0 }
+rule : {[0,0]} 1 { not isUndefined((0,-1)!0) and (0,-1)=[-1,0]}
+
+% always true (condicion default)
+rule : { (0,0) } 0 { t }
+
 
 [pedidosIn-regla]
-rule : { [portValue(thisPort),0] } 1 { t }
+rule : { [0,portValue(thisPort)] } 1 { portValue(thisPort)=-1 }
+
 
 [ins-regla]
-rule : { [portValue(thisPort),0] } 1 { portValue(thisPort)!=0 }
-%[in2-regla]
-%rule : { [(0,0)!0,0+send(output,(0,0)!1)] } 1 { portValue(thisPort)!=0 }
-%[in3-regla]
-%rule : { [(0,0)!0,0+send(output,(0,0)!1)] } 1 { portValue(thisPort)!=0 }
-%[in4-regla]
-%rule : { [(0,0)!0,0+send(output,(0,0)!1)] } 1 { portValue(thisPort)!=0 }
-%[in5-regla]
-%rule : { [(0,0)!0,0+send(output,(0,0)!1)] } 1 { portValue(thisPort)!=0 }
-%[in6-regla]
-%rule : { [(0,0)!0,0+send(output,(0,0)!1)] } 1 { portValue(thisPort)!=0 }
+rule : { [0,-1] } 1 { portValue(thisPort)=0 }
+rule : { [portValue(thisPort),0] } 1 { portValue(thisPort)>0 }
