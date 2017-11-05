@@ -45,35 +45,27 @@ link : output@cinta(0,2) out4
 link : output@cinta(0,1) out5
 link : output@cinta(0,0) out6
 portintransition : in@cinta(0,5) in-regla
-portintransition : in1@cinta(0,5) in1-regla
-portintransition : in2@cinta(0,4) in2-regla
-portintransition : in3@cinta(0,3) in3-regla
-portintransition : in4@cinta(0,2) in4-regla
-portintransition : in5@cinta(0,1) in5-regla
-portintransition : in6@cinta(0,0) in6-regla
+portintransition : in1@cinta(0,5) inventario-regla
+portintransition : in2@cinta(0,4) inventario-regla
+portintransition : in3@cinta(0,3) inventario-regla
+portintransition : in4@cinta(0,2) inventario-regla
+portintransition : in5@cinta(0,1) inventario-regla
+portintransition : in6@cinta(0,0) inventario-regla
 localtransition : cinta-reglas
 
 [cinta-reglas]
-% celda: (y_celda,x_celda)!idx_tupla=val
+% celda: (y_celda,x_celda,z_celda)!idx_tupla=val
 % tupla: [idx_0,idx_1,...] -> sin espacios
-rule : { [(0,0)!0,(0,1)!1] } { 100 } { NOT isUndefined((0,1)!1) AND (0,1)!1!=0 AND (0,1)!1>(0,1)!0+time/1000 }
-rule : { [(0,0)!0,0] } { 100 } { NOT isUndefined((0,-1)!1) AND (0,0)!1!=0 AND (0,0)!1>(0,0)!0+time/1000 AND (0,-1)!1=0 } 
-rule : { [(0,0)!0,(0,0)!1+send(output,-1)] } { 100 } { (0,0)!1!=0 AND (0,0)!1<=(0,0)!0+time/1000 } % con -1 pregunta al inventario si hay lugar
-% rule : { [(0,0)!0,0+send(output,(0,0)!1)] } { 0 } { (0,0)!1=-1 }
-rule : { (0,0) } 0 { t } % always true (condicion default)
+rule : { [(0,0)!0,(0,1)!1,0] } { 100 } { NOT isUndefined((0,1)!1) AND (0,1)!1!=0 AND (0,1)!1>(0,1)!0+time/1000 }
+rule : { [(0,0)!0,0,0] } { 100 } { NOT isUndefined((0,-1)!1) AND (0,0)!1!=0 AND (0,0)!1>(0,0)!0+time/1000 AND (0,-1)!1=0 } 
+rule : { [(0,0)!0,(0,1)!1,0] } { 100 } { (0,1)!2=1 }
+rule : { [(0,0)!0,0,0] } { 100 } { (0,0)!2=1 }
+rule : { [(0,0)!0,(0,0)!1+send(output,-1),0] } { 100 } { (0,0)!1!=0 AND (0,0)!1<=(0,0)!0+time/1000 } % con -1 pregunta al inventario si hay lugar
+rule : { (0,0) } 0 { t } % always true
 
 [in-regla]
-rule : { [(0,0)!0,portValue(thisPort)] } 1 { t }
+rule : { [(0,0)!0,portValue(thisPort),0] } { 1 } { t }
 
-[in1-regla]
-rule : { [(0,0)!0,0+send(output,(0,0)!1)] } 1 { portValue(thisPort)!=0 }
-[in2-regla]
-rule : { [(0,0)!0,0+send(output,(0,0)!1)] } 1 { portValue(thisPort)!=0 }
-[in3-regla]
-rule : { [(0,0)!0,0+send(output,(0,0)!1)] } 1 { portValue(thisPort)!=0 }
-[in4-regla]
-rule : { [(0,0)!0,0+send(output,(0,0)!1)] } 1 { portValue(thisPort)!=0 }
-[in5-regla]
-rule : { [(0,0)!0,0+send(output,(0,0)!1)] } 1 { portValue(thisPort)!=0 }
-[in6-regla]
-rule : { [(0,0)!0,0+send(output,(0,0)!1)] } 1 { portValue(thisPort)!=0 }
+[inventario-regla]
+rule : { [(0,0)!0,0+send(output,(0,0)!1),0] } { 1 } { portValue(thisPort)!=0 }
+rule : { [(0,0)!0,(0,0)!1,1] } { 1 } { portValue(thisPort)=0 } % el [x,y,1] indica que la columna del inventario esta llena
