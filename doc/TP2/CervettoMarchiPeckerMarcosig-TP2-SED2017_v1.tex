@@ -468,6 +468,117 @@ rule : { [(0,0)!0,(0,0)!1,1] } { 1 } { portValue(thisPort)=0 }
 
 Se puede ver que como se utiliza el comando \texttt{thisPort} esta regla es válida para todas las celdas de la cinta transportadora. Si la respuesta que recibe la celda de parte del inventario es no nula entonces se envía el producto por el mismo puerto por el que se realizó la consulta. Si en cambio no hay lugar entonces se indica colocando un $1$ en el indicador de la tupla (\texttt{[(0,0)!0,(0,0)!1,1]}).
 
+\subsection{Despacho de productos}\label{sec:DP}
+Según lo descripto en la sección \ref{sec:AC} el despacho de productos es el encargado de extraer los productos del inventario propiamente dicho.
+Su modelo estructural se muestra en la figura \ref{fig:DP-estructura}.
+
+\begin{figure}[h] 
+	\centering 
+	\includegraphics[width=0.5\textwidth]{DP-estructura} 
+	\caption{Modelo del despacho de productos.} 
+	\label{fig:DP-estructura} 
+\end{figure}
+
+Conceptualmente se pueden dividir dos tipos de información que se propagarán por el modelo. Por un lado, el despachante, que va buscando en que columna tiene un producto para extraer (recordar que los productos se ordenan de forma que los más próximos a vencer se encuentran cerca de la salida) representado en la figura \ref{fig:DP-estructura} por el color rojo. Por otro, el producto en sí representado por el color verde. Ambos realizarán movimientos en direcciones opuestas, ya que el despachante irá recorriendo el inventario hacia la izquierda (buscando la primer columna con productos) y una vez que retira el producto, el mismo se moverá hacia a la derecha en dirección a la salida.
+
+Esta división da origen a dos grupos (conceptuales) de reglas:
+\begin{itemize}
+	\item Reglas para movimiento de productos.
+	\item Reglas para movimiento del despachante.
+\end{itemize}
+
+Ubicadas en ese orden estamos dando prioridad al movimiento de productos y por ende, si un pedido se realiza cuando el despachante no está en su puesto, es decir, cuando está buscando un producto, el pedido se pierde.
+
+Las reglas se detallan a continuación:
+
+\begin{minipage}{1\textwidth}
+	\centering
+	\begin{lstlisting}
+[despacho-reglas]
+% Con -1 se pregunta al inventario si hay productos
+
+% Movimiento del producto sacado del inventario
+% Las tres reglas siguientes preguntan por >0 para no actuar con el pedido.
+rule : { (0,-1) } 1 { not isUndefined((0,-1)!0) and (0,-1)!0>0 and (0,0)!0=0 }
+rule : { [0,0] } 1 { not isUndefined((0,1)!0) and (0,1)!0>0 }
+rule : { [0+send(output,(0,0)!0),0] } 1 { cellPos(1)=5 and (0,0)!0>0 }          
+
+% Movimiento del despachante buscando el producto
+rule : {[-1+send(output,-1),0]} 1 { not isUndefined((0,1)!0) and (0,1)=[0,-1] and (0,0)!0=0 }
+rule : {[0,0]} 1 { not isUndefined((0,-1)!0) and (0,-1)=[-1,0]}
+
+% always true (condicion default)
+rule : { (0,0) } 0 { t }
+	\end{lstlisting}
+\end{minipage}
+
+Siendo respectivamente las primeras tres reglas responsables del movimiento del producto y con el siguiente significado:
+\begin{enumerate}
+	\item Copia el valor de la celda contigua a la izquierda si dicha celda existe y contiene un producto (i.e. su valor es >0), y si la celda en cuestión esta vacía.
+	\item Si el producto se movió a la derecha la celda se setea en 0
+	\item Si llegó a la última celda de la derecha (oficina del despachante), la celda se pone en 0 y envía el producto por la salida de productos.
+\end{enumerate}
+
+Y las siguientes dos las responsables del movimiento del despachante, respectivamente:
+\begin{enumerate}
+	\item Se setea la celda en [-1,0] y envía la consulta de disponibilidad de productos en esa columna al inventario, si la celda próxima a la derecha está en estado de consulta fallida (ver a continuación), y si dicha celda existe.
+	\item La celda se setea en 0 si el despachante se movió una posición hacia la izquierda (i.e. (0,-1)=[-1,0])
+\end{enumerate}
+
+Se utilizaron tuplas de dos posiciones para representar el estado de la celda. Esto permite marcar cuando un pedido fue realizado al inventario y éste último informa que en esa columna no hay disponibilidad, resultando en una consulta fallida, representada por el valor [0,-1] en la celda. Este es el caso donde el despachante deberá avanzar una columna más hacia la izquierda, según la primer regla de arriba, asociada al despachante.
+
+Para terminar de definir el modelo, se deben especificar los comportamientos de los diferentes puertos, para ello se plantearon dos juegos de reglas. El primero para la entrada de pedidos, que simplemente copia el valor del pedido de productos (-1) en la celda correspondiente (oficina del despachante). El segundo para los valores que envía el inventario: por un lado  setea el estado de la celda en consulta fallida ([0,-1]) si el inventario devuelve 0, o por otro, copia el valor si el inventario devuelve un producto (valor >0). Dichas reglas se muestran a continuación:
+
+\begin{minipage}{1\textwidth}
+	\centering
+	\begin{lstlisting}
+[pedidosIn-regla]
+rule : { [0,portValue(thisPort)] } 1 { portValue(thisPort)=-1 }
+
+[ins-regla]
+rule : { [0,-1] } 1 { portValue(thisPort)=0 }
+rule : { [portValue(thisPort),0] } 1 { portValue(thisPort)>0 }
+	\end{lstlisting}
+\end{minipage}
+
+Este conjunto de reglas con la estructura graficada en la figura definen el modelo del despacho. Los links y la asignación de reglas se pueden ver en la siguiente definición dentro del archivo ".ma"
+
+\begin{minipage}{1\textwidth}
+	\centering
+	\begin{lstlisting}
+[despacho]
+type : cell
+dim : (1,6)
+delay : transport
+defaultDelayTime  : 0
+border : nowrapped
+neighbors : despacho(0,-1) despacho(0,0) despacho(0,1)
+initialvalue : 0
+initialCellsValue : despacho.val
+in : pedidosIn in1 in2 in3 in4 in5
+out : pedidosOut out1 out2 out3 out4 out5
+link : pedidosIn in@despacho(0,5)
+link : in5 in@despacho(0,4)
+link : in4 in@despacho(0,3)
+link : in3 in@despacho(0,2)
+link : in2 in@despacho(0,1)
+link : in1 in@despacho(0,0)
+link : output@despacho(0,5) pedidosOut
+link : output@despacho(0,4) out5
+link : output@despacho(0,3) out4
+link : output@despacho(0,2) out3
+link : output@despacho(0,1) out2
+link : output@despacho(0,0) out1
+portintransition : in@despacho(0,5) pedidosIn-regla
+portintransition : in@despacho(0,4) ins-regla
+portintransition : in@despacho(0,3) ins-regla
+portintransition : in@despacho(0,2) ins-regla
+portintransition : in@despacho(0,1) ins-regla
+portintransition : in@despacho(0,0) ins-regla
+localtransition : despacho-reglas
+\end{lstlisting}
+\end{minipage}
+
 
 \section{Modelado y Simulación}
 \subsection{Pruebas parciales}
