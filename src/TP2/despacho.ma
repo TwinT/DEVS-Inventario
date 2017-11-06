@@ -61,12 +61,12 @@ localtransition : despacho-reglas
 % Movimiento del producto sacado del inventario
 % Las tres reglas sigueintes preguntan por >0 para no actuar con el pedido.
 rule : { (0,-1) } 100 { not isUndefined((0,-1)!0) and (0,-1)!0>0 and (0,0)!0=0 }
-rule : { [0,0] } 1 { not isUndefined((0,1)!0) and (0,1)!0>0 }
-rule : { [0+send(output,(0,0)!0),0] } 1 { cellPos(1)=6 and (0,0)!0>0 }
+rule : { [0,0] } 100 { not isUndefined((0,1)!0) and (0,0)!0>0 and (0,1)!0=0 }
+rule : { [0+send(output,(0,0)!0),0] } 100 { cellPos(1)=6 and (0,0)!0>0 }
 
 % Movimiento del despachante buscando el producto
 rule : {[-1+send(output,-1),0]} 100 { not isUndefined((0,1)!0) and (0,1)=[0,-1] and (0,0)!0=0 }
-rule : {[0,0]} 1 { not isUndefined((0,-1)!0) and (0,-1)=[-1,0]}
+rule : {[0,0]} 100 { not isUndefined((0,-1)!0) and (0,0)=[0,-1]}
 
 % always true (condicion default)
 rule : { (0,0) } 0 { t }

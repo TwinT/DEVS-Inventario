@@ -540,12 +540,12 @@ Las reglas se detallan a continuación:
 % Movimiento del producto sacado del inventario
 % Las tres reglas sigueintes preguntan por >0 para no actuar con el pedido.
 rule : { (0,-1) } 100 { not isUndefined((0,-1)!0) and (0,-1)!0>0 and (0,0)!0=0 }
-rule : { [0,0] } 1 { not isUndefined((0,1)!0) and (0,1)!0>0 }
-rule : { [0+send(output,(0,0)!0),0] } 1 { cellPos(1)=6 and (0,0)!0>0 }
+rule : { [0,0] } 100 { not isUndefined((0,1)!0) and (0,0)!0>0 and (0,1)!0=0 }
+rule : { [0+send(output,(0,0)!0),0] } 100 { cellPos(1)=6 and (0,0)!0>0 }
 
 % Movimiento del despachante buscando el producto
 rule : {[-1+send(output,-1),0]} 100 { not isUndefined((0,1)!0) and (0,1)=[0,-1] and (0,0)!0=0 }
-rule : {[0,0]} 1 { not isUndefined((0,-1)!0) and (0,-1)=[-1,0]}
+rule : {[0,0]} 100 { not isUndefined((0,-1)!0) and (0,0)=[0,-1]}
 
 % always true (condicion default)
 rule : { (0,0) } 0 { t }
@@ -555,14 +555,14 @@ rule : { (0,0) } 0 { t }
 Siendo respectivamente las primeras tres reglas responsables del movimiento del producto y con el siguiente significado:
 \begin{enumerate}
 	\item Copia el valor de la celda contigua a la izquierda si dicha celda existe y contiene un producto (i.e. su valor es $>0$), y si la celda en cuestión está vacía.
-	\item Si el producto se movió a la derecha la celda se setea en 0
+	\item Si el producto se moveró a la derecha, en el mismo instante la celda se setea en 0
 	\item Si llegó a la última celda de la derecha (oficina del despachante), la celda se pone en 0 y envía el producto por la salida de productos.
 \end{enumerate}
 
 Y las siguientes dos las responsables del movimiento del despachante, respectivamente:
 \begin{enumerate}
 	\item Se setea la celda en [-1,0] y envía la consulta de disponibilidad de productos en esa columna al inventario, si la celda próxima a la derecha está en estado de consulta fallida (ver a continuación), y si dicha celda existe.
-	\item La celda se setea en 0 si el despachante se movió una posición hacia la izquierda (i.e. (0,-1)=[-1,0])
+	\item La celda se setea en 0 en el mismo instante que el despachante se movió una posición hacia la izquierda (i.e. (0,-1)=[-1,0])
 \end{enumerate}
 
 Se utilizaron tuplas de dos posiciones para representar el estado de la celda. Esto permite marcar cuando un pedido fue realizado al inventario y éste último informa que en esa columna no hay disponibilidad, resultando en una consulta fallida, representada por el valor [0,-1] en la celda. Este es el caso donde el despachante deberá avanzar una columna más hacia la izquierda, según la primer regla de arriba, asociada al despachante.
@@ -779,7 +779,7 @@ Ante este estímulo, el comportamiento que se espera es el siguiente:
 	\item Luego de 1 ms el pedido se registra en la oficina del despachante (celda (0,5)).
 	\item Luego de 100 ms, el despachante camina hasta la primera columna del inventario (celda (0,5)) y hace el pedido al inventario.
 	\item En el tiempo 00:01:00:103 el inventario responde que no hay productos en esa columna.
-	\item Luego de 1 ms más el despachante camina una columna más y repite el pedido.
+	\item Luego de 100 ms más el despachante camina una columna más y repite el pedido.
 	\item Se repite el proceso con sus respectivos tiempos hasta que el despachante llega a la columna 3 (celda (0,2)) donde el inventario en tiempo 00:01:00:412 responde con un producto con fecha de caducidad 600.2 (recordar que el control de calidad se realiza por un modelo atómico mostrado en el TP1).
 	\item El producto se debe desplazar hacia la derecha a 100 ms por celda hasta salir por el puerto de salida de pedidos.
 	\item El proceso se repite ante una llegada de un pedido en el tiempo 00:01:01:000. Pero el despachante debe llegar hasta la primer columna para encontrar un producto.
@@ -792,25 +792,24 @@ Para la salida del top-model podemos observar:
 \begin{minipage}{1\textwidth}
 	\centering
 	\begin{lstlisting}
-0 / L / Y / 00:01:00:001:0 / despacho(01) / out6 /     -1.00000 / top(09)
-0 / L / Y / 00:01:00:104:0 / despacho(01) / out5 /     -1.00000 / top(09)
-0 / L / Y / 00:01:00:207:0 / despacho(01) / out4 /     -1.00000 / top(09)
-0 / L / Y / 00:01:00:310:0 / despacho(01) / out3 /     -1.00000 / top(09)
-0 / L / Y / 00:01:00:813:0 / despacho(01) / pedidosout /    300.40000 / top(09)
-0 / L / Y / 00:01:01:001:0 / despacho(01) / out6 /     -1.00000 / top(09)
-0 / L / Y / 00:01:01:104:0 / despacho(01) / out5 /     -1.00000 / top(09)
-0 / L / Y / 00:01:01:207:0 / despacho(01) / out4 /     -1.00000 / top(09)
-0 / L / Y / 00:01:01:310:0 / despacho(01) / out3 /     -1.00000 / top(09)
-0 / L / Y / 00:01:01:413:0 / despacho(01) / out2 /     -1.00000 / top(09)
-0 / L / Y / 00:01:01:516:0 / despacho(01) / out1 /     -1.00000 / top(09)
-0 / L / Y / 00:01:02:219:0 / despacho(01) / pedidosout /    600.20000 / top(09)
-0 / L / Y / 00:02:00:001:0 / despacho(01) / out6 /     -1.00000 / top(09)
-0 / L / Y / 00:02:00:204:0 / despacho(01) / pedidosout /    900.50000 / top(09)
-
+Y / 00:01:00:001:0 / out6 /     -1.00000 / top(09)
+Y / 00:01:00:104:0 / out5 /     -1.00000 / top(09)
+Y / 00:01:00:207:0 / out4 /     -1.00000 / top(09)
+Y / 00:01:00:310:0 / out3 /     -1.00000 / top(09)
+Y / 00:01:00:813:0 / pedidosout /    300.40000 / top(09)
+Y / 00:01:01:001:0 / out6 /     -1.00000 / top(09)
+Y / 00:01:01:104:0 / out5 /     -1.00000 / top(09)
+Y / 00:01:01:207:0 / out4 /     -1.00000 / top(09)
+Y / 00:01:01:310:0 / out3 /     -1.00000 / top(09)
+Y / 00:01:01:413:0 / out2 /     -1.00000 / top(09)
+Y / 00:01:01:516:0 / out1 /     -1.00000 / top(09)
+Y / 00:01:02:219:0 / pedidosout /    600.20000 / top(09)
+Y / 00:02:00:001:0 / out6 /     -1.00000 / top(09)
+Y / 00:02:00:204:0 / pedidosout /    900.50000 / top(09)
 	\end{lstlisting}	
 \end{minipage}
 
-Donde se observa que 100 ms después de cada respuesta del inventario se cursa un pedido a la columna siguiente. Por otro lado se observa que el producto sale correctamente por la salida \textit{pedidosOut} 503 ms después de haber entrado en el despacho, tal como fue previsto. Se observa coherencia también en los casos siguientes, con un tiempo de demora en la salida proporcional a la distancia recorrida por el despachante para encontrar un producto en el inventario.
+Donde se observa que 101 ms después de cada respuesta del inventario se cursa un pedido a la columna siguiente. Por otro lado se observa que el producto sale correctamente por la salida \textit{pedidosOut} 503 ms después de haber entrado en el despacho, tal como fue previsto. Se observa coherencia también en los casos siguientes, con un tiempo de demora en la salida proporcional a la distancia recorrida por el despachante para encontrar un producto en el inventario.
 
 \section{Conclusiones}
 
