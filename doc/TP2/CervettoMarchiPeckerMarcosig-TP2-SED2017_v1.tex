@@ -535,16 +535,16 @@ Las reglas se detallan a continuación:
 	\centering
 	\begin{lstlisting}
 [despacho-reglas]
-% Con -1 se pregunta al inventario si hay productos
+% Con -1 pregunta al inventario si hay lugar
 
 % Movimiento del producto sacado del inventario
-% Las tres reglas siguientes preguntan por >0 para no actuar con el pedido.
-rule : { (0,-1) } 1 { not isUndefined((0,-1)!0) and (0,-1)!0>0 and (0,0)!0=0 }
+% Las tres reglas sigueintes preguntan por >0 para no actuar con el pedido.
+rule : { (0,-1) } 100 { not isUndefined((0,-1)!0) and (0,-1)!0>0 and (0,0)!0=0 }
 rule : { [0,0] } 1 { not isUndefined((0,1)!0) and (0,1)!0>0 }
-rule : { [0+send(output,(0,0)!0),0] } 1 { cellPos(1)=5 and (0,0)!0>0 }          
+rule : { [0+send(output,(0,0)!0),0] } 1 { cellPos(1)=6 and (0,0)!0>0 }
 
 % Movimiento del despachante buscando el producto
-rule : {[-1+send(output,-1),0]} 1 { not isUndefined((0,1)!0) and (0,1)=[0,-1] and (0,0)!0=0 }
+rule : {[-1+send(output,-1),0]} 100 { not isUndefined((0,1)!0) and (0,1)=[0,-1] and (0,0)!0=0 }
 rule : {[0,0]} 1 { not isUndefined((0,-1)!0) and (0,-1)=[-1,0]}
 
 % always true (condicion default)
@@ -568,6 +568,9 @@ Y las siguientes dos las responsables del movimiento del despachante, respectiva
 Se utilizaron tuplas de dos posiciones para representar el estado de la celda. Esto permite marcar cuando un pedido fue realizado al inventario y éste último informa que en esa columna no hay disponibilidad, resultando en una consulta fallida, representada por el valor [0,-1] en la celda. Este es el caso donde el despachante deberá avanzar una columna más hacia la izquierda, según la primer regla de arriba, asociada al despachante.
 
 Para terminar de definir el modelo, se deben especificar los comportamientos de los diferentes puertos, para ello se plantearon dos juegos de reglas. El primero para la entrada de pedidos, que simplemente copia el valor del pedido de productos (-1) en la celda correspondiente (oficina del despachante). El segundo para los valores que envía el inventario: por un lado  setea el estado de la celda en consulta fallida ([0,-1]) si el inventario devuelve 0, o por otro, copia el valor si el inventario devuelve un producto (valor $>0$). Dichas reglas se muestran a continuación:
+Las velocidades del despachante y del producto se ajustaron seteando el tiempo de transición de una celda en otra en en 100 ms. Mientras que las salidas y entradas se setearon con una velocidad de 1 ms.
+
+Para terminar de definir el modelo, se deben especificar los comportamientos de los diferentes puertos, para ello se plantearon dos juegos de reglas. El primero para la entrada de pedidos, que simplemente copia el valor del pedido de productos (-1) en la celda correspondiente (oficina del despachante). El segundo para los valores que envía el inventario: por un lado  setea el estado de la celda en consulta fallida ([0,-1]) si el inventario devuelve 0, o por otro, copia el valor si el inventario devuelve un producto (valor >0). Dichas reglas se muestran a continuación:
 
 \begin{minipage}{1\textwidth}
 	\centering
@@ -588,28 +591,31 @@ Este conjunto de reglas con la estructura graficada en la Figura~\ref{fig:DP-est
 	\begin{lstlisting}
 [despacho]
 type : cell
-dim : (1,6)
+dim : (1,7)
 delay : transport
 defaultDelayTime  : 0
 border : nowrapped
 neighbors : despacho(0,-1) despacho(0,0) despacho(0,1)
 initialvalue : 0
 initialCellsValue : despacho.val
-in : pedidosIn in1 in2 in3 in4 in5
-out : pedidosOut out1 out2 out3 out4 out5
-link : pedidosIn in@despacho(0,5)
+in : pedidosIn in1 in2 in3 in4 in5 in6
+out : pedidosOut out1 out2 out3 out4 out5 out6
+link : pedidosIn in@despacho(0,6)
+link : in6 in@despacho(0,5)
 link : in5 in@despacho(0,4)
 link : in4 in@despacho(0,3)
 link : in3 in@despacho(0,2)
 link : in2 in@despacho(0,1)
 link : in1 in@despacho(0,0)
-link : output@despacho(0,5) pedidosOut
+link : output@despacho(0,6) pedidosOut
+link : output@despacho(0,5) out6
 link : output@despacho(0,4) out5
 link : output@despacho(0,3) out4
 link : output@despacho(0,2) out3
 link : output@despacho(0,1) out2
 link : output@despacho(0,0) out1
-portintransition : in@despacho(0,5) pedidosIn-regla
+portintransition : in@despacho(0,6) pedidosIn-regla
+portintransition : in@despacho(0,5) ins-regla
 portintransition : in@despacho(0,4) ins-regla
 portintransition : in@despacho(0,3) ins-regla
 portintransition : in@despacho(0,2) ins-regla
@@ -741,8 +747,69 @@ Eval: SendToNCPort Reference(out, [0.3, 0, 0]) at time 00:06:00:000:0
 En esta prueba se observa que se produce un evento de entrada en $00:05:00:000$ que modifica el estado de la celda (0,5). Este evento es el ingreso de un producto de fecha de vencimiento $300.4$. La demora de las reglas asociadas con entradas es de $1~\textrm{ms}$. En $00:05:00:001$ se determina el vecindario inverso de la celda $(0,5)$, que consiste en las celdas $(0,4)$ y $(0,5)$, y se evalúa cómo repercuten los cambios en la celda $(0,5)$. Para las celdas en este vecindario se ejecutan la primera y segunda regla y el producto avanza a la celda $(0,4)$ y se quita de la $(0,5)$. Las reglas locales se ejecutan cada $100~\textrm{ms}$, por lo tanto en el tiempo $00:05:00:101$ se evalúa el vecindario inverso de las celdas que sufrieron cambios en al paso anterior. Este vecindario inverso está compuesto por las celdas $(0,3)$, $(0,4)$ y $(0,5)$. En este paso el producto avanza una celda más hacia la izquierda pasando a la celda $(0,3)$. Nuevamente se esperan $100~\textrm{ms}$ para volver a evauar las reglas y en este caso se determina que la celda $(0,3)$ es la que le corresponde al producto y entonces se consulta inventario por la disponibilidad de lugar. Se puede observar que como el valor de las celdas evaluadas en $00:05:00:201$ no cambió entonces no se vuelven a evaluar las reglas locales. La respuesta del inventario llega a la celda $(0,3)$ en el tiempo $00:06:00:000$.
 
 \subsubsection{Inventario}
+Las pruebas de este módulo por
 
 \subsubsection{Despacho de Productos}
+Para la prueba de este módulo también se procedió a excitarlo con un archivo de eventos ".ev", conteniendo los pedidos de productos y las respuestas del inventario. Se tuvo especial cuidado en generar las respuestas del inventario en los momentos adecuados a la salida de consultas a las columnas. Considerando que la asignación de los valores de las reglas tiene un retraso de 1 (velocidad del despachante).
+
+\begin{minipage}{1\textwidth}
+	\centering
+	\begin{lstlisting}
+00:01:00:000 pedidosIn -1
+00:01:00:103 in6 0
+00:01:00:206 in5 0
+00:01:00:309 in4 0
+00:01:00:412 in3 300.4
+00:01:01:000 pedidosIn -1
+00:01:01:103 in6 0
+00:01:01:206 in5 0
+00:01:01:309 in4 0
+00:01:01:412 in3 0
+00:01:01:515 in2 0
+00:01:01:618 in1 600.2
+00:02:00:000 pedidosIn -1
+00:02:00:103 in6 900.5
+	\end{lstlisting}	
+\end{minipage}
+
+Ante este estímulo, el comportamiento que se espera es el siguiente:
+\begin{enumerate}
+	\item En el tiempo 00:01:00:000 se recibe un evento de pedido de producto.
+	\item Luego de 1 ms el pedido se registra en la oficina del despachante (celda (0,5)).
+	\item Luego de 100 ms, el despachante camina hasta la primera columna del inventario (celda (0,5)) y hace el pedido al inventario.
+	\item En el tiempo 00:01:00:103 el inventario responde que no hay productos en esa columna.
+	\item Luego de 1 ms más el despachante camina una columna más y repite el pedido.
+	\item Se repite el proceso con sus respectivos tiempos hasta que el despachante llega a la columna 3 (celda (0,2)) donde el inventario en tiempo 00:01:00:412 responde con un producto con fecha de caducidad 600.2 (recordar que el control de calidad se realiza por un modelo atómico mostrado en el TP1).
+	\item El producto se debe desplazar hacia la derecha a 100 ms por celda hasta salir por el puerto de salida de pedidos.
+	\item El proceso se repite ante una llegada de un pedido en el tiempo 00:01:01:000. Pero el despachante debe llegar hasta la primer columna para encontrar un producto.
+	\item Finalmente el proceso se repite en el tiempo 00:02:00:000 pero el inventario dispone de producto en la columna más cercana al despachante (celda (0,5)). Por lo que el recorrido del despachante es solamente de una posición.
+\end{enumerate}
+
+Para verificar el comportamiento esperado anterior, se procedió a analizar los archivos logs generados. Filtrando con el comando \textit{grep}, y conociendo la nomenclatura de los mensajes se puede analizar el comportamiento.
+Para la salida del top-model podemos observar:
+
+\begin{minipage}{1\textwidth}
+	\centering
+	\begin{lstlisting}
+0 / L / Y / 00:01:00:001:0 / despacho(01) / out6 /     -1.00000 / top(09)
+0 / L / Y / 00:01:00:104:0 / despacho(01) / out5 /     -1.00000 / top(09)
+0 / L / Y / 00:01:00:207:0 / despacho(01) / out4 /     -1.00000 / top(09)
+0 / L / Y / 00:01:00:310:0 / despacho(01) / out3 /     -1.00000 / top(09)
+0 / L / Y / 00:01:00:813:0 / despacho(01) / pedidosout /    300.40000 / top(09)
+0 / L / Y / 00:01:01:001:0 / despacho(01) / out6 /     -1.00000 / top(09)
+0 / L / Y / 00:01:01:104:0 / despacho(01) / out5 /     -1.00000 / top(09)
+0 / L / Y / 00:01:01:207:0 / despacho(01) / out4 /     -1.00000 / top(09)
+0 / L / Y / 00:01:01:310:0 / despacho(01) / out3 /     -1.00000 / top(09)
+0 / L / Y / 00:01:01:413:0 / despacho(01) / out2 /     -1.00000 / top(09)
+0 / L / Y / 00:01:01:516:0 / despacho(01) / out1 /     -1.00000 / top(09)
+0 / L / Y / 00:01:02:219:0 / despacho(01) / pedidosout /    600.20000 / top(09)
+0 / L / Y / 00:02:00:001:0 / despacho(01) / out6 /     -1.00000 / top(09)
+0 / L / Y / 00:02:00:204:0 / despacho(01) / pedidosout /    900.50000 / top(09)
+
+	\end{lstlisting}	
+\end{minipage}
+
+Donde se observa que 100 ms después de cada respuesta del inventario se cursa un pedido a la columna siguiente. Por otro lado se observa que el producto sale correctamente por la salida \textit{pedidosOut} 503 ms después de haber entrado en el despacho, tal como fue previsto. Se observa coherencia también en los casos siguientes, con un tiempo de demora en la salida proporcional a la distancia recorrida por el despachante para encontrar un producto en el inventario.
 
 \section{Conclusiones}
 
