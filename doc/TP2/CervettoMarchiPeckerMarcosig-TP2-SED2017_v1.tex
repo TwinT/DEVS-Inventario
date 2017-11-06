@@ -132,6 +132,10 @@
 %----------------------------- listings -----------------------------------
 % Necesitas este paquete para mostrar el código.
 \usepackage{listings}
+\lstset{
+  breaklines=true,
+  postbreak=\mbox{\textcolor{red}{$\hookrightarrow$}\space},
+}
 \lstdefinestyle{customcpp}{
   backgroundcolor=\color{white},   % choose the background color; you must add \usepackage{color} or \usepackage{xcolor}; should come as last argument
   basicstyle=\small,        % the size of the fonts that are used for the code
@@ -364,6 +368,190 @@ Las preguntas a responder mediante simulaciones son:
 \end{itemize}
 % \FloatBarrier
 
+\section{Descripción Formal}
+
+\subsection{\textit{Top-Model}}
+
+\subsection{Cinta Transportadora}\label{sec:CT}
+
+La cinta transportadora es el dispositivo por el que ingresan los productos al inventario. La cinta tiene su entrada \texttt{in} por la derecha en la celda $(0,n)$. Además cada celda tiene asociadas una entrada \texttt{ini} y una salida \texttt{outi}, como se observa en la Figura~\ref{fig:CT-automata}. 
+
+\begin{figure}[h] 
+  \centering 
+  \includegraphics[width=0.8\textwidth]{CT-automata.pdf} 
+  \caption{Autómata celular de la cinta transportadora.} 
+  \label{fig:CT-automata} 
+\end{figure}
+\FloatBarrier
+
+
+Los productos ingresan por la entrada \texttt{in} y se van desplazando hacia la izquierda a una velocidad representada por el tiempo entre ejecuciones de las reglas.
+
+Para cada celda en este autómata celular importa solamente el valor de la celda anterior y el de la celda posterior. Por este motivo el vecindario está definido en la Figura~\ref{fig:CT-vecindario}.
+
+\begin{figure}[h] 
+  \centering 
+  \includegraphics[width=0.4\textwidth]{CT-vecindario.pdf} 
+  \caption{Vecindario de la cinta transportadora.} 
+  \label{fig:CT-vecindario} 
+\end{figure}
+\FloatBarrier
+
+Cada elemento de la cinta transportadora está asociado a una columna en el inventario. A su vez, cada columna en el inventario tiene asignado un rango de fechas de vencimiento posibles, estando más hacia la izquierda las columnas asociadas a vencimientos más remotos.
+
+Las consultas de lugar disponible en una columna del inventario se realizan enviando un valor de fecha de vencimiento imposible, en este caso igual a $-1$. El inventario debe responder con $0$ si no hay lugar en la columna por la que se consultó o un número no nulo en caso contrario. En caso que la respuesta del inventario sea que no hay lugar en la columna por la que se consultó entonces la cinta debe hacer avanzar al producto hacia la izquierda una posición más y volver a preguntar por la disponibilidad de espacio en el inventario.
+
+Cada elemento en la cinta transportadora se representa con una tupla de tres elementos: \texttt{[ID columna, producto, indicador]}. El \texttt{ID columna} representa el rango de fechas de vencimiento asociados a la celda y a la columna respectiva del inventario. El elemento \texttt{producto} lleva la fecha de vencimiento del producto. Por último, el elemento \texttt{indicador} puede tener distintos significados dependiendo de su valor, los valores que puede tomar son: $0$, $1$ ó $2$. Si vale $1$ significa que el producto está listo para ser ubicado en la columna del inventario asociada a la celda actual de la cinta transportadora pero que no había lugar, si en cambio vale $2$ significa que ninguna de las columnas del inventario por las que se consultó tenía espacio y entonces ese producto permanecerá en la cinta transportadora.
+
+Los elementos de las tuplas se acceden utilizando el signo de exclamación e indicando a continuación el elemento que se quiere acceder. Así por ejemplo el elemento $0$ o \texttt{ID} de la celda actual se accede mediante $(0,0)!0$.
+
+Las reglas tienen la siguiente sintaxis: 
+\begin{lstlisting}
+rule : { resultado } { demora } { condicion }}
+\end{lstlisting}
+
+Las reglas que representan a la descripción anterior y están asociadas a las células de este autómata celular se enumeran a continuación:
+
+\begin{minipage}{1\textwidth}
+	\centering
+	\begin{lstlisting}
+[cinta-reglas]
+rule : { [(0,0)!0,(0,1)!1,0] } { 100 } { NOT isUndefined((0,1)!1) AND (0,1)!1 != 0 AND (0,1)!1 > (0,1)!0 + time/1000 }
+rule : { [(0,0)!0,0,0] } { 100 } { NOT isUndefined((0,-1)!1) AND (0,0)!1 != 0 AND (0,0)!1 > (0,0)!0 + time/1000 AND (0,-1)!1 = 0 } 
+rule : { [(0,0)!0,(0,1)!1,0] } { 100 } { (0,1)!2 = 1 }
+rule : { [(0,0)!0,0,0] } { 100 } { (0,0)!2 = 1 AND NOT isUndefined((0,-1)!1) AND (0,-1)!1 = 0 }
+rule : { [(0,0)!0,(0,0)!1,2] } { 100 } { (0,0)!2 = 1 AND (isUndefined((0,-1)!1) OR (0,-1)!1 != 0) }
+rule : { [(0,0)!0,(0,0)!1+send(output,-1),0] } { 100 } { (0,0)!2 != 2 AND (0,0)!1 != 0 AND (0,0)!1 <= (0,0)!0 + time/1000 }
+rule : { (0,0) } 0 { t }
+	\end{lstlisting}
+\end{minipage}
+
+La primera regla pregunta si la celda que está a la derecha de la celda actual está definida (\texttt{NOT isUndefined((0,1)!1)}), tiene un producto (\texttt{(0,1)!1 != 0}) y la fecha de vencimiento del producto es mayor que la de la columna (\texttt{(0,1)!1 > (0,1)!0 + time/1000}). En caso que se cumpla se mueve el producto desde la celda de la derecha a la celda actual.
+
+La segunda regla es el complemento de la primera, es decir, pregunta si la celda de la izquierda está definida (\texttt{NOT isUndefined((0,-1)!1)}) y está vacía (\texttt{(0,-1)!1 = 0}) y en la celda actual hay un producto y su fecha de vencimiento es mayor que la de la columna (\texttt{(0,0)!1>(0,0)!0+time/1000}). Si se cumple, entonces se quita el producto de esta celda.
+
+La tercera regla verifica si el elemento \texttt{indicador} de la tupla de la celda de la derecha es $1$. Si es así significa que la cinta consultó al inventario para mover ese producto y éste le respondió que no había lugar. Entonces lo que se hace es mover ese producto a la siguiente celda hacia la izquierda.
+
+La cuarta regla es el complemento de la tercera regla, pues pregunta si el elemento \texttt{indicador} de la tupla de la celda actual es $1$ y si la celda de la izquierda está vacía. Si se cumple entonces quita al producto de esta celda.
+
+La quinta regla se ejecuta cuando el producto no puede ser descargado en el inventario porque no hay lugar en las columnas que pregunta y alcanza el extremo izquierdo de la cinta transportadora. Esta condición se indica escribiendo un $2$ en el elemento indicador de la celda.
+
+La sexta regla es la que permite hacer la consulta al inventario de si hay lugar en la columna correspondiente. Esta consulta se realiza enviando $-1$ por la salida asociada con la celda \texttt{outi} y la respuesta se espera por la entrada \texttt{ini}. Se puede ver que si el elemento indicador de la celda actual es $2$ entonces esta regla no se ejecuta, es decir, no se repite la consulta al inventario.
+
+Finalmente, la séptima regla es la regla por omisión que es siempre verdadera pues debe existir siempre al menos una regla verdadera.
+
+Asimismo, se definieron reglas que se ejecutan ante la aparición de las distintas entradas. Así, ante el arribo de un producto por la entrada \texttt{in} se ejecuta la siguiente regla:
+
+\begin{minipage}{1\textwidth}
+	\centering
+	\begin{lstlisting}
+[in-regla]
+rule : { [(0,0)!0,portValue(thisPort),0] } { 1 } { t }
+	\end{lstlisting}
+\end{minipage}
+
+Se observa que lo que se hace es copiar el producto que acaba de llegar en la celda conectada a la entrada \texttt{in}.
+
+Finalmente, como se mencionó más arriba, cuando el producto llega a la celda que le corresponde en la cinta transportadora se genera una consulta al inventario para saber si existe lugar en la columna correspondiente. Las reglas que se evalúan cuando llega la respuesta son:
+
+\begin{minipage}{1\textwidth}
+	\centering
+	\begin{lstlisting}
+[inventario-regla]
+rule : { [(0,0)!0,0+send(output,(0,0)!1),0] } { 1 } { portValue(thisPort)!=0 }
+rule : { [(0,0)!0,(0,0)!1,1] } { 1 } { portValue(thisPort)=0 }
+	\end{lstlisting}
+\end{minipage}
+
+Se puede ver que como se utiliza el comando \texttt{thisPort} esta regla es válida para todas las celdas de la cinta transportadora. Si la respuesta que recibe la celda de parte del inventario es no nula entonces se envía el producto por el mismo puerto por el que se realizó la consulta. Si en cambio no hay lugar entonces se indica colocando un $1$ en el indicador de la tupla (\texttt{[(0,0)!0,(0,0)!1,1]}).
+
+
+\section{Modelado y Simulación}
+\subsection{Pruebas parciales}
+\subsubsection{Cinta Transportadora}
+
+Para este ejemplo se utilizó una cinta transportadora de $6$ celdas. El tiempo entre ejecuciones de las reglas en las transiciones locales se configuró en $100~\textrm{ms}$, mientras que el tiempo en las reglas de las transiciones en los puertos de entrada se configuró en $1~\textrm{ms}$. Con el primer tiempo se modeliza la velocidad de avance de la cinta transportadora.
+
+Los valores iniciales de las celdas se configuraron mediante el archivo \texttt{cinta.val} cuyo contenido se muestra a continuación:
+
+\begin{minipage}{1\textwidth}
+	\centering
+	\begin{lstlisting}
+(0,0) = [0.6,0  ,0]
+(0,1) = [0.5,0  ,0]
+(0,2) = [0.4,0  ,0]
+(0,3) = [0.3,0  ,0]
+(0,4) = [0.2,0  ,0]
+(0,5) = [0.1,0.3,0]
+	\end{lstlisting}
+\end{minipage}
+
+Se observa que cada celda tiene asociada una tupla de tres elementos. El primer elemento de estas tuplas identifica a la fecha de vencimiento de la celda. Esta fecha de vencimiento se mantiene fija a lo largo de la simulación aunque al momento de comparar la fecha de vencimiento de un producto con el de la celda a esta última se le suma el tiempo actual \texttt{time/1000}.
+
+Los eventos de entrada: a) arribo de productos a la cinta y b) respuestas del inventario se manejan mediante el archivo \texttt{cinta.ev} cuyo contenido se meustra a continuación:
+
+\begin{minipage}{1\textwidth}
+	\centering
+	\begin{lstlisting}
+00:00:00:111 in2 0
+00:00:00:221 in3 1
+00:05:00:000 in  300.4
+00:06:00:000 in3 1
+00:10:00:000 in  600.2
+00:11:00:000 in2 1
+00:15:00:000 in  900.5
+00:16:00:000 in3 0
+00:17:00:000 in4 0
+00:18:00:000 in5 0
+00:19:00:000 in6 0
+	\end{lstlisting}	
+\end{minipage}
+
+Para analizar el comportamiento del autómata celular que utiliza las reglas antes mencionadas y la secuencia de eventos de entrada del archivo \texttt{cinta.ev} se ejecutó el simulador con el parámetro \texttt{-v} de modo de tener una salida \textit{verbosa}. El primer producto que ingresa en la cinta lo hace mediante el archivo \texttt{cinta.val}. La salida de la prueba es la siguiente:
+
+\begin{minipage}{1\textwidth}
+	\centering
+	\begin{lstlisting}
+0 / L / Y / 00:00:00:100:0 / out2 /  -1.0 /
+0 / L / X / 00:00:00:111:0 /  in2 /   0.0 /
+0 / L / Y / 00:00:00:212:0 / out3 /  -1.0 /
+0 / L / X / 00:00:00:221:0 /  in3 /   1.0 /
+0 / L / Y / 00:00:00:221:0 / out3 /   0.3 /
+0 / L / X / 00:05:00:000:0 /   in / 300.4 /
+0 / L / Y / 00:05:00:201:0 / out3 /  -1.0 /
+0 / L / X / 00:06:00:000:0 /  in3 /   1.0 /
+0 / L / Y / 00:06:00:000:0 / out3 / 300.4 /
+0 / L / X / 00:10:00:000:0 /   in / 600.2 /
+0 / L / Y / 00:10:00:101:0 / out2 /  -1.0 /
+0 / L / X / 00:11:00:000:0 /  in2 /   1.0 /
+0 / L / Y / 00:11:00:000:0 / out2 / 600.2 /
+0 / L / X / 00:15:00:000:0 /   in / 900.5 /
+0 / L / Y / 00:15:00:201:0 / out3 /  -1.0 /
+0 / L / X / 00:16:00:000:0 /  in3 /   0.0 /
+0 / L / Y / 00:16:00:101:0 / out4 /  -1.0 /
+0 / L / X / 00:17:00:000:0 /  in4 /   0.0 /
+0 / L / Y / 00:17:00:101:0 / out5 /  -1.0 /
+0 / L / X / 00:18:00:000:0 /  in5 /   0.0 /
+0 / L / Y / 00:18:00:101:0 / out6 /  -1.0 /
+0 / L / X / 00:19:00:000:0 /  in6 /   0.0 /
+	\end{lstlisting}	
+\end{minipage}
+
+Esta salida se obtuvo del archivo \texttt{log} del modelo \textit{top} reteniendo solamente los eventos de entrada (X) y salida (Y). El primer producto ingresa a la cinta durante la inicialización y por ese motivo no aparece aquí. Ese primer producto tiene una fecha de vencimiento de $0.3$. A los $100~\textrm{ms}$ este producto llega a la celda $(0,2)$ y se consulta al inventario si hay lugar en la columna correspondiente enviando un $-1$ por el puerto de salida \texttt{out2}. Un tiempo después llega la respuesta del inventario indicando con un $0$ que no hay lugar, entonces el producto avanzará una posición en la celda. Se repite la consulta al inventario pero esta vez desde la salida \texttt{out3}. Al tiempo llega la respuesta del inventario indicando que hay lugar e instantáneamente la cinta descarga el producto por la salida. Luego de un tiempo arriba un producto de valor de fecha de vencimiento $300.4~\textrm{ms}$. Este producto avanza en la cinta hasta la posición $(0,3)$, consulta si hay lugar en el inventario y se descarga allí. De igual manera se procede con el producto que ingresa a la cinta a continuación de valor de fecha de vencimiento $600.2~\textrm{ms}$. Finalmente, el último producto de valor $900.5~\textrm{ms}$ que avanza hasta la celda $(0,3)$ y consulta al inventario, ante la respuesta de éste el producto avanza una posición más en la cinta transportadora y vuelve a consultar. Esta operación se repite y el producto alcanza el final de la cinta transportadora y ante la falta de lugar en el inventario entonces el producto permanece en la cinta transportadora.
+
+% Las reglas asociadas con entradas tienen un tiempo de ejecución de 1ms. Esto significa que una vez que se recibe una entrada las reglas se volverán a ejecutar 1ms después.
+% Si la entrada llega a la celda (0,5) entonces después de 1ms se determina cuál es el vecindario inverso de la celda (0,5), es decir, a qué celdas afecta el cambio en la celda (0,5). Para esta celda en particular, el vecindario inverso incluye solamente a la celda (0,4). En este paso se modifican las celdas (0,4) y (0,5).
+% En el siguiente paso, luego de 100ms, se evalúa el vecindario inverso de la celda (0,4) que incluye a las celdas (0,3) y (0,5). Entonces se evalúan las  reglasestas tres celdas.
+
+
+
+\subsubsection{Inventario}
+
+\subsubsection{Despacho de Productos}
+
+\section{Conclusiones}
+
+A lo largo del desarrollo del trabajo práctico con la herramienta CD++ en su versión \textit{standalone} se encontraron algunos inconvenientes: a) cuando se incluye un bloque generador se genera un error que indica que el bloque no está registrado, b) cuando se ejecuta el simulador avanzado con el parámetro \texttt{-r} se produce una excepción y se aborta la ejecución. en lugar de utilizar tres autómatas celulares este trabajo podría haberse resuelto utilizando tan solo uno y definiendo tres zonas cada una con sus reglas. Sin embargo, en la versión avanzada del simulador nos recomendaron no utilizar zonas ya que no están aún debidamente probadas. No obstante los comentarios anteriores, la versión avanzada del simulador presenta como ventaja la incorporación de tuplas que simplifica los vecindarios a utilizar y da mayor flexibilidad.
 
 \appendix
 \section{Código Implementado}
