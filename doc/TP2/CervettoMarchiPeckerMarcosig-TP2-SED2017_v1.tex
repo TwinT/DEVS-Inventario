@@ -567,10 +567,11 @@ Y las siguientes dos las responsables del movimiento del despachante, respectiva
 
 Se utilizaron tuplas de dos posiciones para representar el estado de la celda. Esto permite marcar cuando un pedido fue realizado al inventario y éste último informa que en esa columna no hay disponibilidad, resultando en una consulta fallida, representada por el valor [0,-1] en la celda. Este es el caso donde el despachante deberá avanzar una columna más hacia la izquierda, según la primer regla de arriba, asociada al despachante.
 
-Para terminar de definir el modelo, se deben especificar los comportamientos de los diferentes puertos, para ello se plantearon dos juegos de reglas. El primero para la entrada de pedidos, que simplemente copia el valor del pedido de productos (-1) en la celda correspondiente (oficina del despachante). El segundo para los valores que envía el inventario: por un lado  setea el estado de la celda en consulta fallida ([0,-1]) si el inventario devuelve 0, o por otro, copia el valor si el inventario devuelve un producto (valor $>0$). Dichas reglas se muestran a continuación:
 Las velocidades del despachante y del producto se ajustaron seteando el tiempo de transición de una celda en otra en en 100 ms. Mientras que las salidas y entradas se setearon con una velocidad de 1 ms.
 
-Para terminar de definir el modelo, se deben especificar los comportamientos de los diferentes puertos, para ello se plantearon dos juegos de reglas. El primero para la entrada de pedidos, que simplemente copia el valor del pedido de productos (-1) en la celda correspondiente (oficina del despachante). El segundo para los valores que envía el inventario: por un lado  setea el estado de la celda en consulta fallida ([0,-1]) si el inventario devuelve 0, o por otro, copia el valor si el inventario devuelve un producto (valor >0). Dichas reglas se muestran a continuación:
+Para terminar de definir el modelo, se deben especificar los comportamientos de los diferentes puertos, para ello se plantearon dos juegos de reglas. El primero para la entrada de pedidos, que simplemente copia el valor del pedido de productos (-1) en la celda correspondiente (oficina del despachante). El segundo para los valores que envía el inventario: por un lado  setea el estado de la celda en consulta fallida ([0,-1]) si el inventario devuelve 0, o por otro, copia el valor si el inventario devuelve un producto (valor $>0$). Dichas reglas se muestran a continuación:
+
+
 
 \begin{minipage}{1\textwidth}
 	\centering
