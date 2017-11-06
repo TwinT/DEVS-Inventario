@@ -133,8 +133,11 @@
 % Necesitas este paquete para mostrar el código.
 \usepackage{listings}
 \lstset{
+  breakatwhitespace=false,         % sets if automatic breaks should only happen at whitespace
+  basicstyle=\small,        % the size of the fonts that are used for the code
   breaklines=true,
   postbreak=\mbox{\textcolor{red}{$\hookrightarrow$}\space},
+  extendedchars=true,              % lets you use non-ASCII characters; for 8-bits encodings only, does not work with UTF-8
 }
 \lstdefinestyle{customcpp}{
   backgroundcolor=\color{white},   % choose the background color; you must add \usepackage{color} or \usepackage{xcolor}; should come as last argument
@@ -537,13 +540,54 @@ Para analizar el comportamiento del autómata celular que utiliza las reglas ant
 	\end{lstlisting}	
 \end{minipage}
 
-Esta salida se obtuvo del archivo \texttt{log} del modelo \textit{top} reteniendo solamente los eventos de entrada (X) y salida (Y). El primer producto ingresa a la cinta durante la inicialización y por ese motivo no aparece aquí. Ese primer producto tiene una fecha de vencimiento de $0.3$. A los $100~\textrm{ms}$ este producto llega a la celda $(0,2)$ y se consulta al inventario si hay lugar en la columna correspondiente enviando un $-1$ por el puerto de salida \texttt{out2}. Un tiempo después llega la respuesta del inventario indicando con un $0$ que no hay lugar, entonces el producto avanzará una posición en la celda. Se repite la consulta al inventario pero esta vez desde la salida \texttt{out3}. Al tiempo llega la respuesta del inventario indicando que hay lugar e instantáneamente la cinta descarga el producto por la salida. Luego de un tiempo arriba un producto de valor de fecha de vencimiento $300.4~\textrm{ms}$. Este producto avanza en la cinta hasta la posición $(0,3)$, consulta si hay lugar en el inventario y se descarga allí. De igual manera se procede con el producto que ingresa a la cinta a continuación de valor de fecha de vencimiento $600.2~\textrm{ms}$. Finalmente, el último producto de valor $900.5~\textrm{ms}$ que avanza hasta la celda $(0,3)$ y consulta al inventario, ante la respuesta de éste el producto avanza una posición más en la cinta transportadora y vuelve a consultar. Esta operación se repite y el producto alcanza el final de la cinta transportadora y ante la falta de lugar en el inventario entonces el producto permanece en la cinta transportadora.
+Esta salida se obtuvo del archivo \texttt{log} del modelo \textit{top} reteniendo solamente los eventos de entrada (X) y salida (Y). El primer producto ingresa a la cinta durante la inicialización y por ese motivo no aparece aquí. Ese primer producto tiene una fecha de vencimiento de $0.3$. En el tiempo $0$ se evalúan todas las celdas y el producto avanza una celda hacia la izquierda alcanzando la celda $(0,4)$ de la Figura~\ref{fig:CT-automata}. La siguiente ejecución de las reglas se produce a los $100~\textrm{ms}$ y sólo se evalúan las celdas en el vecindario inverso de las celdas que sufrieron modificaciones en el paso anterior. En este paso el producto no avanza un casillero más hacia la izquierda pues en la comparación de \texttt{(0,0)!1} con \texttt{(0,0)!0 + time/1000} de las primera y segunda regla el producto se queda en la celda $(0,4)$ cuyo campo \texttt{ID} es $0.2$. Entonces en este paso se consulta al inventario si hay lugar disponible en la columna conectada a la salida \texttt{out2} enviando un $-1$ por el puerto de salida. Un tiempo después llega la respuesta del inventario indicando con un $0$ que no hay lugar, entonces el producto avanzará una posición en la celda. Se repite la consulta al inventario pero esta vez desde la salida \texttt{out3}. Al tiempo llega la respuesta del inventario indicando que hay lugar e instantáneamente la cinta descarga el producto por la salida. Luego de un tiempo arriba un producto de valor de fecha de vencimiento $300.4~\textrm{ms}$. Este producto avanza en la cinta hasta la posición $(0,3)$, consulta si hay lugar en el inventario y se descarga allí. De igual manera se procede con el producto que ingresa a la cinta a continuación de valor de fecha de vencimiento $600.2~\textrm{ms}$. Finalmente, el último producto de valor $900.5~\textrm{ms}$ que avanza hasta la celda $(0,3)$ y consulta al inventario, ante la respuesta de éste el producto avanza una posición más en la cinta transportadora y vuelve a consultar. Esta operación se repite y el producto alcanza el final de la cinta transportadora y ante la falta de lugar en el inventario entonces el producto permanece en la cinta transportadora.
 
-% Las reglas asociadas con entradas tienen un tiempo de ejecución de 1ms. Esto significa que una vez que se recibe una entrada las reglas se volverán a ejecutar 1ms después.
-% Si la entrada llega a la celda (0,5) entonces después de 1ms se determina cuál es el vecindario inverso de la celda (0,5), es decir, a qué celdas afecta el cambio en la celda (0,5). Para esta celda en particular, el vecindario inverso incluye solamente a la celda (0,4). En este paso se modifican las celdas (0,4) y (0,5).
-% En el siguiente paso, luego de 100ms, se evalúa el vecindario inverso de la celda (0,4) que incluye a las celdas (0,3) y (0,5). Entonces se evalúan las  reglasestas tres celdas.
+Para tener mayor detalle de la ejecución de las reglas se puede observar la salida del simulador en modo \textit{verboso}. Allí se puede observar que cada vez que se evalúa una regla en una celda se determina su vecindario inverso y de éste se determinan las celdas que podrían verse afectadas por un cambio en el valor de dicha celda. De esta manera no están ejecutándose siempre todas las reglas para todas las celdas. Esto se puede observar en el siguiente extracto de la salida:
 
+\begin{minipage}{1\textwidth}
+	\centering
+	\begin{lstlisting}
++-----------------------------------------------------+
+New Eval: in-regla - 00:05:00:000:0 - cinta(0,5)
+Eval: PortIn Reference(in) = 300.4
+Eval: SendToNCPort Reference(out, [0.1, 300.4, 0]) at time 00:05:00:000:0
++-----------------------------------------------------+
+New Eval: cinta-reglas - 00:05:00:001:0 - cinta(0,4)
+Eval: SendToNCPort Reference(out, [0.2, 300.4, 0]) at time 00:05:00:001:0
++-----------------------------------------------------+
+New Eval: cinta-reglas - 00:05:00:001:0 - cinta(0,5)
+Eval: SendToNCPort Reference(out, [0.1, 0, 0]) at time 00:05:00:001:0
++-----------------------------------------------------+
+New Eval: cinta-reglas - 00:05:00:101:0 - cinta(0,3)
+Eval: SendToNCPort Reference(out, [0.3, 300.4, 0]) at time 00:05:00:101:0
++-----------------------------------------------------+
+New Eval: cinta-reglas - 00:05:00:101:0 - cinta(0,4)
+Eval: SendToNCPort Reference(out, [0.2, 0, 0]) at time 00:05:00:101:0
++-----------------------------------------------------+
+New Eval: cinta-reglas - 00:05:00:101:0 - cinta(0,5)
+Eval: SendToNCPort Reference(out, [0.1, 0, 0]) at time 00:05:00:101:0
++-----------------------------------------------------+
+New Eval: cinta-reglas - 00:05:00:201:0 - cinta(0,2)
+Eval: SendToNCPort Reference(out, [0.4, 0, 0]) at time 00:05:00:201:0
++-----------------------------------------------------+
+New Eval: cinta-reglas - 00:05:00:201:0 - cinta(0,3)
+Eval: SendToPort Reference(output, -1) at time 00:05:00:201:0
+Eval: SendToNCPort Reference(out, [0.3, 300.4, 0]) at time 00:05:00:201:0
++-----------------------------------------------------+
+New Eval: cinta-reglas - 00:05:00:201:0 - cinta(0,4)
+Eval: SendToNCPort Reference(out, [0.2, 0, 0]) at time 00:05:00:201:0
++-----------------------------------------------------+
+New Eval: cinta-reglas - 00:05:00:201:0 - cinta(0,5)
+Eval: SendToNCPort Reference(out, [0.1, 0, 0]) at time 00:05:00:201:0
++-----------------------------------------------------+
+New Eval: inventario-regla - 00:06:00:000:0 - cinta(0,3)
+Eval: PortIn Reference(in3) = 1
+Eval: SendToPort Reference(output, 300.4) at time 00:06:00:000:0
+Eval: SendToNCPort Reference(out, [0.3, 0, 0]) at time 00:06:00:000:0
+	\end{lstlisting}	
+\end{minipage}
 
+En esta prueba se observa que se produce un evento de entrada en $00:05:00:000$ que modifica el estado de la celda (0,5). Este evento es el ingreso de un producto de fecha de vencimiento $300.4$. La demora de las reglas asociadas con entradas es de $1~\textrm{ms}$. En $00:05:00:001$ se determina el vecindario inverso de la celda $(0,5)$, que consiste en las celdas $(0,4)$ y $(0,5)$, y se evalúa cómo repercuten los cambios en la celda $(0,5)$. Para las celdas en este vecindario se ejecutan la primera y segunda regla y el producto avanza a la celda $(0,4)$ y se quita de la $(0,5)$. Las reglas locales se ejecutan cada $100~\textrm{ms}$, por lo tanto en el tiempo $00:05:00:101$ se evalúa el vecindario inverso de las celdas que sufrieron cambios en al paso anterior. Este vecindario inverso está compuesto por las celdas $(0,3)$, $(0,4)$ y $(0,5)$. En este paso el producto avanza una celda más hacia la izquierda pasando a la celda $(0,3)$. Nuevamente se esperan $100~\textrm{ms}$ para volver a evauar las reglas y en este caso se determina que la celda $(0,3)$ es la que le corresponde al producto y entonces se consulta inventario por la disponibilidad de lugar. Se puede observar que como el valor de las celdas evaluadas en $00:05:00:201$ no cambió entonces no se vuelven a evaluar las reglas locales. La respuesta del inventario llega a la celda $(0,3)$ en el tiempo $00:06:00:000$.
 
 \subsubsection{Inventario}
 
@@ -551,7 +595,7 @@ Esta salida se obtuvo del archivo \texttt{log} del modelo \textit{top} reteniend
 
 \section{Conclusiones}
 
-A lo largo del desarrollo del trabajo práctico con la herramienta CD++ en su versión \textit{standalone} se encontraron algunos inconvenientes: a) cuando se incluye un bloque generador se genera un error que indica que el bloque no está registrado, b) cuando se ejecuta el simulador avanzado con el parámetro \texttt{-r} se produce una excepción y se aborta la ejecución. en lugar de utilizar tres autómatas celulares este trabajo podría haberse resuelto utilizando tan solo uno y definiendo tres zonas cada una con sus reglas. Sin embargo, en la versión avanzada del simulador nos recomendaron no utilizar zonas ya que no están aún debidamente probadas. No obstante los comentarios anteriores, la versión avanzada del simulador presenta como ventaja la incorporación de tuplas que simplifica los vecindarios a utilizar y da mayor flexibilidad.
+A lo largo del desarrollo del trabajo práctico con la herramienta CD++ en su versión \textit{standalone} se encontraron algunos inconvenientes: a) cuando se incluye un bloque generador se genera un error que indica que el bloque no está registrado, b) cuando se ejecuta el simulador avanzado con el parámetro \texttt{-r} se produce una excepción y se aborta la ejecución y c) no existe un visualizador para el simulador avanzado ya que los que hay (\textit{drawlog} y \textit{webviewer}) no permiten representar tuplas. Esto último dificulta el ensayo de los autómatas celulares. En lugar de utilizar tres autómatas celulares este trabajo podría haberse resuelto utilizando tan solo uno y definiendo tres zonas cada una con sus reglas. Sin embargo, en la versión avanzada del simulador nos recomendaron no utilizar zonas ya que no están aún debidamente probadas. No obstante los comentarios anteriores, la versión avanzada del simulador presenta como ventaja la incorporación de tuplas que simplifica los vecindarios a utilizar y da mayor flexibilidad.
 
 \appendix
 \section{Código Implementado}
