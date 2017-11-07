@@ -29,13 +29,6 @@ link : qtopout4@inventario in4@cinta
 link : qtopout5@inventario in5@cinta
 link : qtopout6@inventario in6@cinta
 
-link : @cinta qtopin1@inventario
-link : @cinta qtopin2@inventario
-link : @cinta qtopin3@inventario
-link : @cinta qtopin4@inventario
-link : @cinta qtopin5@inventario
-link : @cinta qtopin6@inventario
-
 %Inventario-despacho
 %Productos
 link : pout1@inventario in1@despacho
