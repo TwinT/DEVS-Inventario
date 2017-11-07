@@ -20,6 +20,7 @@ link : out6@cinta out6
 %distribution : Exponential
 %mean : 0.12
 
+#BeginMacro(Cinta)
 [cinta]
 type : cell
 dim : (1,6)
@@ -57,7 +58,7 @@ localtransition : cinta-reglas
 % celda: (y_celda,x_celda,z_celda)!idx_tupla=val
 % tupla: [idx_0,idx_1,...] -> sin espacios
 rule : { [(0,0)!0,(0,1)!1,0] } { 100 } { NOT isUndefined((0,1)!1) AND (0,1)!1!=0 AND (0,1)!1>(0,1)!0+time/1000 }
-rule : { [(0,0)!0,0,0] } { 100 } { NOT isUndefined((0,-1)!1) AND (0,0)!1!=0 AND (0,0)!1>(0,0)!0+time/1000 AND (0,-1)!1=0 } 
+rule : { [(0,0)!0,0,0] } { 100 } { NOT isUndefined((0,-1)!1) AND (0,0)!1!=0 AND (0,0)!1>(0,0)!0+time/1000 AND (0,-1)!1=0 }
 rule : { [(0,0)!0,(0,1)!1,0] } { 100 } { (0,1)!2=1 }
 rule : { [(0,0)!0,0,0] } { 100 } { (0,0)!2=1 AND NOT isUndefined((0,-1)!1) AND (0,-1)!1=0 }
 rule : { [(0,0)!0,(0,0)!1,2] } { 100 } { (0,0)!2=1 AND (isUndefined((0,-1)!1) OR (0,-1)!1!=0) }
@@ -70,3 +71,4 @@ rule : { [(0,0)!0,portValue(thisPort),0] } { 1 } { t }
 [inventario-regla]
 rule : { [(0,0)!0,0+send(output,(0,0)!1),0] } { 1 } { portValue(thisPort)!=0 }
 rule : { [(0,0)!0,(0,0)!1,1] } { 1 } { portValue(thisPort)=0 } % el [x,y,1] indica que la columna del inventario esta llena
+#EndMacro

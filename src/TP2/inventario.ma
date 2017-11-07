@@ -38,6 +38,7 @@ link : pout4@inventario pout4
 link : pout5@inventario pout5
 link : pout6@inventario pout6
 
+#BeginMacro(Inventario)
 [inventario]
 type : cell
 dim : (6,6)
@@ -118,28 +119,28 @@ localtransition : inventario-reglas
 % Tiene prioridad el de arriba en caso de empate
 
 % Gana el de arriba
-rule : { [(0,0)!0,0] }        100 {not isUndefined((1,-1)!1) and not isUndefined((1,0)!1)  and (1,0)!1=0   and (1,-1)!1!=0 and (1,-1)!1<(1,-1)!0+time/1000 and (0,0)!1!=0 and (0,0)!1<=(1,-1)!1}  
-rule : { [(0,0)!0,(-1,0)!1] } 100 {not isUndefined((-1,0)!1) and not isUndefined((0,-1)!1) and (-1,0)!1!=0 and (0,-1)!1!=0 and (0,-1)!1<(0,-1)!0+time/1000 and (0,0)!1=0 and (-1,0)!1<=(0,-1)!1} 
+rule : { [(0,0)!0,0] }        100 {not isUndefined((1,-1)!1) and not isUndefined((1,0)!1)  and (1,0)!1=0   and (1,-1)!1!=0 and (1,-1)!1<(1,-1)!0+time/1000 and (0,0)!1!=0 and (0,0)!1<=(1,-1)!1}
+rule : { [(0,0)!0,(-1,0)!1] } 100 {not isUndefined((-1,0)!1) and not isUndefined((0,-1)!1) and (-1,0)!1!=0 and (0,-1)!1!=0 and (0,-1)!1<(0,-1)!0+time/1000 and (0,0)!1=0 and (-1,0)!1<=(0,-1)!1}
 
 % Gana el de la izquierda
-rule : { [(0,0)!0,0] }        100 {not isUndefined((-1,1)!1) and not isUndefined((0,1)!1)  and (0,1)!1=0 and (-1,1)!1!=0 and (0,0)!1<(0,0)!0+time/1000   and (0,0)!1!=0  and (0,0)!1<(-1,1)!1}  
-rule : { [(0,0)!0,(0,-1)!1] } 100 {not isUndefined((-1,0)!1) and not isUndefined((0,-1)!1) and (0,0)!1=0 and (0,-1)!1!=0 and (0,-1)!1<(0,-1)!0+time/1000 and (-1,0)!1!=0 and (0,-1)!1<(-1,0)!1} 
+rule : { [(0,0)!0,0] }        100 {not isUndefined((-1,1)!1) and not isUndefined((0,1)!1)  and (0,1)!1=0 and (-1,1)!1!=0 and (0,0)!1<(0,0)!0+time/1000   and (0,0)!1!=0  and (0,0)!1<(-1,1)!1}
+rule : { [(0,0)!0,(0,-1)!1] } 100 {not isUndefined((-1,0)!1) and not isUndefined((0,-1)!1) and (0,0)!1=0 and (0,-1)!1!=0 and (0,-1)!1<(0,-1)!0+time/1000 and (-1,0)!1!=0 and (0,-1)!1<(-1,0)!1}
 
 % caso particular: gana el de arriba porque no hay nada a la izquierda
-rule : { [(0,0)!0,0] }        100 {not isUndefined((1,-1)!1) and not isUndefined((1,0)!1)  and (1,0)!1=0   and (1,-1)!1=0 and (0,0)!1!=0 }  
-rule : { [(0,0)!0,(-1,0)!1] } 100 {not isUndefined((-1,0)!1) and not isUndefined((0,-1)!1) and (-1,0)!1!=0 and (0,-1)!1=0 and (0,0)!1=0 } 
+rule : { [(0,0)!0,0] }        100 {not isUndefined((1,-1)!1) and not isUndefined((1,0)!1)  and (1,0)!1=0   and (1,-1)!1=0 and (0,0)!1!=0 }
+rule : { [(0,0)!0,(-1,0)!1] } 100 {not isUndefined((-1,0)!1) and not isUndefined((0,-1)!1) and (-1,0)!1!=0 and (0,-1)!1=0 and (0,0)!1=0 }
 
 % caso particular: gana el de la izquierda porque no hay nada arriba
-rule : { [(0,0)!0,0] }        100 {not isUndefined((-1,1)!1) and not isUndefined((0,1)!1)  and (0,1)!1=0 and (-1,1)!1=0 and (0,0)!1<(0,0)!0+time/1000 and (0,0)!1!=0 }  
-rule : { [(0,0)!0,(0,-1)!1] } 100 {not isUndefined((-1,0)!1) and not isUndefined((0,-1)!1) and (0,0)!1=0 and (0,-1)!1!=0 and (0,-1)!1<(0,-1)!0+time/1000 and (-1,0)!1=0 } 
+rule : { [(0,0)!0,0] }        100 {not isUndefined((-1,1)!1) and not isUndefined((0,1)!1)  and (0,1)!1=0 and (-1,1)!1=0 and (0,0)!1<(0,0)!0+time/1000 and (0,0)!1!=0 }
+rule : { [(0,0)!0,(0,-1)!1] } 100 {not isUndefined((-1,0)!1) and not isUndefined((0,-1)!1) and (0,0)!1=0 and (0,-1)!1!=0 and (0,-1)!1<(0,-1)!0+time/1000 and (-1,0)!1=0 }
 
 % caso particular: columna de la izquierda, solo se puede bajar
-rule : { [(0,0)!0,0] }        100 {isUndefined((1,-1)!1) and not isUndefined((1,0)!1)  and (1,0)!1=0  and (0,0)!1!=0}  
-rule : { [(0,0)!0,(-1,0)!1] } 100 {not isUndefined((-1,0)!1) and isUndefined((0,-1)!1) and (-1,0)!1!=0 and (0,0)!1=0} 
+rule : { [(0,0)!0,0] }        100 {isUndefined((1,-1)!1) and not isUndefined((1,0)!1)  and (1,0)!1=0  and (0,0)!1!=0}
+rule : { [(0,0)!0,(-1,0)!1] } 100 {not isUndefined((-1,0)!1) and isUndefined((0,-1)!1) and (-1,0)!1!=0 and (0,0)!1=0}
 
 % caso particular: fila de arriba, se puede ir a la derecha
-rule : { [(0,0)!0,0] }        100 {isUndefined((-1,1)!1) and not isUndefined((0,1)!1) and (0,1)!1=0 and (0,0)!1<(0,0)!0+time/1000 and (0,0)!1!=0 }  
-rule : { [(0,0)!0,(0,-1)!1] } 100 {isUndefined((-1,0)!1) and not isUndefined((0,-1)!1) and (0,0)!1=0 and (0,-1)!1!=0 and (0,-1)!1<(0,-1)!0+time/1000} 
+rule : { [(0,0)!0,0] }        100 {isUndefined((-1,1)!1) and not isUndefined((0,1)!1) and (0,1)!1=0 and (0,0)!1<(0,0)!0+time/1000 and (0,0)!1!=0 }
+rule : { [(0,0)!0,(0,-1)!1] } 100 {isUndefined((-1,0)!1) and not isUndefined((0,-1)!1) and (0,0)!1=0 and (0,-1)!1!=0 and (0,-1)!1<(0,-1)!0+time/1000}
 
 rule : { (0,0) } 0 { t }
 
@@ -156,4 +157,4 @@ rule:  { [(0,0)!0,portValue(thisPort)] } 1 { t }
 
 %borra producto
 rule:  { [(0,0)!0,0+send(output,(0,0)!1)] } 1 { t }
-
+%EndMacro
