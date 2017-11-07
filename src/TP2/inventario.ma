@@ -109,56 +109,37 @@ portintransition : in@inventario(5,2) query-bot-in
 portintransition : in@inventario(5,1) query-bot-in
 portintransition : in@inventario(5,0) query-bot-in
 
-
-%zone : left-rule  { (0,0)..(5,0) }
-%zone : right-rule { (0,5)..(5,5) }
 localtransition : inventario-reglas
 
 
-
-%[left-rule]
-
-%rule : { (0,0) } 0 { t }
-
-%[right-rule]
-
-% hacia abajo si está vacío y (1,-1) quiere entrar pero es menor a (1,-1)
-%rule : { [(0,0)!0,0] }        100 {not isUndefined((1,-1)!1) and (1,-1)!1<(1,-1)!0+time/1000 and (0,0)!1>0 and (0,0)!1<=(1,-1)!1}  
-
-% absorción del de la izquierda o el de arriba
-% izquierda
-%rule : { [(0,0)!0,(0,-1)!1] } 100 {not isUndefined((-1,0)!1) and (0,0)!1=0 and (-1,0)!1>=(0,-1)!1} 
-% arriba
-%rule : { [(0,0)!0,(-1,0)!1] } 100 {not isUndefined((-1,0)!1) and (0,0)!1=0 and (-1,0)!1<(0,-1)!1} 
-% casillero de arriba (0,5)
-%rule : { [(0,0)!0,(0,-1)!1] } 100 {isUndefined((-1,0)!1) and (0,0)!1=0 and (0,-1)!1<(0,-1)!0+time/1000 and (0,-1)!1>0} 
-%rule : { (0,0) } 0 { t }
-
 [inventario-reglas]
 
-% hacia abajo si está vacío y (1,-1) quiere entrar pero es menor a (1,-1)
-rule : { [(0,0)!0,0] }        100 {not isUndefined((1,-1)!1) and (1,-1)!1<(1,-1)!0+time/1000 and (0,0)!1>0 and (0,0)!1<=(1,-1)!1}  
+% Hacia abajo si está vacío y el de la izquierda quiere entrar tb
+% Tiene prioridad el de arriba en caso de empate
 
-% absorción del de la izquierda o el de arriba
-% izquierda
-rule : { [(0,0)!0,(0,-1)!1] } 100 {not isUndefined((-1,0)!1) and (0,0)!1=0 and (-1,0)!1>=(0,-1)!1} 
-% arriba
-rule : { [(0,0)!0,(-1,0)!1] } 100 {not isUndefined((-1,0)!1) and (0,0)!1=0 and (-1,0)!1<(0,-1)!1} 
-% casillero de arriba (,5)
-rule : { [(0,0)!0,(-1,0)!1] } 100 {isUndefined((-1,0)!1) and (0,0)!1=0 and (-1,0)!1<(-1,0)!0+time/1000 and (-1,0)!1>0} 
+% Gana el de arriba
+rule : { [(0,0)!0,0] }        100 {not isUndefined((1,-1)!1) and not isUndefined((1,0)!1)  and (1,0)!1=0   and (1,-1)!1!=0 and (1,-1)!1<(1,-1)!0+time/1000 and (0,0)!1!=0 and (0,0)!1<=(1,-1)!1}  
+rule : { [(0,0)!0,(-1,0)!1] } 100 {not isUndefined((-1,0)!1) and not isUndefined((0,-1)!1) and (-1,0)!1!=0 and (0,-1)!1!=0 and (0,-1)!1<(0,-1)!0+time/1000 and (0,0)!1=0 and (-1,0)!1<=(0,-1)!1} 
 
-%hacia la derecha
-rule : { [(0,0)!0,0] } 100 {not isUndefined((-1,1)!1) and (0,0)!1<=(-1,1)!1 and (0,0)!1>0 and (0,0)!1<(0,0)!0+time/1000}
-rule : { [(0,0)!0,0] } 100 { isUndefined((-1,1)!1) and (0,0)!1>0 and (0,0)!1<(0,0)!0+time/1000 }
+% Gana el de la izquierda
+rule : { [(0,0)!0,0] }        100 {not isUndefined((-1,1)!1) and not isUndefined((0,1)!1)  and (0,1)!1=0 and (-1,1)!1!=0 and (0,0)!1<(0,0)!0+time/1000   and (0,0)!1!=0  and (0,0)!1<(-1,1)!1}  
+rule : { [(0,0)!0,(0,-1)!1] } 100 {not isUndefined((-1,0)!1) and not isUndefined((0,-1)!1) and (0,0)!1=0 and (0,-1)!1!=0 and (0,-1)!1<(0,-1)!0+time/1000 and (-1,0)!1!=0 and (0,-1)!1<(-1,0)!1} 
 
-% hacia abajo si está vacío
-rule : { [(0,0)!0,0] } 100 { not isUndefined((1,0)!1) and (1,0)!1=0 and (0,0)!1>0} 
-rule : { [(0,0)!0,(-1,0)!1] } 100 { not isUndefined((-1,0)!1) and (0,0)!1=0 and (-1,0)!1>0}
+% caso particular: gana el de arriba porque no hay nada a la izquierda
+rule : { [(0,0)!0,0] }        100 {not isUndefined((1,-1)!1) and not isUndefined((1,0)!1)  and (1,0)!1=0   and (1,-1)!1=0 and (0,0)!1!=0 }  
+rule : { [(0,0)!0,(-1,0)!1] } 100 {not isUndefined((-1,0)!1) and not isUndefined((0,-1)!1) and (-1,0)!1!=0 and (0,-1)!1=0 and (0,0)!1=0 } 
 
-% hacia la derecha si su fecha de vencimiento es menor que la de la columna derecha
-% y gana la competencia con (-1,1)
-rule : { [(0,0)!0,0]} 100 {not isUndefined((-1,1)!1) and (0,0)!1<=(-1,1)!1 and (0,0)!1>0 and (0,0)!1<(0,0)!0+time/1000}
-rule : { [(0,0)!0,0]} 100 {isUndefined((-1,1)!1) and (0,0)!1>0 and (0,0)!1<(0,0)!0+time/1000}
+% caso particular: gana el de la izquierda porque no hay nada arriba
+rule : { [(0,0)!0,0] }        100 {not isUndefined((-1,1)!1) and not isUndefined((0,1)!1)  and (0,1)!1=0 and (-1,1)!1=0 and (0,0)!1<(0,0)!0+time/1000 and (0,0)!1!=0 }  
+rule : { [(0,0)!0,(0,-1)!1] } 100 {not isUndefined((-1,0)!1) and not isUndefined((0,-1)!1) and (0,0)!1=0 and (0,-1)!1!=0 and (0,-1)!1<(0,-1)!0+time/1000 and (-1,0)!1=0 } 
+
+% caso particular: columna de la izquierda, solo se puede bajar
+rule : { [(0,0)!0,0] }        100 {isUndefined((1,-1)!1) and not isUndefined((1,0)!1)  and (1,0)!1=0  and (0,0)!1!=0}  
+rule : { [(0,0)!0,(-1,0)!1] } 100 {not isUndefined((-1,0)!1) and isUndefined((0,-1)!1) and (-1,0)!1!=0 and (0,0)!1=0} 
+
+% caso particular: fila de arriba, se puede ir a la derecha
+rule : { [(0,0)!0,0] }        100 {isUndefined((-1,1)!1) and not isUndefined((0,1)!1) and (0,1)!1=0 and (0,0)!1<(0,0)!0+time/1000 and (0,0)!1!=0 }  
+rule : { [(0,0)!0,(0,-1)!1] } 100 {isUndefined((-1,0)!1) and not isUndefined((0,-1)!1) and (0,0)!1=0 and (0,-1)!1!=0 and (0,-1)!1<(0,-1)!0+time/1000} 
 
 rule : { (0,0) } 0 { t }
 
