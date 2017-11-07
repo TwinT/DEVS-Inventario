@@ -52,8 +52,8 @@ link : out4@despacho qbotin4@inventario
 link : out5@despacho qbotin5@inventario
 link : out6@despacho qbotin6@inventario
 
-#Cinta
+#Macro(Cinta)
 
-#Inventario
+#Macro(Inventario)
 
-#Despacho
+#Macro(Despacho)
