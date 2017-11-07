@@ -38,7 +38,7 @@ link : pout4@inventario pout4
 link : pout5@inventario pout5
 link : pout6@inventario pout6
 
-#BeginMacro(Inventario)
+
 [inventario]
 type : cell
 dim : (6,6)
@@ -157,4 +157,3 @@ rule:  { [(0,0)!0,portValue(thisPort)] } 1 { t }
 
 %borra producto
 rule:  { [(0,0)!0,0+send(output,(0,0)!1)] } 1 { t }
-%EndMacro

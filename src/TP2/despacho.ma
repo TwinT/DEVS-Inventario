@@ -17,7 +17,7 @@ link : out5@despacho out5
 link : out6@despacho out6
 link : pedidosOut@despacho pedidosOut
 
-#BeginMacro(Despacho)
+
 [despacho]
 type : cell
 dim : (1,7)
@@ -44,13 +44,14 @@ link : output@despacho(0,2) out3
 link : output@despacho(0,1) out2
 link : output@despacho(0,0) out1
 portintransition : in@despacho(0,6) pedidosIn-regla
-portintransition : in@despacho(0,5) ins-regla
-portintransition : in@despacho(0,4) ins-regla
-portintransition : in@despacho(0,3) ins-regla
-portintransition : in@despacho(0,2) ins-regla
-portintransition : in@despacho(0,1) ins-regla
-portintransition : in@despacho(0,0) ins-regla
+portintransition : in@despacho(0,5) despacho-ins-regla
+portintransition : in@despacho(0,4) despacho-ins-regla
+portintransition : in@despacho(0,3) despacho-ins-regla
+portintransition : in@despacho(0,2) despacho-ins-regla
+portintransition : in@despacho(0,1) despacho-ins-regla
+portintransition : in@despacho(0,0) despacho-ins-regla
 localtransition : despacho-reglas
+
 
 
 [despacho-reglas]
@@ -76,7 +77,6 @@ rule : { (0,0) } 0 { t }
 rule : { [0,portValue(thisPort)] } 1 { portValue(thisPort)=-1 }
 
 
-[ins-regla]
+[despacho-ins-regla]
 rule : { [0,-1] } 1 { portValue(thisPort)=0 }
 rule : { [portValue(thisPort),0] } 1 { portValue(thisPort)>0 }
-#EndMacro
