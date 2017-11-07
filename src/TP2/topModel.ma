@@ -188,6 +188,7 @@ localtransition : despacho-reglas
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Reglas
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%% Cinta %%%%%%%%%%
 [cinta-reglas]
 % celda: (y_celda,x_celda,z_celda)!idx_tupla=val
 % tupla: [idx_0,idx_1,...] -> sin espacios
@@ -206,6 +207,7 @@ rule : { [(0,0)!0,portValue(thisPort),0] } { 1 } { t }
 rule : { [(0,0)!0,0+send(output,(0,0)!1),0] } { 1 } { portValue(thisPort)!=0 }
 rule : { [(0,0)!0,(0,0)!1,1] } { 1 } { portValue(thisPort)=0 } % el [x,y,1] indica que la columna del inventario esta llena
 
+%%%%%%%%%% Inventario %%%%%%%%%%
 [inventario-reglas]
 % Hacia abajo si está vacío y el de la izquierda quiere entrar tb
 % Tiene prioridad el de arriba en caso de empate
@@ -241,6 +243,7 @@ rule:  { [(0,0)!0,portValue(thisPort)] } 1 { t }
 %borra producto
 rule:  { [(0,0)!0,0+send(output,(0,0)!1)] } 1 { t }
 
+%%%%%%%%%% Despacho %%%%%%%%%%%%
 [despacho-reglas]
 % celda: (y_celda,x_celda)!idx_tupla=val
 % tupla: [idx_0,idx_1,...] -> sin espacios
