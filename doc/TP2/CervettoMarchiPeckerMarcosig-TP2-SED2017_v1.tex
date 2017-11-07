@@ -374,6 +374,14 @@ Las preguntas a responder mediante simulaciones son:
 \section{Descripción Formal}
 
 \subsection{\textit{Top-Model}}
+El diagrama de bloques correspondiente a cada uno de los autómatas celulares descriptos en la especificación funcional se puede ver en la Figura~\ref{fig:TM-estructura}.
+
+\begin{figure}[h] 
+	\centering 
+	\includegraphics[width=0.7\textwidth]{TM-estructura} 
+	\caption{Interconexión de autómatas celulares en el \texttt{top model}.} 
+	\label{fig:TM-estructura} 
+\end{figure}
 
 \subsection{Cinta Transportadora}\label{sec:CT}
 
@@ -381,7 +389,7 @@ La cinta transportadora es el dispositivo por el que ingresan los productos al i
 
 \begin{figure}[h] 
   \centering 
-  \includegraphics[width=0.8\textwidth]{CT-automata.pdf} 
+  \includegraphics[width=0.8\textwidth]{CT-automata} 
   \caption{Autómata celular de la cinta transportadora.} 
   \label{fig:CT-automata} 
 \end{figure}
@@ -514,12 +522,12 @@ Su modelo estructural se muestra en la Figura~\ref{fig:DP-estructura}.
 
 \begin{figure}[h] 
 	\centering 
-	\includegraphics[width=0.5\textwidth]{DP-estructura} 
+	\includegraphics[width=0.8\textwidth]{DP-estructura} 
 	\caption{Modelo del despacho de productos.} 
 	\label{fig:DP-estructura} 
 \end{figure}
 
-Conceptualmente se pueden dividir dos tipos de información que se propagarán por el modelo. Por un lado, el despachante que va buscando en qué columna tiene un producto para extraer (recordar que los productos se ordenan de forma que los más próximos a vencer se encuentran cerca de la salida) representado en la Figura~\ref{fig:DP-estructura} por un círculo de color rojo. Por otro, el producto en sí representado por un cuadrado de color verde. Ambos realizarán movimientos en direcciones opuestas, el despachante irá recorriendo el inventario hacia la izquierda buscando la primer columna con productos y, una vez que lo retira, el producto se moverá hacia la derecha en dirección a la salida.
+Conceptualmente se pueden dividir dos tipos de información que se propagarán por el modelo. Por un lado, el despachante que va buscando en qué columna tiene un producto para extraer (recordar que los productos se ordenan de forma que los más próximos a vencer se encuentran cerca de la salida) representado en la Figura~\ref{fig:DP-estructura} por un círculo de color rojo. Por otro, el producto en sí representado por un cuadrado de color verde. Ambos realizarán movimientos en direcciones opuestas, el despachante irá recorriendo el inventario hacia la izquierda buscando la primer columna con productos y, una vez que lo retira, el producto se moverá hacia la derecha en dirección a la salida. 
 
 Esta separación da origen a dos grupos (conceptuales) de reglas:
 \begin{itemize}
@@ -529,21 +537,24 @@ Esta separación da origen a dos grupos (conceptuales) de reglas:
 
 Ubicadas en ese orden estamos dando prioridad al movimiento de productos y por ende, si un pedido se realiza cuando el despachante no está en su puesto, es decir, cuando está buscando un producto, el pedido se pierde. El vecindario para el despacho de productos se corresponde con el utilizado para la cinta transportadora y se puede observar en la Figura~\ref{fig:CT-vecindario}. 
 
-Las reglas se detallan a continuación:
+Se observa en la Figura~\ref{fig:DP-estructura} que el tamaño del autómata celular correspondiente al despacho de productos tiene una celda más que la cantidad de columnas del inventario. Esta celda corresponde a la oficina del despachante en donde se reciben los pedidos de productos. El pedido de un producto se representa con el arribo de un mensaje cuyo contenido es $-1$.
+
+Se utilizan tuplas de dos elementos para representar el estado de la celda: \texttt{[producto, indicador]}. El primer elemento corresponde al producto retirado del inventario, cuando exista un producto en la celda. El segundo elemento permite marcar con $-1$ cuando se realizó un pedido al inventario y éste informó que en la columna consultada no había disponibilidad, resultando en una consulta fallida. En este último caso el despachante deberá avanzar una columna más hacia la izquierda y volver a consultar al inventario.
+
+Las velocidades del despachante y del producto se ajustaron configurando el tiempo entre evaluaciones de las reglas locales en $100~\textrm{ms}$. Mientras que las reglas asociadas con transiciones en las entradas se configuraron con un retardo de $1~\textrm{ms}$.
+
+Las reglas asociadas a las transiciones locales se detallan a continuación:
 
 \begin{minipage}{1\textwidth}
 	\centering
 	\begin{lstlisting}
 [despacho-reglas]
-% Con -1 pregunta al inventario si hay lugar
-
-% Movimiento del producto sacado del inventario
-% Las tres reglas sigueintes preguntan por >0 para no actuar con el pedido.
+% Movimiento del producto sacado del inventario:
 rule : { (0,-1) } 100 { not isUndefined((0,-1)!0) and (0,-1)!0>0 and (0,0)!0=0 }
 rule : { [0,0] } 100 { not isUndefined((0,1)!0) and (0,0)!0>0 and (0,1)!0=0 }
 rule : { [0+send(output,(0,0)!0),0] } 100 { cellPos(1)=6 and (0,0)!0>0 }
 
-% Movimiento del despachante buscando el producto
+% Movimiento del despachante buscando el producto:
 rule : {[-1+send(output,-1),0]} 100 { not isUndefined((0,1)!0) and (0,1)=[0,-1] and (0,0)!0=0 }
 rule : {[0,0]} 100 { not isUndefined((0,-1)!0) and (0,0)=[0,-1]}
 
@@ -552,26 +563,20 @@ rule : { (0,0) } 0 { t }
 	\end{lstlisting}
 \end{minipage}
 
-Siendo respectivamente las primeras tres reglas responsables del movimiento del producto y con el siguiente significado:
+Las primeras tres reglas son las responsables del movimiento del producto y tienen el siguiente significado:
 \begin{enumerate}
-	\item Copia el valor de la celda contigua a la izquierda si dicha celda existe y contiene un producto (i.e. su valor es $>0$), y si la celda en cuestión está vacía.
-	\item Si el producto se moveró a la derecha, en el mismo instante la celda se setea en 0
-	\item Si llegó a la última celda de la derecha (oficina del despachante), la celda se pone en 0 y envía el producto por la salida de productos.
+	\item Si la celda contigua a la izquierda existe y contiene un producto (i.e. su valor es $>0$) y si la celda actual está vacía, entonces copia el valor de la primera en la segunda. 
+	\item Si la celda contigua a la derecha existe y está vacía entonces el producto se mueve a la derecha (regla anterior) y en el mismo instante la celda actual pasa a $0$.
+	\item Si se alcanzó la última celda de la derecha (oficina del despachante), el elemento \texttt{producto} de la tupla se pone en $0$ y se envía el producto por la salida de productos.
 \end{enumerate}
 
-Y las siguientes dos las responsables del movimiento del despachante, respectivamente:
+\noindent Las siguientes dos reglas, por su parte, son las responsables del movimiento del despachante y significan respectivamente:
 \begin{enumerate}
-	\item Se setea la celda en [-1,0] y envía la consulta de disponibilidad de productos en esa columna al inventario, si la celda próxima a la derecha está en estado de consulta fallida (ver a continuación), y si dicha celda existe.
-	\item La celda se setea en 0 en el mismo instante que el despachante se movió una posición hacia la izquierda (i.e. (0,-1)=[-1,0])
+	\item Si la celda contigua a la derecha existe y está en estado de consulta fallida: [0,-1], entonces se consulta al inventario por la disponibilidad de producto en la columna asociada a la celda actual (enviando el valor $-1$) y a esta celda se le asigna el valor [-1,0]. 
+	\item A continuación de la regla anterior, se pregunta si la celda actual tiene una consulta fallida y si la celda de la izquierda está definida. En caso afirmativo se asigna a la celda actual el valor [0,0].
 \end{enumerate}
 
-Se utilizaron tuplas de dos posiciones para representar el estado de la celda. Esto permite marcar cuando un pedido fue realizado al inventario y éste último informa que en esa columna no hay disponibilidad, resultando en una consulta fallida, representada por el valor [0,-1] en la celda. Este es el caso donde el despachante deberá avanzar una columna más hacia la izquierda, según la primer regla de arriba, asociada al despachante.
-
-Las velocidades del despachante y del producto se ajustaron seteando el tiempo de transición de una celda en otra en en 100 ms. Mientras que las salidas y entradas se setearon con una velocidad de 1 ms.
-
-Para terminar de definir el modelo, se deben especificar los comportamientos de los diferentes puertos, para ello se plantearon dos juegos de reglas. El primero para la entrada de pedidos, que simplemente copia el valor del pedido de productos (-1) en la celda correspondiente (oficina del despachante). El segundo para los valores que envía el inventario: por un lado  setea el estado de la celda en consulta fallida ([0,-1]) si el inventario devuelve 0, o por otro, copia el valor si el inventario devuelve un producto (valor $>0$). Dichas reglas se muestran a continuación:
-
-
+Para terminar de definir el modelo, se deben especificar las reglas de comportamiento ante transiciones de los diferentes puertos de entrada. Para esto se plantean dos juegos de reglas. El primero corresponde a la entrada de pedidos y simplemente copia el valor del pedido de productos ($-1$) en la celda correspondiente (oficina del despachante). El segundo corresponde a las consultas que se envían al inventario, si el inventario devuelve un producto (valor $>0$) entonces se copia este valor en el elemento \texttt{producto} de la tupla correspondiente a la celda, mientras que si la columna está vacía entonces el inventario devuelve $0$ y se asigna a la tupla el valor [0,-1]. Con este último valor se representa a una consulta fallida. Estas reglas se muestran a continuación:
 
 \begin{minipage}{1\textwidth}
 	\centering
@@ -585,7 +590,7 @@ rule : { [portValue(thisPort),0] } 1 { portValue(thisPort)>0 }
 	\end{lstlisting}
 \end{minipage}
 
-Este conjunto de reglas con la estructura graficada en la Figura~\ref{fig:DP-estructura} definen el modelo del despacho de productos. Los links y la asignación de reglas se pueden ver en la siguiente definición dentro del archivo ".ma"
+Este conjunto de reglas con la estructura graficada en la Figura~\ref{fig:DP-estructura} definen el modelo del despacho de productos. Los \textit{links} y la asignación de reglas se pueden ver en la siguiente definición dentro del archivo \texttt{.ma}:
 
 \begin{minipage}{1\textwidth}
 	\centering
@@ -623,6 +628,106 @@ portintransition : in@despacho(0,2) ins-regla
 portintransition : in@despacho(0,1) ins-regla
 portintransition : in@despacho(0,0) ins-regla
 localtransition : despacho-reglas
+\end{lstlisting}
+\end{minipage}
+
+
+\subsection{Inventario}\label{sec:IP}
+Según lo descripto en la sección \ref{sec:AC} el inventario de productos es el encargado de almacenar los productos. Su modelo estructural se muestra en la Figura~\ref{fig:IP-estructura}.
+
+\begin{figure}[h] 
+	\centering 
+	\includegraphics[width=0.8\textwidth]{DP-estructura} 
+	\caption{Modelo del inventario de productos.} 
+	\label{fig:IP-estructura} 
+\end{figure}
+
+Las reglas asociadas a las transiciones locales se detallan a continuación:
+
+\begin{minipage}{1\textwidth}
+	\centering
+	\begin{lstlisting}
+[left-rule]
+
+% hacia abajo si esta vacio
+rule : { [(0,0)!0,0] } 100 { not isUndefined((1,0)!1) and (1,0)!1=0 and (0,0)!1>0}
+rule : { [(0,0)!0,(-1,0)!1] } 100 { not isUndefined((-1,0)!1) and (0,0)!1=0 and (-1,0)!1>0}
+
+% hacia la derecha si su fecha de vencimiento es menor que la de la columna derecha
+% y gana la competencia con (-1,1)
+rule : { [(0,0)!0,0]} 100 {not isUndefined((-1,1)!1) and (0,0)!1<(-1,1)!1 and (0,0)!1>0 and (0,0)!1<(0,0)!0+time/1000}
+rule : { [(0,0)!0,0]} 100 {isUndefined((-1,1)!1) and (0,0)!1>0 and (0,0)!1<(0,0)!0+time/1000}
+rule : { (0,0) } 0 { t }
+
+[right-rule]
+% hacia abajo si esta vacio y (1,-1) quiere entrar pero es menor a (1,-1)
+rule : { [(0,0)!0,0] }        100 {not isUndefined((1,-1)!1) and (1,-1)!1<(1,-1)!0+time/1000 and (0,0)!1>0 and (0,0)!1<(1,-1)!1}
+
+% absorcion del de la izquierda o el de arriba
+% izquierda
+rule : { [(0,0)!0,(0,-1)!1] } 100 {not isUndefined((-1,0)!1) and (0,0)!1=0 and (-1,0)!1>=(0,-1)!1}
+% arriba
+rule : { [(0,0)!0,(-1,0)!1] } 100 {not isUndefined((-1,0)!1) and (0,0)!1=0 and (-1,0)!1<(0,-1)!1}
+% casillero de arriba (0,5)
+rule : { [(0,0)!0,(0,-1)!1] } 100 {isUndefined((-1,0)!1) and (0,0)!1=0 and (0,-1)!1<(0,-1)!0+time/1000 and (0,-1)!1>0}
+rule : { (0,0) } 0 { t }
+
+[inventario-reglas]
+
+% hacia abajo si esta vacio y (1,-1) quiere entrar pero es menor a (1,-1)
+rule : { [(0,0)!0,0] }        100 {not isUndefined((1,-1)!1) and (1,-1)!1<(1,-1)!0+time/1000 and (0,0)!1>0 and (0,0)!1<(1,-1)!1}
+
+% absorcion del de la izquierda o el de arriba
+% izquierda
+rule : { [(0,0)!0,(0,-1)!1] } 100 {not isUndefined((-1,0)!1) and (0,0)!1=0 and (-1,0)!1>=(0,-1)!1}
+% arriba
+rule : { [(0,0)!0,(-1,0)!1] } 100 {not isUndefined((-1,0)!1) and (0,0)!1=0 and (-1,0)!1<(0,-1)!1}
+% casillero de arriba (,5)
+rule : { [(0,0)!0,(-1,0)!1] } 100 {isUndefined((-1,0)!1) and (0,0)!1=0 and (-1,0)!1<(-1,0)!0+time/1000 and (-1,0)!1>0}
+
+%hacia la derecha
+rule : { [(0,0)!0,0] } 100 {not isUndefined((-1,1)!1) and (0,0)!1<(-1,1)!1 and (0,0)!1>0 and (0,0)!1<(0,0)!0+time/1000}
+rule : { [(0,0)!0,0] } 100 { isUndefined((-1,1)!1) and (0,0)!1>0 and (0,0)!1<(0,0)!0+time/1000 }
+
+rule : { (0,0) } 0 { t }
+	\end{lstlisting}
+\end{minipage}
+
+Este conjunto de reglas con la estructura graficada en la Figura~\ref{fig:IP-estructura} definen el modelo del inventario de productos. Los \textit{links} y la asignación de reglas se pueden ver en la siguiente definición dentro del archivo \texttt{.ma}:
+
+\begin{minipage}{1\textwidth}
+	\centering
+	\begin{lstlisting}
+[inventario]
+type : cell
+dim : (5,5)
+delay : transport
+defaultDelayTime  : 0
+border : nowrapped
+
+neighbors : inventario(-1,-1) inventario(-1,0) inventario(-1,1)
+neighbors : inventario(0,-1)  inventario(0,0)  inventario(0,1)
+neighbors : inventario(1,-1)  inventario(1,0)  inventario(1,1)
+
+initialvalue : 0
+initialCellsValue : inventario.val
+in : in1 in2 in3 in4 in5
+out : out1 out2 out3 out4 out5
+link : in5 in@inventario(0,4)
+link : in4 in@inventario(0,3)
+link : in3 in@inventario(0,2)
+link : in2 in@inventario(0,1)
+link : in1 in@inventario(0,0)
+link : output@inventario(0,4) out5
+link : output@inventario(0,3) out4
+link : output@inventario(0,2) out3
+link : output@inventario(0,1) out2
+link : output@inventario(0,0) out1
+
+localtransition : inventario-reglas
+
+zone : left-rule  { (0,0)..(5,0) }
+zone : right-rule { (0,5)..(5,5) }
 \end{lstlisting}
 \end{minipage}
 
