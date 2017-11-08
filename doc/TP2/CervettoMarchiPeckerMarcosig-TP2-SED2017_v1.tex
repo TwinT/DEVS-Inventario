@@ -421,37 +421,38 @@ Las reglas tienen la siguiente sintaxis:
 rule : { resultado } { demora } { condicion }
 \end{lstlisting}
 
-Las reglas que representan a la descripción anterior y están asociadas a las células de este autómata celular se enumeran a continuación:
+Las reglas asociadas a las transiciones locales en las celdas del autómata y que representan a la descripción anterior se detallan a continuación:
 
 \begin{minipage}{1\textwidth}
 	\centering
 	\begin{lstlisting}
 [cinta-reglas]
+
 rule : { [(0,0)!0,(0,1)!1,0] } { 100 } { NOT isUndefined((0,1)!1) AND (0,1)!1 != 0 AND (0,1)!1 > (0,1)!0 + time/1000 }
+
 rule : { [(0,0)!0,0,0] } { 100 } { NOT isUndefined((0,-1)!1) AND (0,0)!1 != 0 AND (0,0)!1 > (0,0)!0 + time/1000 AND (0,-1)!1 = 0 } 
+
 rule : { [(0,0)!0,(0,1)!1,0] } { 100 } { (0,1)!2 = 1 }
+
 rule : { [(0,0)!0,0,0] } { 100 } { (0,0)!2 = 1 AND NOT isUndefined((0,-1)!1) AND (0,-1)!1 = 0 }
+
 rule : { [(0,0)!0,(0,0)!1,2] } { 100 } { (0,0)!2 = 1 AND (isUndefined((0,-1)!1) OR (0,-1)!1 != 0) }
+
 rule : { [(0,0)!0,(0,0)!1+send(output,-1),0] } { 100 } { (0,0)!2 != 2 AND (0,0)!1 != 0 AND (0,0)!1 <= (0,0)!0 + time/1000 }
+
 rule : { (0,0) } 0 { t }
 	\end{lstlisting}
 \end{minipage}
 
-La primera regla pregunta si la celda que está a la derecha de la celda actual está definida: \texttt{NOT isUndefined((0,1)!1)}, tiene un producto: \texttt{(0,1)!1 != 0} y la fecha de vencimiento del producto es mayor que el \texttt{ID} de la columna \texttt{(0,1)!1 > (0,1)!0 + time/1000}. En caso que se cumpla se mueve el producto desde la celda de la derecha a la celda actual.
+\begin{enumerate}
+	\item Las primeras dos reglas están relacionadas con el movimiento de un producto hacia la izquierda. Si una celda está vacía y la celda que está a su derecha tiene un producto que de acuerdo con su fecha de vencimiento debe moverse hacia la izquierda entonces el producto se mueve de la celda de la derecha a la celda actual.
+	\item Las siguientes dos reglas están relacionadas también con el movimiento de un producto hacia la izquierda. Si una celda está vacía y la celda que está a su derecha tiene un producto cuyo elemento \texttt{indicador} de la tupla es $1$ significa que la cinta transportadora consultó al inventario para mover ese producto en el paso anterior y éste le respondió que no había lugar. Entonces lo que se hace es mover ese producto a la siguiente celda hacia la izquierda.
+	\item La quinta regla se ejecuta cuando el producto no puede ser descargado en el inventario porque no hay lugar en las columnas que pregunta y alcanza el extremo izquierdo de la cinta transportadora. Esta condición se indica escribiendo un $2$ en el elemento \texttt{indicador} del producto en la celda.
+	\item La sexta regla está relacionada con la consulta al inventario por lugar para alojar un producto en la columna correspondiente. Si una celda tiene un producto cuya fecha de vencimiento está dentro del rango de fechas asignado a dicha celda entonces el producto se debe pasar al inventario a la columna correspondiente a dicha celda. Para esto, la cinta consulta por la disponibilidad de espacio en la columna enviando $-1$ por la salida asociada con la celda \texttt{outi}. La respuesta a esta consulta se recibe por la entrada \texttt{ini}. Si el valor devuelto es $0$ significa que hay espacio y entonces se puede descargar el producto (ver reglas asociadas con la transición en el puerto de entrada \texttt{[inventario regla]}).  Se puede ver que si el elemento \texttt{indicador} de la celda actual es $2$ entonces esta regla no se ejecuta, para de esta forma evitar la repitición de consultas al inventario.
+	\item Finalmente, la última regla es la regla por omisión que es siempre verdadera. Siempre debe existir al menos una regla verdadera.
+\end{enumerate}
 
-La segunda regla es el complemento de la primera, es decir, pregunta si la celda de la izquierda está definida: \texttt{NOT isUndefined((0,-1)!1)}, si está vacía: \texttt{(0,-1)!1 = 0}, si en la celda actual hay un producto y si su fecha de vencimiento es mayor que el \texttt{ID} de la columna: \texttt{(0,0)!1 > (0,0)!0 + time/1000}. Si se cumple, entonces se quita el producto de esta celda.
-
-La tercera regla verifica si el elemento \texttt{indicador} de la tupla de la celda de la derecha es $1$. Si es así significa que la cinta consultó al inventario para mover ese producto y éste le respondió que no había lugar. Entonces lo que se hace es mover ese producto a la siguiente celda hacia la izquierda.
-
-La cuarta regla es el complemento de la tercera regla, pregunta si el elemento \texttt{indicador} de la tupla de la celda actual es $1$ y si la celda de la izquierda está vacía. Si se cumple entonces quita al producto de esta celda.
-
-La quinta regla se ejecuta cuando el producto no puede ser descargado en el inventario porque no hay lugar en las columnas que pregunta y alcanza el extremo izquierdo de la cinta transportadora. Esta condición se indica escribiendo un $2$ en el elemento \texttt{indicador} de la celda.
-
-La sexta regla es la que permite hacer la consulta al inventario de si hay lugar en la columna correspondiente. Esta consulta se realiza enviando $-1$ por la salida asociada con la celda \texttt{outi} y la respuesta se espera por la entrada \texttt{ini}. Se puede ver que si el elemento \texttt{indicador} de la celda actual es $2$ entonces esta regla no se ejecuta, es decir, no se repite la consulta al inventario.
-
-Finalmente, la séptima regla es la regla por omisión que es siempre verdadera pues debe existir siempre al menos una regla verdadera.
-
-Asimismo, se definieron reglas que se ejecutan ante la aparición de las distintas entradas. Así, ante el arribo de un producto por la entrada \texttt{in} se ejecuta la siguiente regla:
+Para terminar de definir el modelo, se deben especificar las reglas de comportamiento ante transiciones de los diferentes puertos de entrada se definieron reglas que se ejecutan ante la aparición de las distintas entradas. Así, ante el arribo de un producto por la entrada \texttt{in} se ejecuta la siguiente regla:
 
 \begin{minipage}{1\textwidth}
 	\centering
@@ -461,7 +462,10 @@ rule : { [(0,0)!0,portValue(thisPort),0] } { 1 } { t }
 	\end{lstlisting}
 \end{minipage}
 
-Se observa que lo que se hace es copiar el producto que acaba de llegar en la celda conectada a la entrada \texttt{in}.
+Se observa que:
+\begin{enumerate}
+\item Lo que se hace es copiar el producto que acaba de llegar en la celda conectada a la entrada \texttt{in}.
+\end{enumerate}
 
 Finalmente, como se mencionó más arriba, cuando el producto llega a la celda que le corresponde en la cinta transportadora se genera una consulta al inventario para saber si existe lugar en la columna correspondiente. Las reglas que se evalúan cuando llega la respuesta son:
 
@@ -474,7 +478,12 @@ rule : { [(0,0)!0,(0,0)!1,1] } { 1 } { portValue(thisPort)=0 }
 	\end{lstlisting}
 \end{minipage}
 
-Se puede ver que como se utiliza el comando \texttt{thisPort} esta regla es válida para todas las celdas de la cinta transportadora. Si la respuesta que recibe la celda de parte del inventario es no nula entonces se envía el producto por el mismo puerto por el que se realizó la consulta: \texttt{[(0,0)!0,0+send(output,(0,0)!1),0]} y se coloca un $0$ en su lugar. Si en cambio no hay lugar entonces se indica colocando un $1$ en el indicador de la tupla: \texttt{[(0,0)!0,(0,0)!1,1]}.
+Se puede ver que:
+\begin{enumerate}
+ \item Como se utiliza el comando \texttt{thisPort} esta regla es válida para todas las celdas de la cinta transportadora. 
+ \item Si la respuesta que recibe la celda de parte del inventario es no nula entonces se envía el producto por el mismo puerto por el que se realizó la consulta: \texttt{[(0,0)!0,0+send(output,(0,0)!1),0]} y se coloca un $0$ en su lugar.
+ \item Si en cambio no hay lugar entonces se indica colocando un $1$ en el indicador de la tupla: \texttt{[(0,0)!0,(0,0)!1,1]}.
+\end{enumerate}
 
 Este conjunto de reglas junto con la estructura graficada en la Figura~\ref{fig:CT-automata} definen el modelo de la cinta transportadora. Los links y la asignación de reglas se pueden ver en la siguiente definición dentro del archivo ".ma".
 
@@ -513,6 +522,192 @@ portintransition : in4@cinta(0,2) inventario-regla
 portintransition : in5@cinta(0,1) inventario-regla
 portintransition : in6@cinta(0,0) inventario-regla
 localtransition : cinta-reglas
+	\end{lstlisting}
+\end{minipage}
+
+\subsection{Inventario}\label{sec:IP}
+Según lo descripto en la sección \ref{sec:AC} el inventario de productos es el encargado de almacenar los productos. Su modelo estructural se muestra en la Figura~\ref{fig:IP-estructura}.
+
+\begin{figure}[h] 
+	\centering 
+	\includegraphics[width=0.8\textwidth]{fiuba} 
+	\caption{Modelo del inventario de productos.} 
+	\label{fig:IP-estructura} 
+\end{figure}
+
+Para cada celda en este autómata celular interesa el valor de las $6$ celdas alrededor. Por este motivo el vecindario está definido en la Figura~\ref{fig:IP-vecindario}.
+
+\begin{figure}[h] 
+  \centering 
+  \includegraphics[width=0.4\textwidth]{IP-vecindario} 
+  \caption{Vecindario del inventario de productos.} 
+  \label{fig:IP-vecindario} 
+\end{figure}
+\FloatBarrier
+
+Las reglas asociadas a las transiciones locales en las celdas del autómata se detallan a continuación:
+
+\begin{minipage}{1\textwidth}
+	\centering
+	\begin{lstlisting}
+[inventario-reglas]
+
+% Hacia abajo si esta vacio y el de la izquierda quiere entrar tb
+% Tiene prioridad el de arriba en caso de empate
+
+% Gana el de arriba
+rule : { [(0,0)!0,0] }        100 {not isUndefined((1,-1)!1) and not isUndefined((1,0)!1)  and (1,0)!1=0   and (1,-1)!1!=0 and (1,-1)!1<(1,-1)!0+time/1000 and (0,0)!1!=0 and (0,0)!1<=(1,-1)!1}
+rule : { [(0,0)!0,(-1,0)!1] } 100 {not isUndefined((-1,0)!1) and not isUndefined((0,-1)!1) and (-1,0)!1!=0 and (0,-1)!1!=0 and (0,-1)!1<(0,-1)!0+time/1000 and (0,0)!1=0 and (-1,0)!1<=(0,-1)!1}
+
+% Gana el de la izquierda
+rule : { [(0,0)!0,0] }        100 {not isUndefined((-1,1)!1) and not isUndefined((0,1)!1)  and (0,1)!1=0 and (-1,1)!1!=0 and (0,0)!1<(0,0)!0+time/1000   and (0,0)!1!=0  and (0,0)!1<(-1,1)!1}
+rule : { [(0,0)!0,(0,-1)!1] } 100 {not isUndefined((-1,0)!1) and not isUndefined((0,-1)!1) and (0,0)!1=0 and (0,-1)!1!=0 and (0,-1)!1<(0,-1)!0+time/1000 and (-1,0)!1!=0 and (0,-1)!1<(-1,0)!1}
+
+% caso particular: gana el de arriba porque no hay nada a la izquierda
+rule : { [(0,0)!0,0] }        100 {not isUndefined((1,-1)!1) and not isUndefined((1,0)!1)  and (1,0)!1=0   and (1,-1)!1=0 and (0,0)!1!=0 }
+rule : { [(0,0)!0,(-1,0)!1] } 100 {not isUndefined((-1,0)!1) and not isUndefined((0,-1)!1) and (-1,0)!1!=0 and (0,-1)!1=0 and (0,0)!1=0 }
+
+% caso particular: gana el de la izquierda porque no hay nada arriba
+rule : { [(0,0)!0,0] }        100 {not isUndefined((-1,1)!1) and not isUndefined((0,1)!1)  and (0,1)!1=0 and (-1,1)!1=0 and (0,0)!1<(0,0)!0+time/1000 and (0,0)!1!=0 }
+rule : { [(0,0)!0,(0,-1)!1] } 100 {not isUndefined((-1,0)!1) and not isUndefined((0,-1)!1) and (0,0)!1=0 and (0,-1)!1!=0 and (0,-1)!1<(0,-1)!0+time/1000 and (-1,0)!1=0 }
+
+% caso particular: columna de la izquierda, solo se puede bajar
+rule : { [(0,0)!0,0] }        100 {isUndefined((1,-1)!1) and not isUndefined((1,0)!1)  and (1,0)!1=0  and (0,0)!1!=0}
+rule : { [(0,0)!0,(-1,0)!1] } 100 {not isUndefined((-1,0)!1) and isUndefined((0,-1)!1) and (-1,0)!1!=0 and (0,0)!1=0}
+
+% caso particular: fila de arriba, se puede ir a la derecha
+rule : { [(0,0)!0,0] }        100 {isUndefined((-1,1)!1) and not isUndefined((0,1)!1) and (0,1)!1=0 and (0,0)!1<(0,0)!0+time/1000 and (0,0)!1!=0 }
+rule : { [(0,0)!0,(0,-1)!1] } 100 {isUndefined((-1,0)!1) and not isUndefined((0,-1)!1) and (0,0)!1=0 and (0,-1)!1!=0 and (0,-1)!1<(0,-1)!0+time/1000}
+
+rule : { (0,0) } 0 { t }
+
+	\end{lstlisting}
+\end{minipage}
+
+Estas reglas se ejecutan periódicamente para ordenar los productos en el inventario de modo de ubicar aquellos con fecha de vencimiento próximo lo más cerca posible de la salida (abajo y a la derecha). Cuanto más arriba se encuentre una regla mayor es su prioridad pues se ejecuta antes, y una vez que para una dada celda una regla es válida no se ejecutan las restantes. Las reglas se agrupan en pares de reglas complementarias asociadas con el movimiento de los productos hacia la derecha y hacia abajo y tienen el siguiente significado:
+\begin{enumerate}
+	\item Las primeras dos reglas están relacionadas con el movimiento hacia abajo de un producto. Si una celda está vacía y la celda a su izquierda tiene un producto que de acuerdo con su fecha de vencimiento debe moverse a la columna actual pero que comparando su fecha de vencimiento con la del producto en la celda que está encima de la celda vacía es mayor entonces esta última \textit{gana} la celda vacía.
+	\item Las siguientes dos reglas están relacionadas con el movimiento hacia la derecha de un producto. Este juego de reglas tiene menor prioridad que las anteriores. Si una celda está vacía y la celda a su izquierda tiene un producto que de acuerdo con su fecha de vencimiento debe moverse a la columna actual y que comparando su fecha de vencimiento con la del producto en la celda que está encima de la celda vacía es menor entonces la primera \textit{gana} la celda vacía. 
+	\item Las siguientes dos reglas son un caso particular de las dos primeras reglas. Este juego de reglas tiene menor prioridad que todas las anteriores. Si una celda está vacía, la celda a su izquierda también está vacía pero la celda que está encima no lo está, entonces el producto en esta última celda se mueve hacia abajo y ocupa la primera.
+	\item Las siguientes dos reglas son un caso particular del segundo para de reglas. Este juego de reglas tiene menor prioridad que todas las anteriores. Si una celda está vacía, la celda que está encima también está vacía pero la celda que está a la izquierda de la original tiene un producto que de acuerdo con su fecha de vencimiento debe moverse a la columna actual entonces el producto en esta última celda se mueve hacia la derecha y ocupa la primera.
+	\item Las siguientes dos reglas corresponden a las reglas anteriores cuando se aplican a los productos en la primer columna de la izquierda. Este juego de reglas tiene menor prioridad que todas las anteriores. Si una celda está vacía y la celda que está encima no lo está entonces el producto en esta celda se baja a la primera celda.
+	\item Las últimas dos reglas corresponden a las reglas anteriores cuando se aplican a los productos en la fila superior. Este juego de reglas es el de menor prioridad. Si una celda está vacía y la celda que está a la izquierda tiene un producto que de acuerdo con su fecha de vencimeitno debe moverse a la columna actual entonces el producto en esta última celda se mueve hacia la derecha y ocupa la primera.
+\end{enumerate}
+
+Para terminar de definir el modelo, se deben especificar las reglas de comportamiento ante transiciones de los diferentes puertos de entrada. Para esto se plantean dos juegos de reglas. El primero corresponde a las entradas conectadas a la cinta transportadora y debe manejar por un lado la consulta por espacio en la columna correspondiente (valor $-1$) y por el otro el ingreso de un producto en dicha columna (valor $>0$). El segundo corresponde a las consultas que realiza el despachante de productos que consulta por la disponibilidad de un producto en una dada columna del inventario enviando un $-1$ por el puerto corrspondiente. El primer juego de reglas se enuncia a continuación:
+
+\begin{minipage}{1\textwidth}
+	\centering
+	\begin{lstlisting}
+[query-top-in]
+
+%mantiene valor
+rule : { [(0,0)!0,(0,0)!1+send(output,(0,0)!1)] } 1 { t }
+
+[prod-top-in]
+
+rule:  { [(0,0)!0,portValue(thisPort)] } 1 { t }
+	\end{lstlisting}
+\end{minipage}
+
+Se observa que:
+\begin{itemize}
+  \item Si se recibe un valor $-1$ significa que están preguntando por la disponibilidad de lugar en la columna. Se devuelve el valor de la fecha de vencimiento del producto en la celda superior de la columna por la que se preguntó. Si la celda estaba vacía se devuelve $0$ y sino un valor $>0$.
+  \item Si se recibe un valor $>0$ significa que es un producto que viene de la cinta transportadora. Esto significa que previamente se consultó por la disponibilidad de lugar en la columna y se respondió afirmativamente.
+\end{itemize}
+
+\begin{minipage}{1\textwidth}
+	\centering
+	\begin{lstlisting}
+[query-bot-in]
+
+%borra producto
+rule:  { [(0,0)!0,0+send(output,(0,0)!1)] } 1 { t }
+	\end{lstlisting}
+\end{minipage}
+
+Se observa que:
+\begin{itemize}
+  \item Si se recibe una consulta por los puertos de entrada que están debajo del inventario se está consultando por la disponibilidad de un producto para despachar. Entonces se devuelve un producto representado por su fecha de vencimiento: $(0,0)!1$. Si este valor es $>0$ significa que es un producto válido, mientras que si en su lugar se devuelve $0$ significa que esa posición del inventario estaba vacía (ya sea porque la columna está vacía o porque esa celda está vacía y aún no se reordenó el inventario).
+\end{itemize}
+
+Este conjunto de reglas con la estructura graficada en la Figura~\ref{fig:IP-estructura} definen el modelo del inventario de productos. Los \textit{links} y la asignación de reglas se pueden ver en la siguiente definición dentro del archivo \texttt{.ma}:
+
+\begin{minipage}{1\textwidth}
+	\centering
+	\begin{lstlisting}
+[inventario]
+type : cell
+dim : (6,6)
+delay : transport
+defaultDelayTime  : 0
+border : nowrapped
+
+neighbors : inventario(-1,-1) inventario(-1,0) inventario(-1,1)
+neighbors : inventario(0,-1)  inventario(0,0)  inventario(0,1)
+neighbors : inventario(1,-1)  inventario(1,0)  inventario(1,1)
+
+initialvalue : 0
+initialCellsValue : inventario.val
+in : qtopin1 qtopin2 qtopin3 qtopin4 qtopin5 qtopin6 pin1 pin2 pin3 pin4 pin5 pin6 qbotin1 qbotin2 qbotin3 qbotin4 qbotin5 qbotin6
+out : qtopout1 qtopout2 qtopout3 qtopout4 qtopout5 qtopout6 pout1 pout2 pout3 pout4 pout5 pout6
+link : qtopin6 in@inventario(0,5)
+link : qtopin5 in@inventario(0,4)
+link : qtopin4 in@inventario(0,3)
+link : qtopin3 in@inventario(0,2)
+link : qtopin2 in@inventario(0,1)
+link : qtopin1 in@inventario(0,0)
+
+link : qbotin6 in@inventario(5,5)
+link : qbotin5 in@inventario(5,4)
+link : qbotin4 in@inventario(5,3)
+link : qbotin3 in@inventario(5,2)
+link : qbotin2 in@inventario(5,1)
+link : qbotin1 in@inventario(5,0)
+
+link : pin6 pin@inventario(0,5)
+link : pin5 pin@inventario(0,4)
+link : pin4 pin@inventario(0,3)
+link : pin3 pin@inventario(0,2)
+link : pin2 pin@inventario(0,1)
+link : pin1 pin@inventario(0,0)
+
+link : output@inventario(0,5) qtopout6
+link : output@inventario(0,4) qtopout5
+link : output@inventario(0,3) qtopout4
+link : output@inventario(0,2) qtopout3
+link : output@inventario(0,1) qtopout2
+link : output@inventario(0,0) qtopout1
+
+link : poutput@inventario(5,5) pout6
+link : poutput@inventario(5,4) pout5
+link : poutput@inventario(5,3) pout4
+link : poutput@inventario(5,2) pout3
+link : poutput@inventario(5,1) pout2
+link : poutput@inventario(5,0) pout1
+
+portintransition : in@inventario(0,5) query-top-in
+portintransition : in@inventario(0,4) query-top-in
+portintransition : in@inventario(0,3) query-top-in
+portintransition : in@inventario(0,2) query-top-in
+portintransition : in@inventario(0,1) query-top-in
+portintransition : in@inventario(0,0) query-top-in
+
+portintransition : pin@inventario(0,5) prod-top-in
+portintransition : pin@inventario(0,4) prod-top-in
+portintransition : pin@inventario(0,3) prod-top-in
+portintransition : pin@inventario(0,2) prod-top-in
+portintransition : pin@inventario(0,1) prod-top-in
+portintransition : pin@inventario(0,0) prod-top-in
+
+portintransition : in@inventario(5,5) query-bot-in
+portintransition : in@inventario(5,4) query-bot-in
+portintransition : in@inventario(5,3) query-bot-in
+portintransition : in@inventario(5,2) query-bot-in
+portintransition : in@inventario(5,1) query-bot-in
+portintransition : in@inventario(5,0) query-bot-in
+
+localtransition : inventario-reglas
 	\end{lstlisting}
 \end{minipage}
 
@@ -563,7 +758,7 @@ rule : { (0,0) } 0 { t }
 	\end{lstlisting}
 \end{minipage}
 
-Las primeras tres reglas son las responsables del movimiento del producto y tienen el siguiente significado:
+Estas reglas se explican a continuación. Las primeras tres reglas son las responsables del movimiento del producto y tienen el siguiente significado:
 \begin{enumerate}
 	\item Si la celda contigua a la izquierda existe y contiene un producto (i.e. su valor es $>0$) y si la celda actual está vacía, entonces copia el valor de la primera en la segunda. 
 	\item Si la celda contigua a la derecha existe y está vacía entonces el producto se mueve a la derecha (regla anterior) y en el mismo instante la celda actual pasa a $0$.
@@ -631,105 +826,6 @@ localtransition : despacho-reglas
 \end{lstlisting}
 \end{minipage}
 
-
-\subsection{Inventario}\label{sec:IP}
-Según lo descripto en la sección \ref{sec:AC} el inventario de productos es el encargado de almacenar los productos. Su modelo estructural se muestra en la Figura~\ref{fig:IP-estructura}.
-
-\begin{figure}[h] 
-	\centering 
-	\includegraphics[width=0.8\textwidth]{DP-estructura} 
-	\caption{Modelo del inventario de productos.} 
-	\label{fig:IP-estructura} 
-\end{figure}
-
-Las reglas asociadas a las transiciones locales se detallan a continuación:
-
-\begin{minipage}{1\textwidth}
-	\centering
-	\begin{lstlisting}
-[left-rule]
-
-% hacia abajo si esta vacio
-rule : { [(0,0)!0,0] } 100 { not isUndefined((1,0)!1) and (1,0)!1=0 and (0,0)!1>0}
-rule : { [(0,0)!0,(-1,0)!1] } 100 { not isUndefined((-1,0)!1) and (0,0)!1=0 and (-1,0)!1>0}
-
-% hacia la derecha si su fecha de vencimiento es menor que la de la columna derecha
-% y gana la competencia con (-1,1)
-rule : { [(0,0)!0,0]} 100 {not isUndefined((-1,1)!1) and (0,0)!1<(-1,1)!1 and (0,0)!1>0 and (0,0)!1<(0,0)!0+time/1000}
-rule : { [(0,0)!0,0]} 100 {isUndefined((-1,1)!1) and (0,0)!1>0 and (0,0)!1<(0,0)!0+time/1000}
-rule : { (0,0) } 0 { t }
-
-[right-rule]
-% hacia abajo si esta vacio y (1,-1) quiere entrar pero es menor a (1,-1)
-rule : { [(0,0)!0,0] }        100 {not isUndefined((1,-1)!1) and (1,-1)!1<(1,-1)!0+time/1000 and (0,0)!1>0 and (0,0)!1<(1,-1)!1}
-
-% absorcion del de la izquierda o el de arriba
-% izquierda
-rule : { [(0,0)!0,(0,-1)!1] } 100 {not isUndefined((-1,0)!1) and (0,0)!1=0 and (-1,0)!1>=(0,-1)!1}
-% arriba
-rule : { [(0,0)!0,(-1,0)!1] } 100 {not isUndefined((-1,0)!1) and (0,0)!1=0 and (-1,0)!1<(0,-1)!1}
-% casillero de arriba (0,5)
-rule : { [(0,0)!0,(0,-1)!1] } 100 {isUndefined((-1,0)!1) and (0,0)!1=0 and (0,-1)!1<(0,-1)!0+time/1000 and (0,-1)!1>0}
-rule : { (0,0) } 0 { t }
-
-[inventario-reglas]
-
-% hacia abajo si esta vacio y (1,-1) quiere entrar pero es menor a (1,-1)
-rule : { [(0,0)!0,0] }        100 {not isUndefined((1,-1)!1) and (1,-1)!1<(1,-1)!0+time/1000 and (0,0)!1>0 and (0,0)!1<(1,-1)!1}
-
-% absorcion del de la izquierda o el de arriba
-% izquierda
-rule : { [(0,0)!0,(0,-1)!1] } 100 {not isUndefined((-1,0)!1) and (0,0)!1=0 and (-1,0)!1>=(0,-1)!1}
-% arriba
-rule : { [(0,0)!0,(-1,0)!1] } 100 {not isUndefined((-1,0)!1) and (0,0)!1=0 and (-1,0)!1<(0,-1)!1}
-% casillero de arriba (,5)
-rule : { [(0,0)!0,(-1,0)!1] } 100 {isUndefined((-1,0)!1) and (0,0)!1=0 and (-1,0)!1<(-1,0)!0+time/1000 and (-1,0)!1>0}
-
-%hacia la derecha
-rule : { [(0,0)!0,0] } 100 {not isUndefined((-1,1)!1) and (0,0)!1<(-1,1)!1 and (0,0)!1>0 and (0,0)!1<(0,0)!0+time/1000}
-rule : { [(0,0)!0,0] } 100 { isUndefined((-1,1)!1) and (0,0)!1>0 and (0,0)!1<(0,0)!0+time/1000 }
-
-rule : { (0,0) } 0 { t }
-	\end{lstlisting}
-\end{minipage}
-
-Este conjunto de reglas con la estructura graficada en la Figura~\ref{fig:IP-estructura} definen el modelo del inventario de productos. Los \textit{links} y la asignación de reglas se pueden ver en la siguiente definición dentro del archivo \texttt{.ma}:
-
-\begin{minipage}{1\textwidth}
-	\centering
-	\begin{lstlisting}
-[inventario]
-type : cell
-dim : (5,5)
-delay : transport
-defaultDelayTime  : 0
-border : nowrapped
-
-neighbors : inventario(-1,-1) inventario(-1,0) inventario(-1,1)
-neighbors : inventario(0,-1)  inventario(0,0)  inventario(0,1)
-neighbors : inventario(1,-1)  inventario(1,0)  inventario(1,1)
-
-initialvalue : 0
-initialCellsValue : inventario.val
-in : in1 in2 in3 in4 in5
-out : out1 out2 out3 out4 out5
-link : in5 in@inventario(0,4)
-link : in4 in@inventario(0,3)
-link : in3 in@inventario(0,2)
-link : in2 in@inventario(0,1)
-link : in1 in@inventario(0,0)
-link : output@inventario(0,4) out5
-link : output@inventario(0,3) out4
-link : output@inventario(0,2) out3
-link : output@inventario(0,1) out2
-link : output@inventario(0,0) out1
-
-localtransition : inventario-reglas
-
-zone : left-rule  { (0,0)..(5,0) }
-zone : right-rule { (0,5)..(5,5) }
-\end{lstlisting}
-\end{minipage}
 
 
 \section{Modelado y Simulación}
@@ -918,7 +1014,12 @@ Donde se observa que 101 ms después de cada respuesta del inventario se cursa u
 
 \section{Conclusiones}
 
-A lo largo del desarrollo del trabajo práctico con la herramienta CD++ en su versión \textit{standalone} se encontraron algunos inconvenientes: a) cuando se incluye un bloque generador se genera un error que indica que el bloque no está registrado, b) cuando se ejecuta el simulador avanzado con el parámetro \texttt{-r} se produce una excepción y se aborta la ejecución, c) no existe un visualizador para el simulador avanzado ya que los que hay (\textit{drawlog} y \textit{webviewer}) no permiten representar tuplas y d) el archivo de salida generado por el simulador con la opción \texttt{-o} genera un archivo vacío. Esto último dificulta el ensayo de los autómatas celulares. En lugar de utilizar tres autómatas celulares este trabajo podría haberse resuelto utilizando tan solo uno y definiendo tres zonas cada una con sus reglas. Sin embargo, en la versión avanzada del simulador nos recomendaron no utilizar zonas ya que no están aún debidamente probadas. No obstante los comentarios anteriores, la versión avanzada del simulador presenta como ventaja la incorporación de tuplas que simplifica los vecindarios a utilizar y da mayor flexibilidad.
+A lo largo del desarrollo del trabajo práctico con la herramienta CD++ en su versión \textit{standalone} se encontraron algunos inconvenientes: a) cuando se incluye un bloque generador se genera un error que indica que el bloque no está registrado, b) cuando se ejecuta el simulador avanzado con el parámetro \texttt{-r} se produce una excepción y se aborta la ejecución, c) no existe un visualizador para el simulador avanzado ya que los que hay (\textit{drawlog} y \textit{webviewer}) no permiten representar tuplas y d) el archivo de salida generado por el simulador con la opción \texttt{-o} genera un archivo vacío. Esto último dificulta el ensayo de los autómatas celulares. A pesar que existe un \textit{script} de python para procesar archivos de \texttt{log} de tuplas y procesarlos con los visualizadores antes mencionados, hubo que hacerle correcciones para procesar los distintos índices de la tupla. En lugar de utilizar tres autómatas celulares este trabajo podría haberse resuelto utilizando tan solo uno y definiendo tres zonas cada una con sus reglas. Sin embargo, en la versión avanzada del simulador nos recomendaron no utilizar zonas ya que no están aún debidamente probadas. También encontramos que las macros no funcionan en el simulador avanzado. No obstante los comentarios anteriores, la versión avanzada del simulador presenta como ventaja la incorporación de tuplas que simplifica los vecindarios a utilizar y da mayor flexibilidad.
+
+% Tampoco anduvieron el script de python ni 
+% Tampoco andan las macros ni las zonas en el simulador avanzado o \textit{standalone}.
+% el visualizador web toma el archivo val y de este inicializa tomando la primer componente de las tuplas.
+% al script de python le paso el log08 o el log01 y parece estar mirando el estado de las salidas en lugar de el del indice de la tupla que le paso.
 
 \appendix
 \section{Código Implementado}
