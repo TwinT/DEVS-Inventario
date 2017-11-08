@@ -2,7 +2,6 @@
 00:01:00:500 productIn 456
 00:01:01:000 productIn 789
 00:01:05:103 queryIn -1
-00:01:05:103 queryIn -1
 00:01:05:206 productIn 135
 00:01:05:309 productIn 246
 00:02:00:000 queryIn -1
