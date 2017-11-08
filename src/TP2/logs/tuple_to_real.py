@@ -8,8 +8,8 @@ def tuple_to_real(filename, tuple_idx):
     i = len(filename) - filename[::-1].find('.') - 1
     name, ext = filename[:i], filename[i+1:]
 
-    pattern1 = '(\[(?P<fst>([\.\d]+,){%d})(?P<number>[\.\d]+).*?\])' % tuple_idx
-    pattern2 = '(\[(?P<fst>([\.\d]+,){0})(?P<number>[\.\d]+).*?\])'
+    pattern1 = r'(\[(?P<fst>([\.\d]+,[\s]*){%d})(?P<number>[\.\d]+).*?\])' % tuple_idx
+    pattern2 = r'(\[(?P<fst>([\.\d]+,[\s]*){0})(?P<number>[\.\d]+).*?\])'
         
     with open(filename, 'r') as file:
         content = file.read()
