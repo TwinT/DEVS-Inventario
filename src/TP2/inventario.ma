@@ -1,14 +1,7 @@
 [top]
 components : inventario
-in :  qtopin1 qtopin2 qtopin3 qtopin4 qtopin5 qtopin6 pin1 pin2 pin3 pin4 pin5 pin6 qbotin1 qbotin2 qbotin3 qbotin4 qbotin5 qbotin6
+in :  pin1 pin2 pin3 pin4 pin5 pin6 qbotin1 qbotin2 qbotin3 qbotin4 qbotin5 qbotin6
 out : qtopout1 qtopout2 qtopout3 qtopout4 qtopout5 qtopout6 pout1 pout2 pout3 pout4 pout5 pout6
-
-link : qtopin1 qtopin1@inventario
-link : qtopin2 qtopin2@inventario
-link : qtopin3 qtopin3@inventario
-link : qtopin4 qtopin4@inventario
-link : qtopin5 qtopin5@inventario
-link : qtopin6 qtopin6@inventario
 
 link : qbotin1 qbotin1@inventario
 link : qbotin2 qbotin2@inventario
@@ -51,14 +44,8 @@ neighbors : inventario(1,-1)  inventario(1,0)  inventario(1,1)
 
 initialvalue : 0
 initialCellsValue : inventario.val
-in : qtopin1 qtopin2 qtopin3 qtopin4 qtopin5 qtopin6 pin1 pin2 pin3 pin4 pin5 pin6 qbotin1 qbotin2 qbotin3 qbotin4 qbotin5 qbotin6
+in : pin1 pin2 pin3 pin4 pin5 pin6 qbotin1 qbotin2 qbotin3 qbotin4 qbotin5 qbotin6
 out : qtopout1 qtopout2 qtopout3 qtopout4 qtopout5 qtopout6 pout1 pout2 pout3 pout4 pout5 pout6
-link : qtopin6 in@inventario(0,5)
-link : qtopin5 in@inventario(0,4)
-link : qtopin4 in@inventario(0,3)
-link : qtopin3 in@inventario(0,2)
-link : qtopin2 in@inventario(0,1)
-link : qtopin1 in@inventario(0,0)
 
 link : qbotin6 in@inventario(5,5)
 link : qbotin5 in@inventario(5,4)
@@ -81,19 +68,12 @@ link : output@inventario(0,2) qtopout3
 link : output@inventario(0,1) qtopout2
 link : output@inventario(0,0) qtopout1
 
-link : poutput@inventario(5,5) pout6
-link : poutput@inventario(5,4) pout5
-link : poutput@inventario(5,3) pout4
-link : poutput@inventario(5,2) pout3
-link : poutput@inventario(5,1) pout2
-link : poutput@inventario(5,0) pout1
-
-portintransition : in@inventario(0,5) query-top-in
-portintransition : in@inventario(0,4) query-top-in
-portintransition : in@inventario(0,3) query-top-in
-portintransition : in@inventario(0,2) query-top-in
-portintransition : in@inventario(0,1) query-top-in
-portintransition : in@inventario(0,0) query-top-in
+link : output@inventario(5,5) pout6
+link : output@inventario(5,4) pout5
+link : output@inventario(5,3) pout4
+link : output@inventario(5,2) pout3
+link : output@inventario(5,1) pout2
+link : output@inventario(5,0) pout1
 
 portintransition : pin@inventario(0,5) prod-top-in
 portintransition : pin@inventario(0,4) prod-top-in
@@ -110,7 +90,6 @@ portintransition : in@inventario(5,1) query-bot-in
 portintransition : in@inventario(5,0) query-bot-in
 
 localtransition : inventario-reglas
-
 
 [inventario-reglas]
 
@@ -149,14 +128,10 @@ rule : { [(0,0)!0,(0,-1)!1] } 100 {isUndefined((-1,0)!1) and not isUndefined((0,
 
 rule : { (0,0) } 0 { t }
 
-[query-top-in]
-
-%mantiene valor
-rule : { [(0,0)!0,(0,0)!1+send(output,(0,0)!1)] } 1 { t }
-
 [prod-top-in]
 
-rule:  { [(0,0)!0,portValue(thisPort)] } 1 { t }
+rule:  { [(0,0)!0,(0,0)!1+send(output,(0,0)!1)] } 1 { portValue(thisPort)=-1 }
+rule:  { [(0,0)!0,portValue(thisPort)] } 1 { portValue(thisPort)!=-1 }
 
 [query-bot-in]
 
