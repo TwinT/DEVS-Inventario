@@ -535,7 +535,17 @@ Según lo descripto en la sección \ref{sec:AC} el inventario de productos es el
 	\label{fig:IP-estructura} 
 \end{figure}
 
-Para cada celda en este autómata celular interesa el valor de las $6$ celdas alrededor. Por este motivo el vecindario está definido en la Figura~\ref{fig:IP-vecindario}.
+Para cada celda en este autómata celular interesa el valor de las $8$ celdas alrededor. Por este motivo el vecindario está definido en la Figura~\ref{fig:IP-vecindario}. El ordenamiento de productos está basado en la fecha de vencimiento de los mismos. Cada columna asociada una fecha relativa de vencimiento, por ejemplo, hay columnas que pueden contener los productos que les falte 1 mes para vencer, otra para los que les falte 2 meses para vencer, otra de 3 meses, etc. Las columnas con tiempo de vencimiento mayor son las de la izquierda de la grilla. Esto es así, porque la salida más próxima de productos en la zona de despachos se realiza en la columna de la derecha.
+El acomodamiento de los productos dentro del inventario es el siguiente: los productos van formando una pila en la columna donde entran. Los productos sólo se pueden mover hacia abajo o hacia la derecha. Un producto se podrá mover a la derecha sólo si el paso del tiempo hace que el vencimiento del mismo ya pueda pertenecer a la columna de la derecha. Si la posición se encuentra ocupada, no hay movimiento.
+Puede ocurrir una situación de disputa si se libera una posición que puede se tomada tanto por el bloque superior como por el bloque contiguo. Esto se muestra en la Figura~\ref{fig:IP-disputa}. En este caso, se compara las fechas de vencimiento de ambos productos y la ocupa el de vencimiento más próximo.
+
+\begin{figure}[h] 
+	\centering 
+	\includegraphics[width=0.4\textwidth]{disputa} 
+	\caption{Disputa entre productos por un lugar recién liberado.} 
+	\label{fig:IP-disputa} 
+\end{figure}
+\FloatBarrier
 
 \begin{figure}[h] 
   \centering 
