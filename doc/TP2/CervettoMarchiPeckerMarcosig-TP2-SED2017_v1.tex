@@ -570,38 +570,52 @@ rule : { [(0,0)!0,0] }        100 {not isUndefined((1,-1)!1) and not isUndefined
 rule : { [(0,0)!0,(-1,0)!1] } 100 {not isUndefined((-1,0)!1) and not isUndefined((0,-1)!1) and (-1,0)!1!=0 and (0,-1)!1!=0 and (0,-1)!1<(0,-1)!0+time/1000 and (0,0)!1=0 and (-1,0)!1<=(0,-1)!1}
 
 % Gana el de la izquierda
-rule : { [(0,0)!0,0] }        100 {not isUndefined((-1,1)!1) and not isUndefined((0,1)!1)  and (0,1)!1=0 and (-1,1)!1!=0 and (0,0)!1<(0,0)!0+time/1000   and (0,0)!1!=0  and (0,0)!1<(-1,1)!1}
-rule : { [(0,0)!0,(0,-1)!1] } 100 {not isUndefined((-1,0)!1) and not isUndefined((0,-1)!1) and (0,0)!1=0 and (0,-1)!1!=0 and (0,-1)!1<(0,-1)!0+time/1000 and (-1,0)!1!=0 and (0,-1)!1<(-1,0)!1}
+rule : { [(0,0)!0,0] }        100 {not isUndefined((-1,1)!1) and not isUndefined((0,1)!1)  and (0,1)!1=0 and (-1,1)!1!=0 and (0,0)!1<(0,0)!0+time/1000   and (0,0)!1!=0  and (0,0)!1<(-1,1)!1}  
+rule : { [(0,0)!0,(0,-1)!1] } 100 {not isUndefined((-1,0)!1) and not isUndefined((0,-1)!1) and (0,0)!1=0 and (0,-1)!1!=0 and (0,-1)!1<(0,-1)!0+time/1000 and (-1,0)!1!=0 and (0,-1)!1<(-1,0)!1 and not isUndefined((1,-1)!1) and (1,-1)!1!=0} 
+	\end{lstlisting}
+\end{minipage}
+
+\begin{minipage}{1\textwidth}
+	\centering
+	\begin{lstlisting}
+% caso particular: fila de abajo, se puede ir a la derecha
+rule : { [(0,0)!0,(0,-1)!1] } 100 {not isUndefined((-1,0)!1) and not isUndefined((0,-1)!1) and (0,0)!1=0 and (0,-1)!1!=0 and (0,-1)!1<(0,-1)!0+time/1000 and (-1,0)!1!=0 and (0,-1)!1<(-1,0)!1 and isUndefined((1,0)!1)} 
+
 
 % caso particular: gana el de arriba porque no hay nada a la izquierda
 rule : { [(0,0)!0,0] }        100 {not isUndefined((1,-1)!1) and not isUndefined((1,0)!1)  and (1,0)!1=0   and (1,-1)!1=0 and (0,0)!1!=0 }
 rule : { [(0,0)!0,(-1,0)!1] } 100 {not isUndefined((-1,0)!1) and not isUndefined((0,-1)!1) and (-1,0)!1!=0 and (0,-1)!1=0 and (0,0)!1=0 }
 
 % caso particular: gana el de la izquierda porque no hay nada arriba
-rule : { [(0,0)!0,0] }        100 {not isUndefined((-1,1)!1) and not isUndefined((0,1)!1)  and (0,1)!1=0 and (-1,1)!1=0 and (0,0)!1<(0,0)!0+time/1000 and (0,0)!1!=0 }
-rule : { [(0,0)!0,(0,-1)!1] } 100 {not isUndefined((-1,0)!1) and not isUndefined((0,-1)!1) and (0,0)!1=0 and (0,-1)!1!=0 and (0,-1)!1<(0,-1)!0+time/1000 and (-1,0)!1=0 }
+rule : { [(0,0)!0,0] }        100 {not isUndefined((-1,1)!1) and not isUndefined((0,1)!1)  and (0,1)!1=0 and (-1,1)!1=0 and (0,0)!1<(0,0)!0+time/1000 and (0,0)!1!=0 }  
+rule : { [(0,0)!0,(0,-1)!1] } 100 {not isUndefined((-1,0)!1) and not isUndefined((0,-1)!1) and (0,0)!1=0 and (0,-1)!1!=0 and (0,-1)!1<(0,-1)!0+time/1000 and (-1,0)!1=0 and not isUndefined((1,-1)!1) and (1,-1)!1!=0} 
+rule : { [(0,0)!0,(0,-1)!1] } 100 {not isUndefined((-1,0)!1) and not isUndefined((0,-1)!1) and (0,0)!1=0 and (0,-1)!1!=0 and (0,-1)!1<(0,-1)!0+time/1000 and (-1,0)!1=0 and isUndefined((1,0)!1)} 
+	\end{lstlisting}
+\end{minipage}
 
+\begin{minipage}{1\textwidth}
+	\centering
+	\begin{lstlisting}
 % caso particular: columna de la izquierda, solo se puede bajar
 rule : { [(0,0)!0,0] }        100 {isUndefined((1,-1)!1) and not isUndefined((1,0)!1)  and (1,0)!1=0  and (0,0)!1!=0}
 rule : { [(0,0)!0,(-1,0)!1] } 100 {not isUndefined((-1,0)!1) and isUndefined((0,-1)!1) and (-1,0)!1!=0 and (0,0)!1=0}
 
-% caso particular: fila de arriba, se puede ir a la derecha
-rule : { [(0,0)!0,0] }        100 {isUndefined((-1,1)!1) and not isUndefined((0,1)!1) and (0,1)!1=0 and (0,0)!1<(0,0)!0+time/1000 and (0,0)!1!=0 }
-rule : { [(0,0)!0,(0,-1)!1] } 100 {isUndefined((-1,0)!1) and not isUndefined((0,-1)!1) and (0,0)!1=0 and (0,-1)!1!=0 and (0,-1)!1<(0,-1)!0+time/1000}
+% caso particular: fila de arriba, se puede ir a la derecha sin preguntar arriba
+rule : { [(0,0)!0,0] }        100 {isUndefined((-1,1)!1) and not isUndefined((0,1)!1) and (0,1)!1=0 and (0,0)!1<(0,0)!0+time/1000 and (0,0)!1!=0 }  
+rule : { [(0,0)!0,(0,-1)!1] } 100 {isUndefined((-1,0)!1) and not isUndefined((0,-1)!1) and (0,0)!1=0 and (0,-1)!1!=0 and (0,-1)!1<(0,-1)!0+time/1000 and not isUndefined((1,-1)!1) and (1,-1)!1!=0} 
 
 rule : { (0,0) } 0 { t }
-
 	\end{lstlisting}
 \end{minipage}
 
-Estas reglas se ejecutan periódicamente para ordenar los productos en el inventario de modo de ubicar aquellos con fecha de vencimiento próximo lo más cerca posible de la salida (abajo y a la derecha). Cuanto más arriba se encuentre una regla mayor es su prioridad pues se ejecuta antes, y una vez que para una dada celda una regla es válida no se ejecutan las restantes. Las reglas se agrupan en pares de reglas complementarias asociadas con el movimiento de los productos hacia la derecha y hacia abajo y tienen el siguiente significado:
+Estas reglas se ejecutan periódicamente para ordenar los productos en el inventario de modo de ubicar aquellos con fecha de vencimiento próximo lo más cerca posible de la salida (abajo y a la derecha). Las reglas se agrupan en pares de reglas complementarias asociadas con el movimiento de los productos hacia la derecha y hacia abajo y tienen el siguiente significado:
 \begin{enumerate}
-	\item Las primeras dos reglas están relacionadas con el movimiento hacia abajo de un producto. Si una celda está vacía y la celda a su izquierda tiene un producto que de acuerdo con su fecha de vencimiento debe moverse a la columna actual pero que comparando su fecha de vencimiento con la del producto en la celda que está encima de la celda vacía es mayor entonces esta última \textit{gana} la celda vacía.
-	\item Las siguientes dos reglas están relacionadas con el movimiento hacia la derecha de un producto. Este juego de reglas tiene menor prioridad que las anteriores. Si una celda está vacía y la celda a su izquierda tiene un producto que de acuerdo con su fecha de vencimiento debe moverse a la columna actual y que comparando su fecha de vencimiento con la del producto en la celda que está encima de la celda vacía es menor entonces la primera \textit{gana} la celda vacía. 
-	\item Las siguientes dos reglas son un caso particular de las dos primeras reglas. Este juego de reglas tiene menor prioridad que todas las anteriores. Si una celda está vacía, la celda a su izquierda también está vacía pero la celda que está encima no lo está, entonces el producto en esta última celda se mueve hacia abajo y ocupa la primera.
-	\item Las siguientes dos reglas son un caso particular del segundo para de reglas. Este juego de reglas tiene menor prioridad que todas las anteriores. Si una celda está vacía, la celda que está encima también está vacía pero la celda que está a la izquierda de la original tiene un producto que de acuerdo con su fecha de vencimiento debe moverse a la columna actual entonces el producto en esta última celda se mueve hacia la derecha y ocupa la primera.
-	\item Las siguientes dos reglas corresponden a las reglas anteriores cuando se aplican a los productos en la primer columna de la izquierda. Este juego de reglas tiene menor prioridad que todas las anteriores. Si una celda está vacía y la celda que está encima no lo está entonces el producto en esta celda se baja a la primera celda.
-	\item Las últimas dos reglas corresponden a las reglas anteriores cuando se aplican a los productos en la fila superior. Este juego de reglas es el de menor prioridad. Si una celda está vacía y la celda que está a la izquierda tiene un producto que de acuerdo con su fecha de vencimeitno debe moverse a la columna actual entonces el producto en esta última celda se mueve hacia la derecha y ocupa la primera.
+	\item Las primeras cuatro reglas, en grupos de dos, están relacionadas con el movimiento hacia abajo y hacia la derecha de un producto respectivamente. Si una celda está vacía y la celda a su izquierda tiene un producto que de acuerdo con su fecha de vencimiento debe moverse a la columna actual pero que comparando su fecha de vencimiento con la del producto en la celda que está encima de la celda vacía es mayor entonces esta última \textit{gana} la celda vacía.
+	\item Las siguiente regla es un caso particular de la última fila del inventario. En este caso, un producto sólo puede desplazarse hacia la derecha o salir del inventario.
+		\item Las siguientes cuatro reglas son un caso particular en el caso que se libere una celda y uno y sólo uno de los bloques (el de arriba o el  de la izquierda) exista efectivamente para disputarla.
+		\item La siguiente regla es un caso particular la última fila del inventario. En este caso, el producto se desplaza hacia la derecha, pero sin disputa de un bloque superior.
+	\item Las siguientes cuatro reglas correspondes a los casos particulares de la columna de la izquierda(cuyas celdas no tienen disputa de un producto contiguo) y la fila de arriba(cuyas celdas no tienen disputa de un producto de arriba) 
+	\item La última regla es la que se evalúa siempre positivamente.
 \end{enumerate}
 
 Para terminar de definir el modelo, se deben especificar las reglas de comportamiento ante transiciones de los diferentes puertos de entrada. Para esto se plantean dos juegos de reglas. El primero corresponde a las entradas conectadas a la cinta transportadora y debe manejar por un lado la consulta por espacio en la columna correspondiente (valor $-1$) y por el otro el ingreso de un producto en dicha columna (valor $>0$). El segundo corresponde a las consultas que realiza el despachante de productos que consulta por la disponibilidad de un producto en una dada columna del inventario enviando un $-1$ por el puerto corrspondiente. El primer juego de reglas se enuncia a continuación:
@@ -609,20 +623,17 @@ Para terminar de definir el modelo, se deben especificar las reglas de comportam
 \begin{minipage}{1\textwidth}
 	\centering
 	\begin{lstlisting}
-[query-top-in]
-
-%mantiene valor
-rule : { [(0,0)!0,(0,0)!1+send(output,(0,0)!1)] } 1 { t }
 
 [prod-top-in]
 
-rule:  { [(0,0)!0,portValue(thisPort)] } 1 { t }
+rule:  { [(0,0)!0,(0,0)!1+send(output,(0,0)!1)] } 1 { portValue(thisPort)=-1 }
+rule:  { [(0,0)!0,portValue(thisPort)] } 1 { portValue(thisPort)!=-1 }
 	\end{lstlisting}
 \end{minipage}
 
 Se observa que:
 \begin{itemize}
-  \item Si se recibe un valor $-1$ significa que están preguntando por la disponibilidad de lugar en la columna. Se devuelve el valor de la fecha de vencimiento del producto en la celda superior de la columna por la que se preguntó. Si la celda estaba vacía se devuelve $0$ y sino un valor $>0$.
+  \item Si se recibe un valor $-1$ significa que están preguntando por la disponibilidad de lugar en la columna. Se devuelve el valor de la fecha de vencimiento del producto en la celda superior de la columna por la que se preguntó. Si la celda estaba vacía se devuelve $0$.
   \item Si se recibe un valor $>0$ significa que es un producto que viene de la cinta transportadora. Esto significa que previamente se consultó por la disponibilidad de lugar en la columna y se respondió afirmativamente.
 \end{itemize}
 
@@ -659,14 +670,8 @@ neighbors : inventario(1,-1)  inventario(1,0)  inventario(1,1)
 
 initialvalue : 0
 initialCellsValue : inventario.val
-in : qtopin1 qtopin2 qtopin3 qtopin4 qtopin5 qtopin6 pin1 pin2 pin3 pin4 pin5 pin6 qbotin1 qbotin2 qbotin3 qbotin4 qbotin5 qbotin6
+in : pin1 pin2 pin3 pin4 pin5 pin6 qbotin1 qbotin2 qbotin3 qbotin4 qbotin5 qbotin6
 out : qtopout1 qtopout2 qtopout3 qtopout4 qtopout5 qtopout6 pout1 pout2 pout3 pout4 pout5 pout6
-link : qtopin6 in@inventario(0,5)
-link : qtopin5 in@inventario(0,4)
-link : qtopin4 in@inventario(0,3)
-link : qtopin3 in@inventario(0,2)
-link : qtopin2 in@inventario(0,1)
-link : qtopin1 in@inventario(0,0)
 
 link : qbotin6 in@inventario(5,5)
 link : qbotin5 in@inventario(5,4)
@@ -695,14 +700,12 @@ link : poutput@inventario(5,3) pout4
 link : poutput@inventario(5,2) pout3
 link : poutput@inventario(5,1) pout2
 link : poutput@inventario(5,0) pout1
+	\end{lstlisting}
+\end{minipage}
 
-portintransition : in@inventario(0,5) query-top-in
-portintransition : in@inventario(0,4) query-top-in
-portintransition : in@inventario(0,3) query-top-in
-portintransition : in@inventario(0,2) query-top-in
-portintransition : in@inventario(0,1) query-top-in
-portintransition : in@inventario(0,0) query-top-in
-
+\begin{minipage}{1\textwidth}
+	\centering
+	\begin{lstlisting}
 portintransition : pin@inventario(0,5) prod-top-in
 portintransition : pin@inventario(0,4) prod-top-in
 portintransition : pin@inventario(0,3) prod-top-in
@@ -956,11 +959,10 @@ Eval: SendToNCPort Reference(out, [0.3, 0, 0]) at time 00:06:00:000:0
 	\end{lstlisting}	
 \end{minipage}
 
-En esta prueba se observa que se produce un evento de entrada en $00:05:00:000$ que modifica el estado de la celda (0,5). Este evento es el ingreso de un producto de fecha de vencimiento $300.4$. La demora de las reglas asociadas con entradas es de $1~\textrm{ms}$. En $00:05:00:001$ se determina el vecindario inverso de la celda $(0,5)$, que consiste en las celdas $(0,4)$ y $(0,5)$, y se evalúa cómo repercuten los cambios en la celda $(0,5)$. Para las celdas en este vecindario se ejecutan la primera y segunda regla y el producto avanza a la celda $(0,4)$ y se quita de la $(0,5)$. Las reglas locales se ejecutan cada $100~\textrm{ms}$, por lo tanto en el tiempo $00:05:00:101$ se evalúa el vecindario inverso de las celdas que sufrieron cambios en al paso anterior. Este vecindario inverso está compuesto por las celdas $(0,3)$, $(0,4)$ y $(0,5)$. En este paso el producto avanza una celda más hacia la izquierda pasando a la celda $(0,3)$. Nuevamente se esperan $100~\textrm{ms}$ para volver a evauar las reglas y en este caso se determina que la celda $(0,3)$ es la que le corresponde al producto y entonces se consulta inventario por la disponibilidad de lugar. Se puede observar que como el valor de las celdas evaluadas en $00:05:00:201$ no cambió entonces no se vuelven a evaluar las reglas locales. La respuesta del inventario llega a la celda $(0,3)$ en el tiempo $00:06:00:000$.
+En esta prueba se observa que se produce un evento de entrada en $00:05:00:000$ que modifica el estado de la celda (0,5). Este evento es el ingreso de un producto de fecha de vencimiento $300.4$. La demora de las reglas asociadas con entradas es de $1~\textrm{ms}$. En $00:05:00:001$ se determina el vecindario inverso de la celda $(0,5)$, que consiste en las celdas $(0,4)$ y $(0,5)$, y se evalúa cómo repercuten los cambios en la celda $(0,5)$. Para las celdas en este vecindario se ejecutan la primera y segunda regla y el producto avanza a la celda $(0,4)$ y se quita de la $(0,5)$. Las reglas locales se ejecutan cada $100~\textrm{ms}$, por lo tanto en el tiempo $00:05:00:101$ se evalúa el vecindario inverso de las celdas que sufrieron cambios en al paso anterior. Este vecindario inverso está compuesto por las celdas $(0,3)$, $(0,4)$ y $(0,5)$. En este paso el producto avanza una celda más hacia la izquierda pasando a la celda $(0,3)$. Nuevamente se esperan $100~\textrm{ms}$ para volver a evaluar las reglas y en este caso se determina que la celda $(0,3)$ es la que le corresponde al producto y entonces se consulta inventario por la disponibilidad de lugar. Se puede observar que como el valor de las celdas evaluadas en $00:05:00:201$ no cambió entonces no se vuelven a evaluar las reglas locales. La respuesta del inventario llega a la celda $(0,3)$ en el tiempo $00:06:00:000$.send(output,(0,0)!0)
 
 \subsubsection{Inventario}
-Las pruebas de este módulo individual se realizaron mediante...
-
+En primera instancia las pruebas de este módulo individual se realizaron cargando valores en un archivo inventario.val y observando la evolución de los productos en el inventario.
 \subsubsection{Despacho de Productos}
 Para la prueba de este módulo también se procedió a excitarlo con un archivo de eventos ".ev", conteniendo los pedidos de productos y las respuestas del inventario. Se tuvo especial cuidado en generar las respuestas del inventario en los momentos adecuados a la salida de consultas a las columnas. Considerando que la asignación de los valores de las reglas tiene un retraso de 100 ms (velocidad del despachante).
 

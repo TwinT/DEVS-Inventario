@@ -1,10 +1,10 @@
 [logfiles]
-ParallelRoot : cinta.log00 
-top : cinta.log08 
-cinta : cinta.log01 
-cinta(0,0) : cinta.log02 
-cinta(0,1) : cinta.log03 
-cinta(0,2) : cinta.log04 
-cinta(0,3) : cinta.log05 
-cinta(0,4) : cinta.log06 
-cinta(0,5) : cinta.log07 
+ParallelRoot : ./logs/cinta/cinta.log00 
+top : ./logs/cinta/cinta.log08 
+cinta : ./logs/cinta/cinta.log01 
+cinta(0,0) : ./logs/cinta/cinta.log02 
+cinta(0,1) : ./logs/cinta/cinta.log03 
+cinta(0,2) : ./logs/cinta/cinta.log04 
+cinta(0,3) : ./logs/cinta/cinta.log05 
+cinta(0,4) : ./logs/cinta/cinta.log06 
+cinta(0,5) : ./logs/cinta/cinta.log07 
