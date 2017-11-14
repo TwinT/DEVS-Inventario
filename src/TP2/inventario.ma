@@ -39,10 +39,9 @@ delay : transport
 defaultDelayTime  : 0
 border : nowrapped
 
-neighbors : inventario(-1,-1) inventario(-1,-1) inventario(-1,0) inventario(-1,1) inventario(-1,2)
-neighbors : inventario(0,-1)  inventario(0,-1)  inventario(0,0)  inventario(0,1)  inventario(0,2)
-neighbors : inventario(1,-1)  inventario(1,-1)  inventario(1,0)  inventario(1,1)  inventario(1,2)
-neighbors : inventario(2,-1)  inventario(2,-1)  inventario(2,0)  inventario(2,1)  inventario(2,2)
+neighbors : inventario(-1,-4) inventario(-1,-3) inventario(-1,-2) inventario(-1,-1) inventario(-1,0) inventario(-1,1) inventario(-1,2) inventario(-1,3) inventario(-1,4)
+neighbors : inventario(0,-4)  inventario(0,-3)  inventario(0,-2)  inventario(0,-1)  inventario(0,0)  inventario(0,1)  inventario(0,2)  inventario(0,3)  inventario(0,4) 
+neighbors : inventario(1,-4)  inventario(1,-3)  inventario(1,-2)  inventario(1,-1)  inventario(1,0)  inventario(1,1)  inventario(1,2)  inventario(1,3)  inventario(1,4) 
 
 initialvalue : 0
 initialCellsValue : inventario.val
