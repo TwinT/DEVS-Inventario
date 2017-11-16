@@ -10,3 +10,5 @@
 0 / L / X / 00:00:00:000:0 / inventario(08) / neighborchange / [0.2, 0] / inventario(5,5)(44)
 0 / L / X / 00:00:00:000:0 / inventario(08) / neighborchange / [0.1, 0] / inventario(5,5)(44)
 0 / L / * / 00:00:00:000:0 / inventario(08) / inventario(5,5)(44)
+0 / L / X / 00:01:05:104:0 / inventario(08) / in /     -1.00000 / inventario(5,5)(44)
+0 / L / * / 00:01:05:201:0 / inventario(08) / inventario(5,5)(44)
