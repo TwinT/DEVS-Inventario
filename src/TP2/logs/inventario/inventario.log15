@@ -122,3 +122,8 @@
 0 / L / X / 00:19:00:201:0 / inventario(01) / neighborchange / [0.1, 0] / inventario(2,1)(15)
 0 / L / X / 00:19:00:201:0 / inventario(01) / neighborchange / [0.1, 120] / inventario(2,1)(15)
 0 / L / * / 00:19:00:201:0 / inventario(01) / inventario(2,1)(15)
+0 / L / X / 00:20:00:201:0 / inventario(01) / neighborchange / [0.1, 0] / inventario(2,1)(15)
+0 / L / * / 00:20:00:201:0 / inventario(01) / inventario(2,1)(15)
+0 / L / X / 00:20:00:301:0 / inventario(01) / neighborchange / [0.1, 0] / inventario(2,1)(15)
+0 / L / X / 00:20:00:301:0 / inventario(01) / neighborchange / [0.1, 120] / inventario(2,1)(15)
+0 / L / * / 00:20:00:301:0 / inventario(01) / inventario(2,1)(15)
