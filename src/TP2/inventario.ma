@@ -39,9 +39,9 @@ delay : transport
 defaultDelayTime  : 0
 border : nowrapped
 
-neighbors : inventario(-1,-4) inventario(-1,-3) inventario(-1,-2) inventario(-1,-1) inventario(-1,0) inventario(-1,1) inventario(-1,2) inventario(-1,3) inventario(-1,4)
-neighbors : inventario(0,-4)  inventario(0,-3)  inventario(0,-2)  inventario(0,-1)  inventario(0,0)  inventario(0,1)  inventario(0,2)  inventario(0,3)  inventario(0,4)
-neighbors : inventario(1,-4)  inventario(1,-3)  inventario(1,-2)  inventario(1,-1)  inventario(1,0)  inventario(1,1)  inventario(1,2)  inventario(1,3)  inventario(1,4)
+neighbors : inventario(-1,-1) inventario(-1,0) inventario(-1,1)
+neighbors : inventario(0,-1)  inventario(0,0)  inventario(0,1)
+neighbors : inventario(1,-1)  inventario(1,0)  inventario(1,1)
 
 initialvalue : 0
 initialCellsValue : inventario.val
@@ -134,8 +134,8 @@ rule : { [(0,0)!0,0] }        100 {isUndefined((-1,1)!1) and not isUndefined((0,
 rule : { [(0,0)!0,(0,-1)!1] } 100 {isUndefined((-1,0)!1) and not isUndefined((0,-1)!1) and (0,0)!1=0 and (0,-1)!1!=0 and (0,-1)!1<(0,-1)!0+time/1000 and not isUndefined((1,-1)!1) and (1,-1)!1!=0}
 
 % trigger de eventos
-rule: { (0,0) } {(0,0)!0} { (0,0)!0 < ((0,0)!1 - time)}
-rule: { (0,0) } 0         { (0,0)!0 > ((0,0)!1 - time)}
+rule: { (0,0) } {((0,0)!1 - time/1000) - (0,0)!0} { (0,0)!0 < ((0,0)!1 - time/1000)}
+rule: { (0,0) } 0         { (0,0)!0 > ((0,0)!1 - time/1000)}
 
 rule : { (0,0) } 0 { t }
 
