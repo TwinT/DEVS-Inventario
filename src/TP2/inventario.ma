@@ -98,53 +98,54 @@ localtransition : inventario-reglas
 % Tiene prioridad el de arriba en caso de empate
 
 % Gana el de arriba
-rule : { [(0,0)!0,0] }        100 {not isUndefined((1,-1)!1) and not isUndefined((1,0)!1)  and (1,0)!1=0   and (1,-1)!1!=0 and (1,-1)!1<(1,-1)!0+time/1000 and (0,0)!1!=0 and (0,0)!1<=(1,-1)!1}
-rule : { [(0,0)!0,(-1,0)!1] } 100 {not isUndefined((-1,0)!1) and not isUndefined((0,-1)!1) and (-1,0)!1!=0 and (0,-1)!1!=0 and (0,-1)!1<(0,-1)!0+time/1000 and (0,0)!1=0 and (-1,0)!1<=(0,-1)!1}
-
-% caso particular: gana el de arriba porque el de la izquierda no puede pasar
-rule : { [(0,0)!0,0] }        100 {not isUndefined((1,-1)!1) and not isUndefined((1,0)!1)  and (1,0)!1=0   and (1,-1)!1!=0 and (1,-1)!1>=(1,-1)!0+time/1000 and (0,0)!1!=0}
-rule : { [(0,0)!0,(-1,0)!1] } 100 {not isUndefined((-1,0)!1) and not isUndefined((0,-1)!1) and (-1,0)!1!=0 and (0,-1)!1!=0 and (0,-1)!1>=(0,-1)!0+time/1000 and (0,0)!1=0}
-
-% Gana el de la izquierda
-rule : { [(0,0)!0,0] }        100 {not isUndefined((-1,1)!1) and not isUndefined((0,1)!1)  and (0,1)!1=0 and (-1,1)!1!=0 and (0,0)!1<(0,0)!0+time/1000   and (0,0)!1!=0  and (0,0)!1<(-1,1)!1 and not isUndefined((1,0)!1) and (1,0)!1!=0}
-rule : { [(0,0)!0,(0,-1)!1] } 100 {not isUndefined((-1,0)!1) and not isUndefined((0,-1)!1) and (0,0)!1=0 and (0,-1)!1!=0 and (0,-1)!1<(0,-1)!0+time/1000 and (-1,0)!1!=0 and (0,-1)!1<(-1,0)!1 and not isUndefined((1,-1)!1) and (1,-1)!1!=0}
-
-% caso particular: fila de abajo, se puede ir a la derecha
-rule : { [(0,0)!0,0] }        100 {not isUndefined((-1,1)!1) and not isUndefined((0,1)!1)  and (0,1)!1=0 and (-1,1)!1!=0 and (0,0)!1<(0,0)!0+time/1000   and (0,0)!1!=0  and (0,0)!1<(-1,1)!1 and isUndefined((1,0)!1) }
-rule : { [(0,0)!0,(0,-1)!1] } 100 {not isUndefined((-1,0)!1) and not isUndefined((0,-1)!1) and (0,0)!1=0 and (0,-1)!1!=0 and (0,-1)!1<(0,-1)!0+time/1000 and (-1,0)!1!=0 and (0,-1)!1<(-1,0)!1 and isUndefined((1,0)!1)}
+rule : { [(0,0)!0,0,0] }        100 {not isUndefined((1,-1)!1) and not isUndefined((1,0)!1)  and (1,0)!1=0   and (1,-1)!1!=0 and (1,-1)!1<(1,-1)!0+time/1000 and (0,0)!1!=0 and (0,0)!1<=(1,-1)!1}
+rule : { [(0,0)!0,(-1,0)!1,0] } 100 {not isUndefined((-1,0)!1) and not isUndefined((0,-1)!1) and (-1,0)!1!=0 and (0,-1)!1!=0 and (0,-1)!1<(0,-1)!0+time/1000 and (0,0)!1=0 and (-1,0)!1<=(0,-1)!1}
 
 % caso particular: gana el de arriba porque no hay nada a la izquierda
-rule : { [(0,0)!0,0] }        100 {not isUndefined((1,-1)!1) and not isUndefined((1,0)!1)  and (1,0)!1=0   and (1,-1)!1=0 and (0,0)!1!=0 }
-rule : { [(0,0)!0,(-1,0)!1] } 100 {not isUndefined((-1,0)!1) and not isUndefined((0,-1)!1) and (-1,0)!1!=0 and (0,-1)!1=0 and (0,0)!1=0 }
+rule : { [(0,0)!0,0,0] }        100 {not isUndefined((1,-1)!1) and not isUndefined((1,0)!1)  and (1,0)!1=0   and (1,-1)!1=0 and (0,0)!1!=0 }
+rule : { [(0,0)!0,(-1,0)!1,0] } 100 {not isUndefined((-1,0)!1) and not isUndefined((0,-1)!1) and (-1,0)!1!=0 and (0,-1)!1=0 and (0,0)!1=0 }
 
-% caso particular: gana el de la izquierda porque no hay nada arriba
-rule : { [(0,0)!0,0] }        100 {not isUndefined((-1,1)!1) and not isUndefined((0,1)!1)  and (0,1)!1=0 and (-1,1)!1=0 and (0,0)!1<(0,0)!0+time/1000 and (0,0)!1!=0 and not isUndefined((1,0)!1) and (1,0)!1!=0}
-rule : { [(0,0)!0,(0,-1)!1] } 100 {not isUndefined((-1,0)!1) and not isUndefined((0,-1)!1) and (0,0)!1=0 and (0,-1)!1!=0 and (0,-1)!1<(0,-1)!0+time/1000 and (-1,0)!1=0 and not isUndefined((1,-1)!1) and (1,-1)!1!=0}
-
-% caso particular: fila de abajo, se puede ir a la derecha porque no hay nada arriba
-rule : { [(0,0)!0,0] }        100 {not isUndefined((-1,1)!1) and not isUndefined((0,1)!1)  and (0,1)!1=0 and (-1,1)!1=0 and (0,0)!1<(0,0)!0+time/1000   and (0,0)!1!=0  and isUndefined((1,0)!1)}
-rule : { [(0,0)!0,(0,-1)!1] } 100 {not isUndefined((-1,0)!1) and not isUndefined((0,-1)!1) and (0,0)!1=0 and (0,-1)!1!=0 and (0,-1)!1<(0,-1)!0+time/1000 and (-1,0)!1=0 and isUndefined((1,0)!1)}
+% caso particular: gana el de arriba porque el de la izquierda no puede pasar
+rule : { [(0,0)!0,0,0] }        100 {not isUndefined((1,-1)!1) and not isUndefined((1,0)!1)  and (1,0)!1=0   and (1,-1)!1!=0 and (1,-1)!1>=(1,-1)!0+time/1000 and (0,0)!1!=0}
+rule : { [(0,0)!0,(-1,0)!1,0] } 100 {not isUndefined((-1,0)!1) and not isUndefined((0,-1)!1) and (-1,0)!1!=0 and (0,-1)!1!=0 and (0,-1)!1>=(0,-1)!0+time/1000 and (0,0)!1=0}
 
 % caso particular: columna de la izquierda, solo se puede bajar
-rule : { [(0,0)!0,0] }        100 {isUndefined((1,-1)!1) and not isUndefined((1,0)!1)  and (1,0)!1=0  and (0,0)!1!=0}
-rule : { [(0,0)!0,(-1,0)!1] } 100 {not isUndefined((-1,0)!1) and isUndefined((0,-1)!1) and (-1,0)!1!=0 and (0,0)!1=0}
+rule : { [(0,0)!0,0,0] }        100 {isUndefined((1,-1)!1) and not isUndefined((1,0)!1)  and (1,0)!1=0  and (0,0)!1!=0}
+rule : { [(0,0)!0,(-1,0)!1,0] } 100 {not isUndefined((-1,0)!1) and isUndefined((0,-1)!1) and (-1,0)!1!=0 and (0,0)!1=0}
+
+% Gana el de la izquierda
+rule : { [(0,0)!0,0,0] }        100 {not isUndefined((-1,1)!1) and not isUndefined((0,1)!1)  and (0,1)!1=0 and (-1,1)!1!=0 and (0,0)!1<(0,0)!0+time/1000   and (0,0)!1!=0  and (0,0)!1<(-1,1)!1 and not isUndefined((1,0)!1) and (1,0)!1!=0}
+rule : { [(0,0)!0,(0,-1)!1,0] } 100 {not isUndefined((-1,0)!1) and not isUndefined((0,-1)!1) and (0,0)!1=0 and (0,-1)!1!=0 and (0,-1)!1<(0,-1)!0+time/1000 and (-1,0)!1!=0 and (0,-1)!1<(-1,0)!1 and not isUndefined((1,-1)!1) and (1,-1)!1!=0}
+
+% caso particular: fila de abajo, se puede ir a la derecha
+rule : { [(0,0)!0,0,0] }        100 {not isUndefined((-1,1)!1) and not isUndefined((0,1)!1)  and (0,1)!1=0 and (-1,1)!1!=0 and (0,0)!1<(0,0)!0+time/1000   and (0,0)!1!=0  and (0,0)!1<(-1,1)!1 and isUndefined((1,0)!1) }
+rule : { [(0,0)!0,(0,-1)!1,0] } 100 {not isUndefined((-1,0)!1) and not isUndefined((0,-1)!1) and (0,0)!1=0 and (0,-1)!1!=0 and (0,-1)!1<(0,-1)!0+time/1000 and (-1,0)!1!=0 and (0,-1)!1<(-1,0)!1 and isUndefined((1,0)!1)}
+
+% caso particular: gana el de la izquierda porque no hay nada arriba
+rule : { [(0,0)!0,0,0] }        100 {not isUndefined((-1,1)!1) and not isUndefined((0,1)!1)  and (0,1)!1=0 and (-1,1)!1=0 and (0,0)!1<(0,0)!0+time/1000 and (0,0)!1!=0 and not isUndefined((1,0)!1) and (1,0)!1!=0}
+rule : { [(0,0)!0,(0,-1)!1,0] } 100 {not isUndefined((-1,0)!1) and not isUndefined((0,-1)!1) and (0,0)!1=0 and (0,-1)!1!=0 and (0,-1)!1<(0,-1)!0+time/1000 and (-1,0)!1=0 and not isUndefined((1,-1)!1) and (1,-1)!1!=0}
+
+% caso particular: fila de abajo, se puede ir a la derecha porque no hay nada arriba
+rule : { [(0,0)!0,0,0] }        100 {not isUndefined((-1,1)!1) and not isUndefined((0,1)!1)  and (0,1)!1=0 and (-1,1)!1=0 and (0,0)!1<(0,0)!0+time/1000   and (0,0)!1!=0  and isUndefined((1,0)!1)}
+rule : { [(0,0)!0,(0,-1)!1,0] } 100 {not isUndefined((-1,0)!1) and not isUndefined((0,-1)!1) and (0,0)!1=0 and (0,-1)!1!=0 and (0,-1)!1<(0,-1)!0+time/1000 and (-1,0)!1=0 and isUndefined((1,0)!1)}
 
 % caso particular: fila de arriba, se puede ir a la derecha sin preguntar arriba pero hay alguien abajo
-rule : { [(0,0)!0,0] }        100 {isUndefined((-1,1)!1) and not isUndefined((0,1)!1) and (0,1)!1=0 and (0,0)!1<(0,0)!0+time/1000 and (0,0)!1!=0 and not isUndefined((1,0)!1) and (1,0)!1!=0 }
-rule : { [(0,0)!0,(0,-1)!1] } 100 {isUndefined((-1,0)!1) and not isUndefined((0,-1)!1) and (0,0)!1=0 and (0,-1)!1!=0 and (0,-1)!1<(0,-1)!0+time/1000 and not isUndefined((1,-1)!1) and (1,-1)!1!=0}
+rule : { [(0,0)!0,0,0] }        100 {isUndefined((-1,1)!1) and not isUndefined((0,1)!1) and (0,1)!1=0 and (0,0)!1<(0,0)!0+time/1000 and (0,0)!1!=0 and not isUndefined((1,0)!1) and (1,0)!1!=0 }
+rule : { [(0,0)!0,(0,-1)!1,0] } 100 {isUndefined((-1,0)!1) and not isUndefined((0,-1)!1) and (0,0)!1=0 and (0,-1)!1!=0 and (0,-1)!1<(0,-1)!0+time/1000 and not isUndefined((1,-1)!1) and (1,-1)!1!=0}
 
-% trigger de eventos
-rule: { (0,0) } {((0,0)!1 - time/1000) - (0,0)!0} { (0,0)!0 < ((0,0)!1 - time/1000)}
-rule: { (0,0) } 0         { (0,0)!0 > ((0,0)!1 - time/1000)}
+% trigger de eventos (en la última columna no hay)
+rule: { [(0,0)!0,(0,0)!1,1] } {(0,0)!1 - (time/1000 + (0,1)!0)} {not isUndefined((0,1)!0) and (0,0)!1 > ((0,1)!0 + time/1000) and (0,0)!1!=0}
+rule: { [(0,0)!0,(0,0)!1,1] } 0                                 {not isUndefined((0,1)!0) and (0,0)!1 < ((0,1)!0 + time/1000) and (0,0)!1!=0}
+
 
 rule : { (0,0) } 0 { t }
 
 [prod-top-in]
 
-rule:  { [(0,0)!0,(0,0)!1+send(output,(0,0)!1)] } 1 { portValue(thisPort)=-1 }
-rule:  { [(0,0)!0,portValue(thisPort)] } 1 { portValue(thisPort)!=-1 }
+rule:  { [(0,0)!0,(0,0)!1+send(output,(0,0)!1),0] } 1 { portValue(thisPort)=-1 }
+rule:  { [(0,0)!0,portValue(thisPort),0] } 1 { portValue(thisPort)!=-1 }
 
 [query-bot-in]
 
 %borra producto
-rule:  { [(0,0)!0,0+send(output,(0,0)!1)] } 1 { t }
+rule:  { [(0,0)!0,0+send(output,(0,0)!1),0] } 1 { t }
