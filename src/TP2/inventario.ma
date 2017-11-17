@@ -138,7 +138,6 @@ rule : { [(0,0)!0,0,0] }        100 {isUndefined((-1,1)!1) and not isUndefined((
 rule: { [(0,0)!0,(0,0)!1,1] } { ((0,0)!1 - (time/1000 + (0,1)!0))*1000 } {not isUndefined((0,1)!0) and (0,0)!1 > ((0,1)!0 + time/1000) and (0,0)!1!=0}
 rule: { [(0,0)!0,(0,0)!1,1] } 0                                 {not isUndefined((0,1)!0) and (0,0)!1 < ((0,1)!0 + time/1000) and (0,0)!1!=0}
 
-
 rule : { (0,0) } 0 { t }
 
 [prod-top-in]
