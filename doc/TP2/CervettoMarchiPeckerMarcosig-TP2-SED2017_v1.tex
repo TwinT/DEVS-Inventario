@@ -530,18 +530,19 @@ Según lo descripto en la sección \ref{sec:AC} el inventario de productos es el
 
 \begin{figure}[h] 
 	\centering 
-	\includegraphics[width=0.8\textwidth]{INV-estructura.png} 
+	\includegraphics[width=0.6\textwidth]{INV-estructura.png} 
 	\caption{Modelo del inventario de productos.} 
 	\label{fig:IP-estructura} 
 \end{figure}
-
-Para cada celda en este autómata celular interesa el valor de las $8$ celdas alrededor. Por este motivo el vecindario está definido en la Figura~\ref{fig:IP-vecindario}. El ordenamiento de productos está basado en la fecha de vencimiento de los mismos. Cada columna asociada una fecha relativa de vencimiento, por ejemplo, hay columnas que pueden contener los productos que les falte 1 mes para vencer, otra para los que les falte 2 meses para vencer, otra de 3 meses, etc. Las columnas con tiempo de vencimiento mayor son las de la izquierda de la grilla. Esto es así, porque la salida más próxima de productos en la zona de despachos se realiza en la columna de la derecha.
+%% Esto podría ir en la descripción conceptual:
+Para cada celda en este autómata celular interesa el valor de las $8$ celdas alrededor. Por este motivo el vecindario está definido en la Figura~\ref{fig:IP-vecindario}. El ordenamiento de productos está basado en la fecha de vencimiento de los mismos. Cada columna tiene asociada una fecha relativa de vencimiento, por ejemplo, hay columnas que pueden contener los productos que les falte 1 mes para vencer, otra para los que les falte 2 meses para vencer, otra de 3 meses, etc. Las columnas con tiempo de vencimiento mayor son las de la izquierda de la grilla. Esto es así, porque la salida más próxima de productos en la zona de despachos se realiza en la columna de la derecha.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 El acomodamiento de los productos dentro del inventario es el siguiente: los productos van formando una pila en la columna donde entran. Los productos sólo se pueden mover hacia abajo o hacia la derecha. Un producto se podrá mover a la derecha sólo si el paso del tiempo hace que el vencimiento del mismo ya pueda pertenecer a la columna de la derecha. Si la posición se encuentra ocupada, no hay movimiento.
 Puede ocurrir una situación de disputa si se libera una posición que puede se tomada tanto por el bloque superior como por el bloque contiguo. Esto se muestra en la Figura~\ref{fig:IP-disputa}. En este caso, se compara las fechas de vencimiento de ambos productos y la ocupa el de vencimiento más próximo.
 
 \begin{figure}[h] 
 	\centering 
-	\includegraphics[width=0.4\textwidth]{disputa} 
+	\includegraphics[width=0.3\textwidth]{disputa} 
 	\caption{Disputa entre productos por un lugar recién liberado.} 
 	\label{fig:IP-disputa} 
 \end{figure}
@@ -566,55 +567,73 @@ Las reglas asociadas a las transiciones locales en las celdas del autómata se d
 % Tiene prioridad el de arriba en caso de empate
 
 % Gana el de arriba
-rule : { [(0,0)!0,0] }        100 {not isUndefined((1,-1)!1) and not isUndefined((1,0)!1)  and (1,0)!1=0   and (1,-1)!1!=0 and (1,-1)!1<(1,-1)!0+time/1000 and (0,0)!1!=0 and (0,0)!1<=(1,-1)!1}
-rule : { [(0,0)!0,(-1,0)!1] } 100 {not isUndefined((-1,0)!1) and not isUndefined((0,-1)!1) and (-1,0)!1!=0 and (0,-1)!1!=0 and (0,-1)!1<(0,-1)!0+time/1000 and (0,0)!1=0 and (-1,0)!1<=(0,-1)!1}
-
-% Gana el de la izquierda
-rule : { [(0,0)!0,0] }        100 {not isUndefined((-1,1)!1) and not isUndefined((0,1)!1)  and (0,1)!1=0 and (-1,1)!1!=0 and (0,0)!1<(0,0)!0+time/1000   and (0,0)!1!=0  and (0,0)!1<(-1,1)!1}  
-rule : { [(0,0)!0,(0,-1)!1] } 100 {not isUndefined((-1,0)!1) and not isUndefined((0,-1)!1) and (0,0)!1=0 and (0,-1)!1!=0 and (0,-1)!1<(0,-1)!0+time/1000 and (-1,0)!1!=0 and (0,-1)!1<(-1,0)!1 and not isUndefined((1,-1)!1) and (1,-1)!1!=0} 
-	\end{lstlisting}
-\end{minipage}
-
-\begin{minipage}{1\textwidth}
-	\centering
-	\begin{lstlisting}
-% caso particular: fila de abajo, se puede ir a la derecha
-rule : { [(0,0)!0,(0,-1)!1] } 100 {not isUndefined((-1,0)!1) and not isUndefined((0,-1)!1) and (0,0)!1=0 and (0,-1)!1!=0 and (0,-1)!1<(0,-1)!0+time/1000 and (-1,0)!1!=0 and (0,-1)!1<(-1,0)!1 and isUndefined((1,0)!1)} 
-
+rule : { [(0,0)!0,(-1,0)!1,0] } 100 {not isUndefined((-1,0)!1) and not isUndefined((0,-1)!1) and (-1,0)!1!=0 and (0,-1)!1!=0 and (0,-1)!1<(0,-1)!0+time/1000 and (0,0)!1=0 and (-1,0)!1<=(0,-1)!1}
+rule : { [(0,0)!0,0,0] }        100 {not isUndefined((1,-1)!1) and not isUndefined((1,0)!1)  and (1,0)!1=0   and (1,-1)!1!=0 and (1,-1)!1<(1,-1)!0+time/1000 and (0,0)!1!=0 and (0,0)!1<=(1,-1)!1}
 
 % caso particular: gana el de arriba porque no hay nada a la izquierda
-rule : { [(0,0)!0,0] }        100 {not isUndefined((1,-1)!1) and not isUndefined((1,0)!1)  and (1,0)!1=0   and (1,-1)!1=0 and (0,0)!1!=0 }
-rule : { [(0,0)!0,(-1,0)!1] } 100 {not isUndefined((-1,0)!1) and not isUndefined((0,-1)!1) and (-1,0)!1!=0 and (0,-1)!1=0 and (0,0)!1=0 }
+rule : { [(0,0)!0,(-1,0)!1,0] } 100 {not isUndefined((-1,0)!1) and not isUndefined((0,-1)!1) and (-1,0)!1!=0 and (0,-1)!1=0 and (0,0)!1=0 }
+rule : { [(0,0)!0,0,0] }        100 {not isUndefined((1,-1)!1) and not isUndefined((1,0)!1)  and (1,0)!1=0   and (1,-1)!1=0 and (0,0)!1!=0 }
 
-% caso particular: gana el de la izquierda porque no hay nada arriba
-rule : { [(0,0)!0,0] }        100 {not isUndefined((-1,1)!1) and not isUndefined((0,1)!1)  and (0,1)!1=0 and (-1,1)!1=0 and (0,0)!1<(0,0)!0+time/1000 and (0,0)!1!=0 }  
-rule : { [(0,0)!0,(0,-1)!1] } 100 {not isUndefined((-1,0)!1) and not isUndefined((0,-1)!1) and (0,0)!1=0 and (0,-1)!1!=0 and (0,-1)!1<(0,-1)!0+time/1000 and (-1,0)!1=0 and not isUndefined((1,-1)!1) and (1,-1)!1!=0} 
-rule : { [(0,0)!0,(0,-1)!1] } 100 {not isUndefined((-1,0)!1) and not isUndefined((0,-1)!1) and (0,0)!1=0 and (0,-1)!1!=0 and (0,-1)!1<(0,-1)!0+time/1000 and (-1,0)!1=0 and isUndefined((1,0)!1)} 
+% caso particular: gana el de arriba porque el de la izquierda no puede pasar
+rule : { [(0,0)!0,(-1,0)!1,0] } 100 {not isUndefined((-1,0)!1) and not isUndefined((0,-1)!1) and (-1,0)!1!=0 and (0,-1)!1!=0 and (0,-1)!1>=(0,-1)!0+time/1000 and (0,0)!1=0}
+rule : { [(0,0)!0,0,0] }        100 {not isUndefined((1,-1)!1) and not isUndefined((1,0)!1)  and (1,0)!1=0   and (1,-1)!1!=0 and (1,-1)!1>=(1,-1)!0+time/1000 and (0,0)!1!=0}
+
+% caso particular: columna de la izquierda, solo se puede bajar
+rule : { [(0,0)!0,(-1,0)!1,0] } 100 {not isUndefined((-1,0)!1) and isUndefined((0,-1)!1) and (-1,0)!1!=0 and (0,0)!1=0}
+rule : { [(0,0)!0,0,0] }        100 {isUndefined((1,-1)!1) and not isUndefined((1,0)!1)  and (1,0)!1=0  and (0,0)!1!=0}
 	\end{lstlisting}
 \end{minipage}
 
 \begin{minipage}{1\textwidth}
 	\centering
 	\begin{lstlisting}
-% caso particular: columna de la izquierda, solo se puede bajar
-rule : { [(0,0)!0,0] }        100 {isUndefined((1,-1)!1) and not isUndefined((1,0)!1)  and (1,0)!1=0  and (0,0)!1!=0}
-rule : { [(0,0)!0,(-1,0)!1] } 100 {not isUndefined((-1,0)!1) and isUndefined((0,-1)!1) and (-1,0)!1!=0 and (0,0)!1=0}
+% Gana el de la izquierda
+rule : { [(0,0)!0,(0,-1)!1,0] } 100 {not isUndefined((-1,0)!1) and not isUndefined((0,-1)!1) and (0,0)!1=0 and (0,-1)!1!=0 and (0,-1)!1<(0,-1)!0+time/1000 and (-1,0)!1!=0 and (0,-1)!1<(-1,0)!1 and not isUndefined((1,-1)!1) and (1,-1)!1!=0}
+rule : { [(0,0)!0,0,0] }        100 {not isUndefined((-1,1)!1) and not isUndefined((0,1)!1)  and (0,1)!1=0 and (-1,1)!1!=0 and (0,0)!1<(0,0)!0+time/1000   and (0,0)!1!=0  and (0,0)!1<(-1,1)!1 and not isUndefined((1,0)!1) and (1,0)!1!=0}
 
-% caso particular: fila de arriba, se puede ir a la derecha sin preguntar arriba
-rule : { [(0,0)!0,0] }        100 {isUndefined((-1,1)!1) and not isUndefined((0,1)!1) and (0,1)!1=0 and (0,0)!1<(0,0)!0+time/1000 and (0,0)!1!=0 }  
-rule : { [(0,0)!0,(0,-1)!1] } 100 {isUndefined((-1,0)!1) and not isUndefined((0,-1)!1) and (0,0)!1=0 and (0,-1)!1!=0 and (0,-1)!1<(0,-1)!0+time/1000 and not isUndefined((1,-1)!1) and (1,-1)!1!=0} 
+% caso particular: fila de abajo, se puede ir a la derecha
+rule : { [(0,0)!0,(0,-1)!1,0] } 100 {not isUndefined((-1,0)!1) and not isUndefined((0,-1)!1) and (0,0)!1=0 and (0,-1)!1!=0 and (0,-1)!1<(0,-1)!0+time/1000 and (-1,0)!1!=0 and (0,-1)!1<(-1,0)!1 and isUndefined((1,0)!1)}
+rule : { [(0,0)!0,0,0] }        100 {not isUndefined((-1,1)!1) and not isUndefined((0,1)!1)  and (0,1)!1=0 and (-1,1)!1!=0 and (0,0)!1<(0,0)!0+time/1000   and (0,0)!1!=0  and (0,0)!1<(-1,1)!1 and isUndefined((1,0)!1) }
+
+% caso particular: gana el de la izquierda porque no hay nada arriba
+rule : { [(0,0)!0,(0,-1)!1,0] } 100 {not isUndefined((-1,0)!1) and not isUndefined((0,-1)!1) and (0,0)!1=0 and (0,-1)!1!=0 and (0,-1)!1<(0,-1)!0+time/1000 and (-1,0)!1=0 and not isUndefined((1,-1)!1) and (1,-1)!1!=0}
+rule : { [(0,0)!0,0,0] }        100 {not isUndefined((-1,1)!1) and not isUndefined((0,1)!1)  and (0,1)!1=0 and (-1,1)!1=0 and (0,0)!1<(0,0)!0+time/1000 and (0,0)!1!=0 and not isUndefined((1,0)!1) and (1,0)!1!=0}
+
+% caso particular: fila de abajo, se puede ir a la derecha porque no hay nada arriba
+rule : { [(0,0)!0,(0,-1)!1,0] } 100 {not isUndefined((-1,0)!1) and not isUndefined((0,-1)!1) and (0,0)!1=0 and (0,-1)!1!=0 and (0,-1)!1<(0,-1)!0+time/1000 and (-1,0)!1=0 and isUndefined((1,0)!1)}
+rule : { [(0,0)!0,0,0] }        100 {not isUndefined((-1,1)!1) and not isUndefined((0,1)!1)  and (0,1)!1=0 and (-1,1)!1=0 and (0,0)!1<(0,0)!0+time/1000   and (0,0)!1!=0  and isUndefined((1,0)!1)}
+	\end{lstlisting}
+\end{minipage}
+
+\begin{minipage}{1\textwidth}
+	\centering
+	\begin{lstlisting}
+% caso particular: fila de arriba, se puede ir a la derecha sin preguntar arriba pero hay alguien abajo
+rule : { [(0,0)!0,(0,-1)!1,0] } 100 {isUndefined((-1,0)!1) and not isUndefined((0,-1)!1) and (0,0)!1=0 and (0,-1)!1!=0 and (0,-1)!1<(0,-1)!0+time/1000 and not isUndefined((1,-1)!1) and (1,-1)!1!=0}
+rule : { [(0,0)!0,0,0] }        100 {isUndefined((-1,1)!1) and not isUndefined((0,1)!1) and (0,1)!1=0 and (0,0)!1<(0,0)!0+time/1000 and (0,0)!1!=0 and not isUndefined((1,0)!1) and (1,0)!1!=0 }
+
+% trigger de eventos (en la ultima columna no hay)
+rule: { [(0,0)!0,(0,0)!1,1] } { ((0,0)!1 - (time/1000 + (0,1)!0))*1000 } {not isUndefined((0,1)!0) and (0,0)!1 > ((0,1)!0 + time/1000) and (0,0)!1!=0}
+rule: { [(0,0)!0,(0,0)!1,1] } 0                                 {not isUndefined((0,1)!0) and (0,0)!1 < ((0,1)!0 + time/1000) and (0,0)!1!=0}
 
 rule : { (0,0) } 0 { t }
 	\end{lstlisting}
 \end{minipage}
 
-Estas reglas se ejecutan periódicamente para ordenar los productos en el inventario de modo de ubicar aquellos con fecha de vencimiento próximo lo más cerca posible de la salida (abajo y a la derecha). Las reglas se agrupan en pares de reglas complementarias asociadas con el movimiento de los productos hacia la derecha y hacia abajo y tienen el siguiente significado:
+Las reglas se agrupan en pares de reglas complementarias asociadas con el movimiento de los productos hacia la derecha y hacia abajo y tienen el siguiente significado:
 \begin{enumerate}
-	\item Las primeras cuatro reglas, en grupos de dos, están relacionadas con el movimiento hacia abajo y hacia la derecha de un producto respectivamente. Si una celda está vacía y la celda a su izquierda tiene un producto que de acuerdo con su fecha de vencimiento debe moverse a la columna actual pero que comparando su fecha de vencimiento con la del producto en la celda que está encima de la celda vacía es mayor entonces esta última \textit{gana} la celda vacía.
-	\item Las siguiente regla es un caso particular de la última fila del inventario. En este caso, un producto sólo puede desplazarse hacia la derecha o salir del inventario.
-		\item Las siguientes cuatro reglas son un caso particular en el caso que se libere una celda y uno y sólo uno de los bloques (el de arriba o el  de la izquierda) exista efectivamente para disputarla.
-		\item La siguiente regla es un caso particular la última fila del inventario. En este caso, el producto se desplaza hacia la derecha, pero sin disputa de un bloque superior.
-	\item Las siguientes cuatro reglas correspondes a los casos particulares de la columna de la izquierda(cuyas celdas no tienen disputa de un producto contiguo) y la fila de arriba(cuyas celdas no tienen disputa de un producto de arriba) 
+	\item Los primeros 4 pares de reglas están asociados con el movimiento de un producto hacia abajo. Las condiciones del movimiento son las siguientes respectivamente:
+	\subitem Si una celda está vacía y la celda a su izquierda tiene un producto que de acuerdo con su fecha de vencimiento debe moverse a la columna actual pero que comparando su fecha de vencimiento con la del producto en la celda que está encima de la celda vacía es mayor entonces esta última \textit{gana} la celda vacía.
+	\subitem Si una celda está vacía y sólo está ocupada la posición de arriba el producto cae.
+	\subitem Si una celda está vacía y el producto ocupando la posición de la izquierda aún no puede saltar de columna, entonces el producto de arriba cae.
+	\subitem Si el producto se encuentra en la columna de más a la izquierda, sólo puede bajar.
+	\item Los siguientes 4 pares de reglas corresponden a un movimiento del producto hacia la derecha, según los siguientes casos:
+	\subitem Ante una disputa entre la celda de arriba y la de la izquierda, por su fecha de vencimiento gana el producto de la izquierda y la ocupa.
+	\subitem Mismo caso que antes, pero en la fila de abajo
+	\subitem No hay nada en la celda de arriba a la celda vacía por lo que el producto de la izquierda la puede ocupar libremente, si su fecha de vencimiento le permite pasar de columna.
+	\subitem Mismo caso anterior, pero en la fila de abajo.
+	\item Esta regla es el caso particular donde la celda vacía se encuentra en la fila de arriba (no es necesario preguntar por arriba) y el producto a la izquierda puede pasar porque tiene alguien abajo que lo "sostiene".
+	\item Esta regla es la que setea el cambio para el momento de vencimiento de la columna, de esta forma se dispara una transición que genera el reacomodamiento del producto. Simplemente escribe un 1 en la posición 3 de la tupla al momento de vencer el producto (según su columna) 
 	\item La última regla es la que se evalúa siempre positivamente.
 \end{enumerate}
 
