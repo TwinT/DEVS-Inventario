@@ -83,6 +83,7 @@
 % Para poder usar subfiguras: (al estilo Figura 2.3(b) )
 %
 %\usepackage{subfig}
+\usepackage{subfigure}
 
 %
 % Para poder armar tablas con formato
@@ -112,7 +113,6 @@
 \newcommand{\imgdir}{img}
 \graphicspath{{\imgdir/}}
 
-\usepackage{subfigure}
 %
 %------------------------------ graphicx ----------------------------------
 
@@ -1056,6 +1056,50 @@ Y / 00:02:00:204:0 / pedidosout /    900.50000 / top(09)
 \end{minipage}
 
 Donde se observa que 101 ms después de cada respuesta del inventario se cursa un pedido a la columna siguiente. Por otro lado se observa que el producto sale correctamente por la salida \textit{pedidosOut} 503 ms después de haber entrado en el despacho, tal como fue previsto. Se observa coherencia también en los casos siguientes, con un tiempo de demora en la salida proporcional a la distancia recorrida por el despachante para encontrar un producto en el inventario.
+
+
+En la Figura~\ref{fig:IP-movimiento} se puede observar el movimiento lateral de un producto. Este movimiento se debe a que de acuerdo a su fecha de vencimiento el producto se debe ubicar en una columna de fechas de vencimiento más próxima y a que las celdas a la derecha están vacías.
+
+ \begin{figure}[h] 
+ \centering
+ 
+ 	\begin{tabular}{cc}
+ 		\includegraphics[width=0.3\linewidth]{} &
+ 		\includegraphics[width=0.3\linewidth]{} \\[5mm]
+ 		\includegraphics[width=0.3\linewidth]{} &
+ 		\includegraphics[width=0.3\linewidth]{} \\
+ 	\end{tabular}
+ 	
+ 	\caption{Movimiento lateral de un producto.} 
+ 	\label{fig:IP-movimiento} 
+ \end{figure}
+ \FloatBarrier
+
+En la Figura~\ref{fig:IP-ensayodisputa} se puede observar el comportamiento del inventario ante una situación de disputa. Se puede ver que la fecha de venciminto del producto que está encima de la celda vacía es menor que la de la celda a la derecha de la misma. Por este motiva, la primera gana la disputa y el producto baja ocupando la celda vacía.
+
+ \begin{figure}[h] 
+ \centering
+ 
+ 	\begin{tabular}{cc}
+ 		\includegraphics[width=0.3\linewidth]{} &
+ 		\includegraphics[width=0.3\linewidth]{} \\[5mm]
+ 		\includegraphics[width=0.3\linewidth]{} &
+ 		\includegraphics[width=0.3\linewidth]{} \\
+ 	\end{tabular}
+ 	
+ 	\caption{Situación de disputa entre 2 celdas.} 
+ 	\label{fig:IP-ensayodisputa} 
+ \end{figure}
+ \FloatBarrier
+
+
+
+
+
+
+
+
+
 
 \section{Conclusiones}
 
