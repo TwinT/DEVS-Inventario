@@ -534,8 +534,20 @@ Según lo descripto en la sección \ref{sec:AC} el inventario de productos es el
 	\caption{Modelo del inventario de productos.} 
 	\label{fig:IP-estructura} 
 \end{figure}
+
+Este autómata celular se puede ver como una estantería en donde los productos se acomodan en la celda que les corresponde de acuerdo a las reglas que se explican más adelante. Los productos ingresan al inventario provenientes de la cinta transportadora conectada a los puertos de entrada asociados a las celdas superiores. Los productos egresan del inventario por los puertos de salida asociados a las celdas en la fila inferior.
+
 %% Esto podría ir en la descripción conceptual:
 Para cada celda en este autómata celular interesa el valor de las $8$ celdas alrededor. Por este motivo el vecindario está definido en la Figura~\ref{fig:IP-vecindario}. El ordenamiento de productos está basado en la fecha de vencimiento de los mismos. Cada columna tiene asociada una fecha relativa de vencimiento, por ejemplo, hay columnas que pueden contener los productos que les falte 1 mes para vencer, otra para los que les falte 2 meses para vencer, otra de 3 meses, etc. Las columnas con tiempo de vencimiento mayor son las de la izquierda de la grilla. Esto es así, porque la salida más próxima de productos en la zona de despachos se realiza en la columna de la derecha.
+
+\begin{figure}[h] 
+  \centering 
+  \includegraphics[width=0.4\textwidth]{IP-vecindario} 
+  \caption{Vecindario de Moore para el inventario de productos.} 
+  \label{fig:IP-vecindario} 
+\end{figure}
+\FloatBarrier
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 El acomodamiento de los productos dentro del inventario es el siguiente: los productos van formando una pila en la columna donde entran. Los productos sólo se pueden mover hacia abajo o hacia la derecha. Un producto se podrá mover a la derecha sólo si el paso del tiempo hace que el vencimiento del mismo ya pueda pertenecer a la columna de la derecha. Si la posición se encuentra ocupada, no hay movimiento.
 Puede ocurrir una situación de disputa si se libera una posición que puede se tomada tanto por el bloque superior como por el bloque contiguo. Esto se muestra en la Figura~\ref{fig:IP-disputa}. En este caso, se compara las fechas de vencimiento de ambos productos y la ocupa el de vencimiento más próximo.
@@ -548,11 +560,13 @@ Puede ocurrir una situación de disputa si se libera una posición que puede se 
 \end{figure}
 \FloatBarrier
 
+Cada celda del inventario se representa por una tupla de 3 elementos: \texttt{[rango,producto,flag]}. El elemento \texttt{rango} de la tupla identifica a la columna del inventario a la que pertenece la celda y representa el rango \textit{relativo} de fechas de vencimiento de productos que se pueden alojar en la columna. Por ejemplo, en la columna $i$ se puede alojar aquellos productos cuyas fechas de vencimiento estén comprendidas entre $1~\textrm{mes}$ y $2~\textrm{meses}$. Por otro lado, el elemento \texttt{producto} de la tupla es la fecha de vencimiento \textit{absoluta} del producto alojado en dicha celda. Por ejemplo, la fecha de vencimiento del producto en la celda es \today. Por último, el elemento \texttt{flag} de la tupla se utiliza para generar eventos en las celdas y de esta manera lograr que un producto avance de acuerdo con el paso del tiempo. En la Figura~\ref{fig:IP-ejemplo} se puede ver el significado de los elementos de la tupla.
+
 \begin{figure}[h] 
-  \centering 
-  \includegraphics[width=0.4\textwidth]{IP-vecindario} 
-  \caption{Vecindario del inventario de productos.} 
-  \label{fig:IP-vecindario} 
+	\centering 
+	\includegraphics[width=0.3\textwidth]{IP-ejemplo} 
+	\caption{Disputa entre productos por un lugar recién liberado.} 
+	\label{fig:IP-ejemplo} 
 \end{figure}
 \FloatBarrier
 
