@@ -350,11 +350,11 @@ Para este trabajo, el bloque Inventario se va a modelizar con un autómata celul
  \end{figure}
  \FloatBarrier
  
-\subsection{Celdas}
+\subsection{Celdas del inventario}
 
-El objetivo del autómata celular es ordenar los productos en el almacén de modo que aquellos con fecha de vencimiento más próxima queden ubicados espacialmente más cerca de la salida, de modo de ser despachados más rápido. De esta manera se busca reducir la cantidad de productos vencidos dentro del almacén. Para esto, periódicamente se revisan las fechas de vencimiento de los productos estampadas en un código de barras en cada unidad. Su ubicación depende del valor de su fecha de vencimiento. Los productos sólo pueden ser movidos si la columna adyacente a la derecha tiene una ubicación disponible hasta un nivel por encima de la altura de ubicación del producto.
+El objetivo del autómata celular es ordenar los productos en el almacén de modo que aquellos con fecha de vencimiento más próxima queden ubicados espacialmente más cerca de la salida, de modo de ser despachados más rápido. De esta manera se busca reducir la cantidad de productos vencidos dentro del almacén. Para esto, periódicamente se revisan las fechas de vencimiento de los productos estampadas en un código de barras en cada unidad. Su ubicación depende del valor de su fecha de vencimiento. Los productos sólo pueden ser movidos si la columna adyacente a la derecha tiene una ubicación disponible a la altura del producto.
 Cabe destacar que si la ubicación inferior a donde se encuentra un producto está libre, el producto baja hasta estar apoyado sobre otro producto o sobre el suelo del depósito.
-Por estos motivos (y por la preferencia de movimiento hacia la derecha) el vecindario propuesto se puede ver en la Figura~\ref{fig:AC-vecindario}.
+Por estos motivos el vecindario propuesto es el de Moore y se puede ver en la Figura~\ref{fig:AC-vecindario}.
 
 \begin{figure}[h] 
   \centering 
@@ -385,7 +385,7 @@ El diagrama de bloques correspondiente a cada uno de los autómatas celulares de
 
 \subsection{Cinta Transportadora}\label{sec:CT}
 
-La cinta transportadora es el dispositivo por el que ingresan los productos al inventario. La cinta tiene su entrada \texttt{in} por la derecha en la celda $[0,n]$. Además cada celda tiene asociadas una entrada \texttt{ini} y una salida \texttt{outi}, como se observa en la Figura~\ref{fig:CT-automata}. 
+La cinta transportadora es el dispositivo por el que ingresan los productos al inventario. La cinta tiene su entrada \texttt{in} por la derecha en la celda $[0,N]$ con $N=5$ en este caso. Además cada celda tiene asociadas una entrada \texttt{ini} y una salida \texttt{outi}, como se observa en la Figura~\ref{fig:CT-automata}. 
 
 \begin{figure}[h] 
   \centering 
