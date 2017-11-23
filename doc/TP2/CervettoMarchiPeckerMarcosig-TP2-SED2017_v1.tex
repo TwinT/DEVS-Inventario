@@ -350,11 +350,11 @@ Para este trabajo, el bloque Inventario se va a modelizar con un autómata celul
  \end{figure}
  \FloatBarrier
  
-\subsection{Celdas}
+\subsection{Celdas del inventario}
 
-El objetivo del autómata celular es ordenar los productos en el almacén de modo que aquellos con fecha de vencimiento más próxima queden ubicados espacialmente más cerca de la salida, de modo de ser despachados más rápido. De esta manera se busca reducir la cantidad de productos vencidos dentro del almacén. Para esto, periódicamente se revisan las fechas de vencimiento de los productos estampadas en un código de barras en cada unidad. Su ubicación depende del valor de su fecha de vencimiento. Los productos sólo pueden ser movidos si la columna adyacente a la derecha tiene una ubicación disponible hasta un nivel por encima de la altura de ubicación del producto.
+El objetivo del autómata celular es ordenar los productos en el almacén de modo que aquellos con fecha de vencimiento más próxima queden ubicados espacialmente más cerca de la salida, de modo de ser despachados más rápido. De esta manera se busca reducir la cantidad de productos vencidos dentro del almacén. Para esto, periódicamente se revisan las fechas de vencimiento de los productos estampadas en un código de barras en cada unidad. Su ubicación depende del valor de su fecha de vencimiento. Los productos sólo pueden ser movidos si la columna adyacente a la derecha tiene una ubicación disponible a la altura del producto.
 Cabe destacar que si la ubicación inferior a donde se encuentra un producto está libre, el producto baja hasta estar apoyado sobre otro producto o sobre el suelo del depósito.
-Por estos motivos (y por la preferencia de movimiento hacia la derecha) el vecindario propuesto se puede ver en la Figura~\ref{fig:AC-vecindario}.
+Por estos motivos el vecindario propuesto es el de Moore y se puede ver en la Figura~\ref{fig:AC-vecindario}.
 
 \begin{figure}[h] 
   \centering 
@@ -385,7 +385,7 @@ El diagrama de bloques correspondiente a cada uno de los autómatas celulares de
 
 \subsection{Cinta Transportadora}\label{sec:CT}
 
-La cinta transportadora es el dispositivo por el que ingresan los productos al inventario. La cinta tiene su entrada \texttt{in} por la derecha en la celda $[0,n]$. Además cada celda tiene asociadas una entrada \texttt{ini} y una salida \texttt{outi}, como se observa en la Figura~\ref{fig:CT-automata}. 
+La cinta transportadora es el dispositivo por el que ingresan los productos al inventario. La cinta tiene su entrada \texttt{in} por la derecha en la celda $[0,N]$ con $N=5$ en este caso. Además cada celda tiene asociadas una entrada \texttt{ini} y una salida \texttt{outi}, como se observa en la Figura~\ref{fig:CT-automata}. 
 
 \begin{figure}[h] 
   \centering 
@@ -408,9 +408,9 @@ Para cada celda en este autómata celular importa solamente el valor de la celda
 \end{figure}
 \FloatBarrier
 
-Cada elemento de la cinta transportadora está asociado a una columna en el inventario. A su vez, cada columna en el inventario tiene asignado un rango de fechas de vencimiento posibles, estando más hacia la izquierda las columnas asociadas a vencimientos más remotos.
+Cada posición de la cinta transportadora está asociado a una columna en el inventario. A su vez, cada columna en el inventario tiene asignado un rango de fechas de vencimiento posibles, estando más hacia la izquierda las columnas asociadas a vencimientos más remotos.
 
-Las consultas de lugar disponible en una columna del inventario se realizan enviando un valor de fecha de vencimiento imposible, en este caso igual a $-1$. El inventario debe responder con $0$ si no hay lugar en la columna por la que se consultó o un número no nulo en caso contrario. En caso que la respuesta del inventario sea que no hay lugar en la columna por la que se consultó entonces la cinta debe hacer avanzar al producto hacia la izquierda una posición más y volver a preguntar por la disponibilidad de espacio en el inventario.
+Las consultas de lugar disponible en una columna del inventario se realizan enviando un valor de fecha de vencimiento imposible, en este caso igual a $-1$. El inventario debe responder con $0$ si hay lugar en la columna por la que se consultó o un número no nulo en caso contrario. En caso que la respuesta del inventario sea que no hay lugar en la columna por la que se consultó entonces la cinta debe hacer avanzar al producto hacia la izquierda una posición más y volver a preguntar por la disponibilidad de espacio en el inventario.
 
 Cada elemento en la cinta transportadora se representa con una tupla de tres elementos: \texttt{[ID columna, producto, indicador]}. El \texttt{ID columna} representa el rango de fechas de vencimiento asociados a la celda y a la columna respectiva del inventario. El elemento \texttt{producto} es el producto en sí y está representado por su fecha de vencimiento. Por último, el elemento \texttt{indicador} puede tener distintos significados dependiendo de su valor y los valores que puede tomar son: $0$, $1$ ó $2$. Si vale $1$ significa que el producto estaba listo para ser ubicado en la columna del inventario asociada a la celda actual de la cinta transportadora pero se recibió un mensaje indicando que no había lugar, si en cambio vale $2$ significa que ninguna de las columnas del inventario por las que se consultó tenía espacio y entonces ese producto permanecerá en la cinta transportadora.
 
@@ -448,7 +448,7 @@ rule : { (0,0) } 0 { t }
 	\item Las primeras dos reglas están relacionadas con el movimiento de un producto hacia la izquierda. Si una celda está vacía y la celda que está a su derecha tiene un producto que de acuerdo con su fecha de vencimiento debe moverse hacia la izquierda entonces el producto se mueve de la celda de la derecha a la celda actual.
 	\item Las siguientes dos reglas están relacionadas también con el movimiento de un producto hacia la izquierda. Si una celda está vacía y la celda que está a su derecha tiene un producto cuyo elemento \texttt{indicador} de la tupla es $1$ significa que la cinta transportadora consultó al inventario para mover ese producto en el paso anterior y éste le respondió que no había lugar. Entonces lo que se hace es mover ese producto a la siguiente celda hacia la izquierda.
 	\item La quinta regla se ejecuta cuando el producto no puede ser descargado en el inventario porque no hay lugar en las columnas que pregunta y alcanza el extremo izquierdo de la cinta transportadora. Esta condición se indica escribiendo un $2$ en el elemento \texttt{indicador} del producto en la celda.
-	\item La sexta regla está relacionada con la consulta al inventario por lugar para alojar un producto en la columna correspondiente. Si una celda tiene un producto cuya fecha de vencimiento está dentro del rango de fechas asignado a dicha celda entonces el producto se debe pasar al inventario a la columna correspondiente a dicha celda. Para esto, la cinta consulta por la disponibilidad de espacio en la columna enviando $-1$ por la salida asociada con la celda \texttt{outi}. La respuesta a esta consulta se recibe por la entrada \texttt{ini}. Si el valor devuelto es $0$ significa que hay espacio y entonces se puede descargar el producto (ver reglas asociadas con la transición en el puerto de entrada \texttt{[inventario regla]}).  Se puede ver que si el elemento \texttt{indicador} de la celda actual es $2$ entonces esta regla no se ejecuta, para de esta forma evitar la repitición de consultas al inventario.
+	\item La sexta regla está relacionada con la consulta al inventario por lugar para alojar un producto en la columna correspondiente. Si una celda tiene un producto cuya fecha de vencimiento está dentro del rango de fechas asignado a dicha celda entonces el producto se debe pasar al inventario a la columna correspondiente a dicha celda. Para esto, la cinta consulta por la disponibilidad de espacio en la columna enviando $-1$ por la salida asociada con la celda \texttt{outi}. La respuesta a esta consulta se recibe por la entrada \texttt{ini}. Si el valor devuelto es $0$ significa que hay espacio y entonces se puede descargar el producto (ver reglas asociadas con la transición en el puerto de entrada \texttt{[inventario regla]}). Se puede ver que si el elemento \texttt{indicador} de la celda actual es $2$ entonces esta regla no se ejecuta, para de esta forma evitar la repetición de consultas al inventario.
 	\item Finalmente, la última regla es la regla por omisión que es siempre verdadera. Siempre debe existir al menos una regla verdadera.
 \end{enumerate}
 
@@ -473,15 +473,15 @@ Finalmente, como se mencionó más arriba, cuando el producto llega a la celda q
 	\centering
 	\begin{lstlisting}
 [inventario-regla]
-rule : { [(0,0)!0,0+send(output,(0,0)!1),0] } { 1 } { portValue(thisPort)!=0 }
-rule : { [(0,0)!0,(0,0)!1,1] } { 1 } { portValue(thisPort)=0 }
+rule : { [(0,0)!0,0+send(output,(0,0)!1),0] } { 1 } { portValue(thisPort)=0 }
+rule : { [(0,0)!0,(0,0)!1,1] } { 1 } { portValue(thisPort)!=0 }
 	\end{lstlisting}
 \end{minipage}
 
 Se puede ver que:
 \begin{enumerate}
  \item Como se utiliza el comando \texttt{thisPort} esta regla es válida para todas las celdas de la cinta transportadora. 
- \item Si la respuesta que recibe la celda de parte del inventario es no nula entonces se envía el producto por el mismo puerto por el que se realizó la consulta: \texttt{[(0,0)!0,0+send(output,(0,0)!1),0]} y se coloca un $0$ en su lugar.
+ \item Si la respuesta que recibe la celda de parte del inventario es nula entonces se envía el producto por el mismo puerto por el que se realizó la consulta: \texttt{[(0,0)!0,0+send(output,(0,0)!1),0]} y se coloca un $0$ en su lugar.
  \item Si en cambio no hay lugar entonces se indica colocando un $1$ en el indicador de la tupla: \texttt{[(0,0)!0,(0,0)!1,1]}.
 \end{enumerate}
 
@@ -526,7 +526,7 @@ localtransition : cinta-reglas
 \end{minipage}
 
 \subsection{Inventario}\label{sec:IP}
-Según lo descripto en la sección \ref{sec:AC} el inventario de productos es el encargado de almacenar los productos. Su modelo estructural se muestra en la Figura~\ref{fig:IP-estructura}.
+Según lo descripto en la sección \ref{sec:AC} el inventario de productos es el encargado de almacenarlos. Su modelo estructural se muestra en la Figura~\ref{fig:IP-estructura}.
 
 \begin{figure}[h] 
 	\centering 
@@ -548,6 +548,7 @@ Para cada celda en este autómata celular interesa el valor de las $8$ celdas al
 \end{figure}
 \FloatBarrier
 
+ El ordenamiento de productos está basado en la fecha de vencimiento de los mismos. Cada columna tiene asociada una fecha relativa de vencimiento, por ejemplo, hay columnas que pueden contener los productos que les falte 1 mes para vencer, otra para los que les falte 2 meses para vencer, otra de 3 meses, etc. Las columnas con tiempo de vencimiento mayor son las de la izquierda de la grilla. Esto es así, porque la salida más próxima de productos en la zona de despachos se realiza en la columna de la derecha.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 El acomodamiento de los productos dentro del inventario es el siguiente: los productos van formando una pila en la columna donde entran. Los productos sólo se pueden mover hacia abajo o hacia la derecha. Un producto se podrá mover a la derecha sólo si el paso del tiempo hace que el vencimiento del mismo ya pueda pertenecer a la columna de la derecha. Si la posición se encuentra ocupada, no hay movimiento.
 Puede ocurrir una situación de disputa si se libera una posición que puede se tomada tanto por el bloque superior como por el bloque contiguo. Esto se muestra en la Figura~\ref{fig:IP-disputa}. En este caso, se compara las fechas de vencimiento de ambos productos y la ocupa el de vencimiento más próximo.
