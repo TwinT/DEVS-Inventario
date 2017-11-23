@@ -995,6 +995,41 @@ Eval: SendToNCPort Reference(out, [0.3, 0, 0]) at time 00:06:00:000:0
 
 En esta prueba se observa que se produce un evento de entrada en $00:05:00:000$ que modifica el estado de la celda (0,5). Este evento es el ingreso de un producto de fecha de vencimiento $300.4$. La demora de las reglas asociadas con entradas es de $1~\textrm{ms}$. En $00:05:00:001$ se determina el vecindario inverso de la celda $(0,5)$, que consiste en las celdas $(0,4)$ y $(0,5)$, y se evalúa cómo repercuten los cambios en la celda $(0,5)$. Para las celdas en este vecindario se ejecutan la primera y segunda regla y el producto avanza a la celda $(0,4)$ y se quita de la $(0,5)$. Las reglas locales se ejecutan cada $100~\textrm{ms}$, por lo tanto en el tiempo $00:05:00:101$ se evalúa el vecindario inverso de las celdas que sufrieron cambios en al paso anterior. Este vecindario inverso está compuesto por las celdas $(0,3)$, $(0,4)$ y $(0,5)$. En este paso el producto avanza una celda más hacia la izquierda pasando a la celda $(0,3)$. Nuevamente se esperan $100~\textrm{ms}$ para volver a evaluar las reglas y en este caso se determina que la celda $(0,3)$ es la que le corresponde al producto y entonces se consulta inventario por la disponibilidad de lugar. Se puede observar que como el valor de las celdas evaluadas en $00:05:00:201$ no cambió entonces no se vuelven a evaluar las reglas locales. La respuesta del inventario llega a la celda $(0,3)$ en el tiempo $00:06:00:000$.send(output,(0,0)!0)
 
+
+En la Figura~\ref{fig:IP-movimiento} se puede observar el movimiento lateral de un producto. Este movimiento se debe a que de acuerdo a su fecha de vencimiento el producto se debe ubicar en una columna de fechas de vencimiento más próxima y a que las celdas a la derecha están vacías.
+
+ \begin{figure}[h] 
+ \centering
+ 
+ 	\begin{tabular}{cc}
+ 		\includegraphics[width=0.3\linewidth]{00_05_19_800} &
+ 		\includegraphics[width=0.3\linewidth]{00_05_19_900} \\[5mm]
+ 		\includegraphics[width=0.3\linewidth]{00_05_20_000} &
+ 		\includegraphics[width=0.3\linewidth]{00_05_20_100} \\
+ 	\end{tabular}
+ 	
+ 	\caption{Movimiento lateral de un producto.} 
+ 	\label{fig:IP-movimiento} 
+ \end{figure}
+ \FloatBarrier
+
+En la Figura~\ref{fig:IP-ensayodisputa} se puede observar el comportamiento del inventario ante una situación de disputa. Se puede ver que la fecha de venciminto del producto que está encima de la celda vacía es menor que la de la celda a la derecha de la misma. Por este motiva, la primera gana la disputa y el producto baja ocupando la celda vacía.
+
+ \begin{figure}[h] 
+ \centering
+ 
+ 	\begin{tabular}{cc}
+ 		\includegraphics[width=0.3\linewidth]{00_20_00_001} &
+ 		\includegraphics[width=0.3\linewidth]{00_20_00_101} \\[5mm]
+ 		\includegraphics[width=0.3\linewidth]{00_20_00_201} &
+ 		\includegraphics[width=0.3\linewidth]{00_20_00_301} \\
+ 	\end{tabular}
+ 	
+ 	\caption{Situación de disputa entre 2 celdas.} 
+ 	\label{fig:IP-ensayodisputa} 
+ \end{figure}
+ \FloatBarrier
+
 \subsubsection{Inventario}
 En primera instancia las pruebas de este módulo individual se realizaron cargando valores en un archivo inventario.val y observando la evolución de los productos en el inventario.
 \subsubsection{Despacho de Productos}
@@ -1057,47 +1092,6 @@ Y / 00:02:00:204:0 / pedidosout /    900.50000 / top(09)
 \end{minipage}
 
 Donde se observa que 101 ms después de cada respuesta del inventario se cursa un pedido a la columna siguiente. Por otro lado se observa que el producto sale correctamente por la salida \textit{pedidosOut} 503 ms después de haber entrado en el despacho, tal como fue previsto. Se observa coherencia también en los casos siguientes, con un tiempo de demora en la salida proporcional a la distancia recorrida por el despachante para encontrar un producto en el inventario.
-
-
-En la Figura~\ref{fig:IP-movimiento} se puede observar el movimiento lateral de un producto. Este movimiento se debe a que de acuerdo a su fecha de vencimiento el producto se debe ubicar en una columna de fechas de vencimiento más próxima y a que las celdas a la derecha están vacías.
-
- \begin{figure}[h] 
- \centering
- 
- 	\begin{tabular}{cc}
- 		\includegraphics[width=0.3\linewidth]{} &
- 		\includegraphics[width=0.3\linewidth]{} \\[5mm]
- 		\includegraphics[width=0.3\linewidth]{} &
- 		\includegraphics[width=0.3\linewidth]{} \\
- 	\end{tabular}
- 	
- 	\caption{Movimiento lateral de un producto.} 
- 	\label{fig:IP-movimiento} 
- \end{figure}
- \FloatBarrier
-
-En la Figura~\ref{fig:IP-ensayodisputa} se puede observar el comportamiento del inventario ante una situación de disputa. Se puede ver que la fecha de venciminto del producto que está encima de la celda vacía es menor que la de la celda a la derecha de la misma. Por este motiva, la primera gana la disputa y el producto baja ocupando la celda vacía.
-
- \begin{figure}[h] 
- \centering
- 
- 	\begin{tabular}{cc}
- 		\includegraphics[width=0.3\linewidth]{} &
- 		\includegraphics[width=0.3\linewidth]{} \\[5mm]
- 		\includegraphics[width=0.3\linewidth]{} &
- 		\includegraphics[width=0.3\linewidth]{} \\
- 	\end{tabular}
- 	
- 	\caption{Situación de disputa entre 2 celdas.} 
- 	\label{fig:IP-ensayodisputa} 
- \end{figure}
- \FloatBarrier
-
-
-
-
-
-
 
 
 
