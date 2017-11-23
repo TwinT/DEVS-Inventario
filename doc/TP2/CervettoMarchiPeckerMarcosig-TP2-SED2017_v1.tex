@@ -652,7 +652,7 @@ Las reglas se agrupan en pares de reglas complementarias asociadas con el movimi
 	\item La última regla es la que se evalúa siempre positivamente.
 \end{enumerate}
 
-Para terminar de definir el modelo, se deben especificar las reglas de comportamiento ante transiciones de los diferentes puertos de entrada. Para esto se plantean dos juegos de reglas. El primero corresponde a las entradas conectadas a la cinta transportadora y debe manejar por un lado la consulta por espacio en la columna correspondiente (valor $-1$) y por el otro el ingreso de un producto en dicha columna (valor $>0$). El segundo corresponde a las consultas que realiza el despachante de productos que consulta por la disponibilidad de un producto en una dada columna del inventario enviando un $-1$ por el puerto corrspondiente. El primer juego de reglas se enuncia a continuación:
+Para terminar de definir el modelo, se deben especificar las reglas de comportamiento ante transiciones de los diferentes puertos de entrada. Para esto se plantean dos juegos de reglas. El primero corresponde a las entradas conectadas a la cinta transportadora y debe manejar por un lado la consulta por espacio en la columna correspondiente (valor $-1$) y por el otro el ingreso de un producto en dicha columna (valor $>0$). El segundo corresponde a las consultas que realiza el despachante de productos que consulta por la disponibilidad de un producto en una dada columna del inventario enviando un $-1$ por el puerto correspondiente. El primer juego de reglas se enuncia a continuación:
 
 \begin{minipage}{1\textwidth}
 	\centering
@@ -897,7 +897,7 @@ Los valores iniciales de las celdas se configuraron mediante el archivo \texttt{
 
 Se observa que cada celda tiene asociada una tupla de tres elementos. El primer elemento de estas tuplas identifica a la fecha de vencimiento de la celda. Esta fecha de vencimiento se mantiene fija a lo largo de la simulación aunque al momento de comparar la fecha de vencimiento de un producto con el de la celda a esta última se le suma el tiempo actual \texttt{time/1000}.
 
-Los eventos de entrada: a) arribo de productos a la cinta y b) respuestas del inventario se manejan mediante el archivo \texttt{cinta.ev} cuyo contenido se meustra a continuación:
+Los eventos de entrada: a) arribo de productos a la cinta y b) respuestas del inventario se manejan mediante el archivo \texttt{cinta.ev} cuyo contenido se muestra a continuación:
 
 \begin{minipage}{1\textwidth}
 	\centering
@@ -1092,6 +1092,32 @@ Y / 00:02:00:204:0 / pedidosout /    900.50000 / top(09)
 \end{minipage}
 
 Donde se observa que 101 ms después de cada respuesta del inventario se cursa un pedido a la columna siguiente. Por otro lado se observa que el producto sale correctamente por la salida \textit{pedidosOut} 503 ms después de haber entrado en el despacho, tal como fue previsto. Se observa coherencia también en los casos siguientes, con un tiempo de demora en la salida proporcional a la distancia recorrida por el despachante para encontrar un producto en el inventario.
+
+
+
+
+En la Figura~\ref{fig:IP-ensayodisputa} se puede observar el comportamiento del inventario ante una situación de disputa. Se puede ver que la fecha de vencimiento del producto que está encima de la celda vacía es menor que la de la celda a la derecha de la misma. Por este motivo, la primera gana la disputa y el producto baja ocupando la celda vacía.
+
+ \begin{figure}[h] 
+ \centering
+ 
+ 	\begin{tabular}{cc}
+ 		\includegraphics[width=0.3\linewidth]{} &
+ 		\includegraphics[width=0.3\linewidth]{} \\[5mm]
+ 		\includegraphics[width=0.3\linewidth]{} &
+ 		\includegraphics[width=0.3\linewidth]{} \\
+ 	\end{tabular}
+ 	
+ 	\caption{Situación de disputa entre 2 celdas.} 
+ 	\label{fig:IP-ensayodisputa} 
+ \end{figure}
+ \FloatBarrier
+
+
+
+
+
+
 
 
 
