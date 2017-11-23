@@ -67,7 +67,7 @@
 % Para poner el texto "Figura X" en negrita:
 % (Si no tenés el paquete 'caption2', probá con 'caption').
 %
-\usepackage[hang,bf]{caption2}
+% \usepackage[hang,bf]{caption2}
 
 %
 % Para poner hipervínculos en el pdf
@@ -83,7 +83,8 @@
 % Para poder usar subfiguras: (al estilo Figura 2.3(b) )
 %
 %\usepackage{subfig}
-\usepackage{subfigure}
+%\usepackage{subfigure}
+\usepackage{subcaption}
 
 %
 % Para poder armar tablas con formato
@@ -563,13 +564,13 @@ Puede ocurrir una situación de disputa si se libera una posición que puede se 
 
 Cada celda del inventario se representa por una tupla de 3 elementos: \texttt{[rango,producto,flag]}. El elemento \texttt{rango} de la tupla identifica a la columna del inventario a la que pertenece la celda y representa el rango \textit{relativo} de fechas de vencimiento de productos que se pueden alojar en la columna. Por ejemplo, en la columna $i$ se puede alojar aquellos productos cuyas fechas de vencimiento estén comprendidas entre $1~\textrm{mes}$ y $2~\textrm{meses}$. Por otro lado, el elemento \texttt{producto} de la tupla es la fecha de vencimiento \textit{absoluta} del producto alojado en dicha celda. Por ejemplo, la fecha de vencimiento del producto en la celda es \today. Por último, el elemento \texttt{flag} de la tupla se utiliza para generar eventos en las celdas y de esta manera lograr que un producto avance de acuerdo con el paso del tiempo. En la Figura~\ref{fig:IP-ejemplo} se puede ver el significado de los elementos de la tupla.
 
-\begin{figure}[h] 
-	\centering 
-	\includegraphics[width=0.3\textwidth]{IP-ejemplo} 
-	\caption{Disputa entre productos por un lugar recién liberado.} 
-	\label{fig:IP-ejemplo} 
-\end{figure}
-\FloatBarrier
+%\begin{figure}[h] 
+%	\centering 
+%	\includegraphics[width=0.3\textwidth]{IP-ejemplo} 
+%	\caption{Disputa entre productos por un lugar recién liberado.} 
+%	\label{fig:IP-ejemplo} 
+%\end{figure}
+%\FloatBarrier
 
 Las reglas asociadas a las transiciones locales en las celdas del autómata se detallan a continuación:
 
@@ -902,17 +903,17 @@ Los eventos de entrada: a) arribo de productos a la cinta y b) respuestas del in
 \begin{minipage}{1\textwidth}
 	\centering
 	\begin{lstlisting}
-00:00:00:111 in2 0
-00:00:00:221 in3 1
+00:00:00:111 in2 1
+00:00:00:221 in3 0
 00:05:00:000 in  300.4
-00:06:00:000 in3 1
+00:06:00:000 in3 0
 00:10:00:000 in  600.2
-00:11:00:000 in2 1
+00:11:00:000 in2 0
 00:15:00:000 in  900.5
-00:16:00:000 in3 0
-00:17:00:000 in4 0
-00:18:00:000 in5 0
-00:19:00:000 in6 0
+00:16:00:000 in3 1
+00:17:00:000 in4 1
+00:18:00:000 in5 1
+00:19:00:000 in6 1
 	\end{lstlisting}	
 \end{minipage}
 
@@ -921,28 +922,28 @@ Para analizar el comportamiento del autómata celular que utiliza las reglas ant
 \begin{minipage}{1\textwidth}
 	\centering
 	\begin{lstlisting}
-0 / L / Y / 00:00:00:100:0 / out2 /  -1.0 /
-0 / L / X / 00:00:00:111:0 /  in2 /   0.0 /
-0 / L / Y / 00:00:00:212:0 / out3 /  -1.0 /
-0 / L / X / 00:00:00:221:0 /  in3 /   1.0 /
-0 / L / Y / 00:00:00:221:0 / out3 /   0.3 /
-0 / L / X / 00:05:00:000:0 /   in / 300.4 /
-0 / L / Y / 00:05:00:201:0 / out3 /  -1.0 /
-0 / L / X / 00:06:00:000:0 /  in3 /   1.0 /
-0 / L / Y / 00:06:00:000:0 / out3 / 300.4 /
-0 / L / X / 00:10:00:000:0 /   in / 600.2 /
-0 / L / Y / 00:10:00:101:0 / out2 /  -1.0 /
-0 / L / X / 00:11:00:000:0 /  in2 /   1.0 /
-0 / L / Y / 00:11:00:000:0 / out2 / 600.2 /
-0 / L / X / 00:15:00:000:0 /   in / 900.5 /
-0 / L / Y / 00:15:00:201:0 / out3 /  -1.0 /
-0 / L / X / 00:16:00:000:0 /  in3 /   0.0 /
-0 / L / Y / 00:16:00:101:0 / out4 /  -1.0 /
-0 / L / X / 00:17:00:000:0 /  in4 /   0.0 /
-0 / L / Y / 00:17:00:101:0 / out5 /  -1.0 /
-0 / L / X / 00:18:00:000:0 /  in5 /   0.0 /
-0 / L / Y / 00:18:00:101:0 / out6 /  -1.0 /
-0 / L / X / 00:19:00:000:0 /  in6 /   0.0 /
+0 / L / Y / 00:00:00:100:0 / out2 /  -1.0 
+0 / L / X / 00:00:00:111:0 /  in2 /   1.0 
+0 / L / Y / 00:00:00:212:0 / out3 /  -1.0 
+0 / L / X / 00:00:00:221:0 /  in3 /   0.0 
+0 / L / Y / 00:00:00:221:0 / out3 /   0.3 
+0 / L / X / 00:05:00:000:0 /   in / 300.4 
+0 / L / Y / 00:05:00:201:0 / out3 /  -1.0 
+0 / L / X / 00:06:00:000:0 /  in3 /   0.0 
+0 / L / Y / 00:06:00:000:0 / out3 / 300.4 
+0 / L / X / 00:10:00:000:0 /   in / 600.2 
+0 / L / Y / 00:10:00:101:0 / out2 /  -1.0 
+0 / L / X / 00:11:00:000:0 /  in2 /   0.0 
+0 / L / Y / 00:11:00:000:0 / out2 / 600.2 
+0 / L / X / 00:15:00:000:0 /   in / 900.5 
+0 / L / Y / 00:15:00:201:0 / out3 /  -1.0 
+0 / L / X / 00:16:00:000:0 /  in3 /   1.0 
+0 / L / Y / 00:16:00:101:0 / out4 /  -1.0 
+0 / L / X / 00:17:00:000:0 /  in4 /   1.0 
+0 / L / Y / 00:17:00:101:0 / out5 /  -1.0 
+0 / L / X / 00:18:00:000:0 /  in5 /   1.0 
+0 / L / Y / 00:18:00:101:0 / out6 /  -1.0 
+0 / L / X / 00:19:00:000:0 /  in6 /   1.0	
 	\end{lstlisting}	
 \end{minipage}
 
@@ -977,7 +978,7 @@ New Eval: cinta-reglas - 00:05:00:201:0 - cinta(0,2)
 Eval: SendToNCPort Reference(out, [0.4, 0, 0]) at time 00:05:00:201:0
 +-----------------------------------------------------+
 New Eval: cinta-reglas - 00:05:00:201:0 - cinta(0,3)
-Eval: SendToPort Reference(output, -1) at time 00:05:00:201:0
+Eval: SendToPort Reference(output, -1) at time 00:05:00:201:0http://latex.org/forum/viewtopic.php?t=30100http://latex.org/forum/viewtopic.php?t=30100
 Eval: SendToNCPort Reference(out, [0.3, 300.4, 0]) at time 00:05:00:201:0
 +-----------------------------------------------------+
 New Eval: cinta-reglas - 00:05:00:201:0 - cinta(0,4)
@@ -996,19 +997,35 @@ Eval: SendToNCPort Reference(out, [0.3, 0, 0]) at time 00:06:00:000:0
 En esta prueba se observa que se produce un evento de entrada en $00:05:00:000$ que modifica el estado de la celda (0,5). Este evento es el ingreso de un producto de fecha de vencimiento $300.4$. La demora de las reglas asociadas con entradas es de $1~\textrm{ms}$. En $00:05:00:001$ se determina el vecindario inverso de la celda $(0,5)$, que consiste en las celdas $(0,4)$ y $(0,5)$, y se evalúa cómo repercuten los cambios en la celda $(0,5)$. Para las celdas en este vecindario se ejecutan la primera y segunda regla y el producto avanza a la celda $(0,4)$ y se quita de la $(0,5)$. Las reglas locales se ejecutan cada $100~\textrm{ms}$, por lo tanto en el tiempo $00:05:00:101$ se evalúa el vecindario inverso de las celdas que sufrieron cambios en al paso anterior. Este vecindario inverso está compuesto por las celdas $(0,3)$, $(0,4)$ y $(0,5)$. En este paso el producto avanza una celda más hacia la izquierda pasando a la celda $(0,3)$. Nuevamente se esperan $100~\textrm{ms}$ para volver a evaluar las reglas y en este caso se determina que la celda $(0,3)$ es la que le corresponde al producto y entonces se consulta inventario por la disponibilidad de lugar. Se puede observar que como el valor de las celdas evaluadas en $00:05:00:201$ no cambió entonces no se vuelven a evaluar las reglas locales. La respuesta del inventario llega a la celda $(0,3)$ en el tiempo $00:06:00:000$.send(output,(0,0)!0)
 
 
-En la Figura~\ref{fig:IP-movimiento} se puede observar el movimiento lateral de un producto. Este movimiento se debe a que de acuerdo a su fecha de vencimiento el producto se debe ubicar en una columna de fechas de vencimiento más próxima y a que las celdas a la derecha están vacías.
+En la Figura~\ref{fig:IP-movimiento} se puede observar el movimiento lateral y hacia abajo de un producto. Este movimiento se debe a que de acuerdo a su fecha de vencimiento el producto se debe ubicar en una columna de rangos de fecha de vencimiento más próxima y lo más cerca de la fila inferior posible.
 
  \begin{figure}[h] 
  \centering
- 
- 	\begin{tabular}{cc}
- 		\includegraphics[width=0.3\linewidth]{00_05_19_800} &
- 		\includegraphics[width=0.3\linewidth]{00_05_19_900} \\[5mm]
- 		\includegraphics[width=0.3\linewidth]{00_05_20_000} &
- 		\includegraphics[width=0.3\linewidth]{00_05_20_100} \\
- 	\end{tabular}
- 	
- 	\caption{Movimiento lateral de un producto.} 
+ 	\begin{subfigure}{0.5\textwidth}
+		\centering
+		\includegraphics[width=0.6\linewidth]{00_05_19_800}
+		\caption{t = 00:05:19:800}
+		\label{fig:IP-movimiento-a}
+	\end{subfigure}
+ 	\begin{subfigure}{0.5\textwidth}
+		\centering
+ 		\includegraphics[width=0.6\linewidth]{00_05_19_900}
+		\caption{t = 00:05:19:900}
+		\label{fig:IP-movimiento-b}
+	\end{subfigure}
+ 	\begin{subfigure}{0.5\textwidth}
+		\centering
+ 		\includegraphics[width=0.6\linewidth]{00_05_20_000}
+		\caption{t = 00:05:20:000}
+		\label{fig:IP-movimiento-c}
+	\end{subfigure}
+ 	\begin{subfigure}{0.5\textwidth}
+		\centering
+ 		\includegraphics[width=0.6\linewidth]{00_05_20_100}
+		\caption{t = 00:05:20:100}
+		\label{fig:IP-movimiento-d}
+	\end{subfigure}
+ 	\caption{Movimiento lateral y hacia abajo de un producto.} 
  	\label{fig:IP-movimiento} 
  \end{figure}
  \FloatBarrier
@@ -1017,14 +1034,30 @@ En la Figura~\ref{fig:IP-ensayodisputa} se puede observar el comportamiento del 
 
  \begin{figure}[h] 
  \centering
- 
- 	\begin{tabular}{cc}
- 		\includegraphics[width=0.3\linewidth]{00_20_00_001} &
- 		\includegraphics[width=0.3\linewidth]{00_20_00_101} \\[5mm]
- 		\includegraphics[width=0.3\linewidth]{00_20_00_201} &
- 		\includegraphics[width=0.3\linewidth]{00_20_00_301} \\
- 	\end{tabular}
- 	
+ 	\begin{subfigure}{0.5\textwidth}
+		\centering
+ 		\includegraphics[width=0.6\linewidth]{00_20_00_001}
+		\caption{t = 00:05:19:800}
+		\label{fig:IP-ensayodisputa-a}
+	\end{subfigure}
+ 	\begin{subfigure}{0.5\textwidth}
+		\centering
+ 		\includegraphics[width=0.6\linewidth]{00_20_00_101}
+		\caption{t = 00:05:19:900}
+		\label{fig:IP-ensayodisputa-b}
+	\end{subfigure}
+ 	\begin{subfigure}{0.5\textwidth}
+		\centering
+ 		\includegraphics[width=0.6\linewidth]{00_20_00_201}
+		\caption{t = 00:05:20:000}
+		\label{fig:IP-ensayodisputa-c}
+	\end{subfigure}
+ 	\begin{subfigure}{0.5\textwidth}
+		\centering
+ 		\includegraphics[width=0.6\linewidth]{00_20_00_301}
+		\caption{t = 00:05:20:100}
+		\label{fig:IP-ensayodisputa-d}
+	\end{subfigure}
  	\caption{Situación de disputa entre 2 celdas.} 
  	\label{fig:IP-ensayodisputa} 
  \end{figure}
@@ -1100,6 +1133,24 @@ Donde se observa que 101 ms después de cada respuesta del inventario se cursa u
 \section{Conclusiones}
 
 A lo largo del desarrollo del trabajo práctico con la herramienta CD++ en su versión \textit{standalone} se encontraron algunos inconvenientes: a) cuando se incluye un bloque generador se genera un error que indica que el bloque no está registrado, b) cuando se ejecuta el simulador avanzado con el parámetro \texttt{-r} se produce una excepción y se aborta la ejecución, c) no existe un visualizador para el simulador avanzado ya que los que hay (\textit{drawlog} y \textit{webviewer}) no permiten representar tuplas y d) el archivo de salida generado por el simulador con la opción \texttt{-o} genera un archivo vacío. Esto último dificulta el ensayo de los autómatas celulares. A pesar que existe un \textit{script} de python para procesar archivos de \texttt{log} de tuplas y procesarlos con los visualizadores antes mencionados, hubo que hacerle correcciones para procesar los distintos índices de la tupla. En lugar de utilizar tres autómatas celulares este trabajo podría haberse resuelto utilizando tan solo uno y definiendo tres zonas cada una con sus reglas. Sin embargo, en la versión avanzada del simulador nos recomendaron no utilizar zonas ya que no están aún debidamente probadas. También encontramos que las macros no funcionan en el simulador avanzado. No obstante los comentarios anteriores, la versión avanzada del simulador presenta como ventaja la incorporación de tuplas que simplifica los vecindarios a utilizar y da mayor flexibilidad.
+
+Al integrar todos los modelos en el \texttt{topModel.ma} y ensayarlo obtuvimos el siguiente error:
+\begin{lstlisting}
+Exception AssertException thrown!
+Description: Invalid assertion
+Thrown in: 
+	File: pmcoordin.cpp - Method: receive - Line: 262
+Description: 
+	doneCount() > 0
+	Unexpected Done message!
+\end{lstlisting}
+
+Ejecutando el simulador en modo \textit{verboso} podemos ver que la excepción se debe a un error de \textbf{rollback}:
+\begin{lstlisting}
+StateVars: ()
+Rolling back, current time: 00:00:00:100:0 last time: 00:01:00:000:0
+Aborting simulation...
+\end{lstlisting}
 
 % Tampoco anduvieron el script de python ni 
 % Tampoco andan las macros ni las zonas en el simulador avanzado o \textit{standalone}.

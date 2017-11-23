@@ -4,8 +4,3 @@
 0 / L / X / 00:00:00:000:0 / despacho(45) / neighborchange / [0, 0] / despacho(0,6)(52)
 0 / L / X / 00:00:00:000:0 / despacho(45) / neighborchange / [0, 0] / despacho(0,6)(52)
 0 / L / * / 00:00:00:000:0 / despacho(45) / despacho(0,6)(52)
-0 / L / X / 00:01:05:103:0 / despacho(45) / in /     -1.00000 / despacho(0,6)(52)
-0 / L / * / 00:01:05:103:0 / despacho(45) / despacho(0,6)(52)
-0 / L / @ / 00:01:05:104:0 / despacho(45) / despacho(0,6)(52)
-0 / L / X / 00:01:05:104:0 / despacho(45) / neighborchange / [0, -1] / despacho(0,6)(52)
-0 / L / * / 00:01:05:104:0 / despacho(45) / despacho(0,6)(52)

@@ -190,8 +190,8 @@ rule : { (0,0) } 1 { t } % always true
 rule : { [(0,0)!0,portValue(thisPort),0] } { 1 } { t }
 
 [inventario-regla]
-rule : { [(0,0)!0,0+send(output,(0,0)!1),0] } { 1 } { portValue(thisPort)!=0 }
-rule : { [(0,0)!0,(0,0)!1,1] } { 1 } { portValue(thisPort)=0 } % el [x,y,1] indica que la columna del inventario esta llena
+rule : { [(0,0)!0,0+send(output,(0,0)!1),0] } { 1 } { portValue(thisPort)=0 }
+rule : { [(0,0)!0,(0,0)!1,1] } { 1 } { portValue(thisPort)!=0 } % el [x,y,1] indica que la columna del inventario esta llena
 
 %%%%%%%%%% Inventario %%%%%%%%%%
 [inventario-reglas]
