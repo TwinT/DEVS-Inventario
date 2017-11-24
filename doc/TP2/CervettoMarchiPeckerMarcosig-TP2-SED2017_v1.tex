@@ -997,74 +997,73 @@ Eval: SendToNCPort Reference(out, [0.3, 0, 0]) at time 00:06:00:000:0
 En esta prueba se observa que se produce un evento de entrada en $00:05:00:000$ que modifica el estado de la celda (0,5). Este evento es el ingreso de un producto de fecha de vencimiento $300.4$. La demora de las reglas asociadas con entradas es de $1~\textrm{ms}$. En $00:05:00:001$ se determina el vecindario inverso de la celda $(0,5)$, que consiste en las celdas $(0,4)$ y $(0,5)$, y se evalúa cómo repercuten los cambios en la celda $(0,5)$. Para las celdas en este vecindario se ejecutan la primera y segunda regla y el producto avanza a la celda $(0,4)$ y se quita de la $(0,5)$. Las reglas locales se ejecutan cada $100~\textrm{ms}$, por lo tanto en el tiempo $00:05:00:101$ se evalúa el vecindario inverso de las celdas que sufrieron cambios en al paso anterior. Este vecindario inverso está compuesto por las celdas $(0,3)$, $(0,4)$ y $(0,5)$. En este paso el producto avanza una celda más hacia la izquierda pasando a la celda $(0,3)$. Nuevamente se esperan $100~\textrm{ms}$ para volver a evaluar las reglas y en este caso se determina que la celda $(0,3)$ es la que le corresponde al producto y entonces se consulta inventario por la disponibilidad de lugar. Se puede observar que como el valor de las celdas evaluadas en $00:05:00:201$ no cambió entonces no se vuelven a evaluar las reglas locales. La respuesta del inventario llega a la celda $(0,3)$ en el tiempo $00:06:00:000$.send(output,(0,0)!0)
 
 
-En la Figura~\ref{fig:IP-movimiento} se puede observar el movimiento lateral y hacia abajo de un producto. Este movimiento se debe a que de acuerdo a su fecha de vencimiento el producto se debe ubicar en una columna de rangos de fecha de vencimiento más próxima y lo más cerca de la fila inferior posible.
 
- \begin{figure}[h] 
- \centering
- 	\begin{subfigure}{0.5\textwidth}
-		\centering
-		\includegraphics[width=0.6\linewidth]{00_05_19_800}
-		\caption{t = 00:05:19:800}
-		\label{fig:IP-movimiento-a}
-	\end{subfigure}
- 	\begin{subfigure}{0.5\textwidth}
-		\centering
- 		\includegraphics[width=0.6\linewidth]{00_05_19_900}
-		\caption{t = 00:05:19:900}
-		\label{fig:IP-movimiento-b}
-	\end{subfigure}
- 	\begin{subfigure}{0.5\textwidth}
-		\centering
- 		\includegraphics[width=0.6\linewidth]{00_05_20_000}
-		\caption{t = 00:05:20:000}
-		\label{fig:IP-movimiento-c}
-	\end{subfigure}
- 	\begin{subfigure}{0.5\textwidth}
-		\centering
- 		\includegraphics[width=0.6\linewidth]{00_05_20_100}
-		\caption{t = 00:05:20:100}
-		\label{fig:IP-movimiento-d}
-	\end{subfigure}
- 	\caption{Movimiento lateral y hacia abajo de un producto.} 
- 	\label{fig:IP-movimiento} 
- \end{figure}
- \FloatBarrier
-
-En la Figura~\ref{fig:IP-ensayodisputa} se puede observar el comportamiento del inventario ante una situación de disputa. Se puede ver que la fecha de venciminto del producto que está encima de la celda vacía es menor que la de la celda a la derecha de la misma. Por este motiva, la primera gana la disputa y el producto baja ocupando la celda vacía.
-
- \begin{figure}[h] 
- \centering
- 	\begin{subfigure}{0.5\textwidth}
-		\centering
- 		\includegraphics[width=0.6\linewidth]{00_20_00_001}
-		\caption{t = 00:05:19:800}
-		\label{fig:IP-ensayodisputa-a}
-	\end{subfigure}
- 	\begin{subfigure}{0.5\textwidth}
-		\centering
- 		\includegraphics[width=0.6\linewidth]{00_20_00_101}
-		\caption{t = 00:05:19:900}
-		\label{fig:IP-ensayodisputa-b}
-	\end{subfigure}
- 	\begin{subfigure}{0.5\textwidth}
-		\centering
- 		\includegraphics[width=0.6\linewidth]{00_20_00_201}
-		\caption{t = 00:05:20:000}
-		\label{fig:IP-ensayodisputa-c}
-	\end{subfigure}
- 	\begin{subfigure}{0.5\textwidth}
-		\centering
- 		\includegraphics[width=0.6\linewidth]{00_20_00_301}
-		\caption{t = 00:05:20:100}
-		\label{fig:IP-ensayodisputa-d}
-	\end{subfigure}
- 	\caption{Situación de disputa entre 2 celdas.} 
- 	\label{fig:IP-ensayodisputa} 
- \end{figure}
- \FloatBarrier
 
 \subsubsection{Inventario}
-En primera instancia las pruebas de este módulo individual se realizaron cargando valores en un archivo inventario.val y observando la evolución de los productos en el inventario.
+En primera instancia las pruebas de este módulo individual se realizaron cargando valores iniciales de las celdas en el archivo \verb|inventario.val|, en conjunto con los eventos configurados en el archivo \verb|inventario.ev| y observando la evolución de los productos en el inventario.
+
+En la Figura~\ref{fig:IP-movimiento} se puede observar el movimiento lateral y hacia abajo de un producto dentro del inventario. Este movimiento depende de si su fecha de vencimiento cae dentro del rango de fechas comprendidas dentro de la columna en la que está ubicado o no, como se explicó previamente.
+
+\begin{figure}[h] 
+	\centering
+	\subcaptionbox{t = 00:05:19:800}{
+		\centering
+		\includegraphics[width=0.4\linewidth]{00_05_19_800}
+		\label{fig:IP-movimiento-a}
+	}
+	\hfill
+	\subcaptionbox{t = 00:05:19:900}{
+		\centering
+		\includegraphics[width=0.4\linewidth]{00_05_19_900}
+		\label{fig:IP-movimiento-b}
+	}
+	\subcaptionbox{t = 00:05:20:000}{
+		\centering
+		\includegraphics[width=0.4\linewidth]{00_05_20_000}
+		\label{fig:IP-movimiento-c}
+	}\hfill
+	\subcaptionbox{t = 00:05:20:100}{
+		\centering
+		\includegraphics[width=0.4\linewidth]{00_05_20_100}
+		\label{fig:IP-movimiento-d}
+	}
+	\caption{Movimiento lateral y hacia abajo de un producto.} 
+	\label{fig:IP-movimiento} 
+\end{figure}
+\FloatBarrier
+
+Aquí se puede ver el significado de las fechas de vencimiento relativas por columna y absolutas para cada producto. En $t = 00:05:00:000$, que corresponde a $300~\textrm{s}$, ingresa a la tercer columna del inventario un producto cuya fecha de vencimiento es $320~\textrm{s}$. Éste se desplaza por la columna hacia abajo. Los productos dentro de esta columna son aquellos que vencerán dentro de entre $0.3~\textrm{s}$ y $0.4~\textrm{s}$ respecto de la fecha actual, es decir, en el momento en que ingresa el producto al inventario corresponden a fechas de vencimiento entre $300.3~\textrm{s}$ y $300.4~\textrm{s}$. Se puede notar que la fecha de vencimiento del producto es mayor a este rango, sin embargo los productos sólo se puede mover hacia abajo y/o hacia la derecha, por lo tanto si un producto es puesto en una columna equivocada, en la que se deberían ubicar productos con fecha de vencimiento más próxima a la del propio producto, éste permanecerá allí. En $t = 00:05:19:800$, que corresponde a $319.8~\textrm{s}$, los productos que pueden estar dentro de la columna son aquellos cuya fecha de vencimiento está comprendida entre: $320.1~\textrm{s}$ y $320.2~\textrm{s}$. Las reglas se evalúan en un momento y se ejecutan luego de $0.1~\textrm{s}$ de demora, pues con este tiempo modelizamos la dinámica de tiempo asociada con el manipulador que desplaza los productos dentro del inventario. Por este motivo el producto se desplaza a la columna contigua recién en $t = 00:05:19:900$. En este momento, en la segunda columna se deben alojar aquellos productos con fecha de vencimiento comprendida entre $320.0~\textrm{s}$ y $320.1~\textrm{s}$. Luego de $0.1~\textrm{s}$ el producto debe desplazarse hacia la siguiente columna a la derecha que para ese momento admitirá aquellos productos cuya fecha de vencimiento sea menor a $320.2~\textrm{s}$.
+
+En la Figura~\ref{fig:IP-ensayodisputa} se puede observar el comportamiento del inventario ante una situación de disputa. La celda disputada es la que se encuentra en la esquina inferior derecha. Se puede ver que la fecha de vencimiento del producto que está por encima de la celda vacía es menor que la de la celda a su izquierda. Por este motivo, el primer producto gana la disputa y ocupa la celda vacía.
+
+\begin{figure}[h] 
+	\centering
+	\subcaptionbox{t = 00:20:00:001}{
+		\centering
+		\includegraphics[width=0.4\linewidth]{00_20_00_001}
+		\label{fig:IP-ensayodisputa-a}
+	}
+	\hfill
+	\subcaptionbox{t = 00:20:00:101}{
+		\centering
+		\includegraphics[width=0.4\linewidth]{00_20_00_101}
+		\label{fig:IP-ensayodisputa-b}
+	}
+	\subcaptionbox{t = 00:20:00:201}{
+		\centering
+		\includegraphics[width=0.4\linewidth]{00_20_00_201}
+		\label{fig:IP-ensayodisputa-c}
+	}\hfill
+	\subcaptionbox{t = 00:20:00:301}{
+		\centering
+		\includegraphics[width=0.4\linewidth]{00_20_00_301}
+		\label{fig:IP-ensayodisputa-d}
+	}
+	\caption{Situación de disputa entre 2 celdas.} 
+	\label{fig:IP-ensayodisputa} 
+\end{figure}
+\FloatBarrier
+
 \subsubsection{Despacho de Productos}
 Para la prueba de este módulo también se procedió a excitarlo con un archivo de eventos ".ev", conteniendo los pedidos de productos y las respuestas del inventario. Se tuvo especial cuidado en generar las respuestas del inventario en los momentos adecuados a la salida de consultas a las columnas. Considerando que la asignación de los valores de las reglas tiene un retraso de 100 ms (velocidad del despachante).
 
@@ -1132,7 +1131,7 @@ Donde se observa que 101 ms después de cada respuesta del inventario se cursa u
 
 \section{Conclusiones}
 
-A lo largo del desarrollo del trabajo práctico con la herramienta CD++ en su versión \textit{standalone} se encontraron algunos inconvenientes: a) cuando se incluye un bloque generador se genera un error que indica que el bloque no está registrado, b) cuando se ejecuta el simulador avanzado con el parámetro \texttt{-r} se produce una excepción y se aborta la ejecución, c) no existe un visualizador para el simulador avanzado ya que los que hay (\textit{drawlog} y \textit{webviewer}) no permiten representar tuplas y d) el archivo de salida generado por el simulador con la opción \texttt{-o} genera un archivo vacío. Esto último dificulta el ensayo de los autómatas celulares. A pesar que existe un \textit{script} de python para procesar archivos de \texttt{log} de tuplas y procesarlos con los visualizadores antes mencionados, hubo que hacerle correcciones para procesar los distintos índices de la tupla. En lugar de utilizar tres autómatas celulares este trabajo podría haberse resuelto utilizando tan solo uno y definiendo tres zonas cada una con sus reglas. Sin embargo, en la versión avanzada del simulador nos recomendaron no utilizar zonas ya que no están aún debidamente probadas. También encontramos que las macros no funcionan en el simulador avanzado. No obstante los comentarios anteriores, la versión avanzada del simulador presenta como ventaja la incorporación de tuplas que simplifica los vecindarios a utilizar y da mayor flexibilidad.
+A lo largo del desarrollo del trabajo práctico con la herramienta CD++ en su versión \textit{standalone} se encontraron algunos inconvenientes: a) cuando se incluye un bloque generador se genera un error que indica que el bloque no está registrado, b) cuando se ejecuta el simulador avanzado con el parámetro \texttt{-r} se produce una excepción y se aborta la ejecución, c) no existe un visualizador para el simulador avanzado ya que los que hay (\textit{drawlog} y \textit{webviewer}) no permiten representar tuplas y d) el archivo de salida generado por el simulador con la opción \texttt{-o} genera un archivo vacío. Esto último dificulta el ensayo de los autómatas celulares. A pesar que existe un \textit{script} de python para procesar archivos de \texttt{log} de tuplas y procesarlos con los visualizadores antes mencionados, hubo que hacerle correcciones para procesar los distintos índices de la tupla. En lugar de utilizar tres autómatas celulares este trabajo podría haberse resuelto utilizando tan solo uno y definiendo tres zonas cada una con sus reglas. Sin embargo, en la versión avanzada del simulador nos recomendaron no utilizar zonas ya que no están aún debidamente probadas. También encontramos que las macros no funcionan en el simulador avanzado. No obstante los comentarios anteriores, la versión avanzada del simulador presenta como ventaja la incorporación de tuplas que simplifica los vecindarios a utilizar relaxedy da mayor flexibilidad.
 
 Al integrar todos los modelos en el \texttt{topModel.ma} y ensayarlo obtuvimos el siguiente error:
 \begin{lstlisting}
