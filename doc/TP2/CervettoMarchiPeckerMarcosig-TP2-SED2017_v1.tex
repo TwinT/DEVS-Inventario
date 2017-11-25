@@ -313,7 +313,7 @@ Para este trabajo, el bloque Inventario se va a modelizar con un autómata celul
  \end{figure}
  \FloatBarrier
  
- El primer bloque corresponde a una fila de celdas que manejarán la ubicación inicial de los productos dentro del inventario. Del trabajo 1 se puede recordar que cada producto tiene una fecha de vencimiento asociada. Esta fecha será la que determine la columna en la que se apilará a cada producto. Por ejemplo: si falta menos de una semana para su vencimiento se apilará en la columna 0 (más a la derecha), si falta entre 1 y 2 semanas en la columna 1, entre 2 y 3 en la columna 2, etc. Este proceso se esquematiza en la Figura \ref{fig:AC-ingreso-de-productos}.
+ El primer bloque corresponde a una fila de celdas que manejarán la ubicación inicial de los productos dentro del inventario. Del trabajo práctico 1 se puede recordar que cada producto tiene una fecha de vencimiento asociada. Esta fecha será la que determine la columna en la que se apilará a cada producto. Por ejemplo: si falta menos de una semana para su vencimiento se apilará en la columna 0 (más a la derecha), si falta entre 1 y 2 semanas en la columna 1, entre 2 y 3 en la columna 2, etc. Este proceso se esquematiza en la Figura \ref{fig:AC-ingreso-de-productos}.
  
  \begin{figure}[h] 
  	\centering 
@@ -397,7 +397,7 @@ La cinta transportadora es el dispositivo por el que ingresan los productos al i
 \FloatBarrier
 
 
-Los productos ingresan por la entrada \texttt{in} y se van desplazando hacia la izquierda a una velocidad representada por el tiempo entre ejecuciones de las reglas.
+Los productos ingresan por la entrada \texttt{in} y se van desplazando hacia la izquierda a una velocidad representada por el tiempo entre ejecuciones de las reglas ($100~\textrm{ms}$).
 
 Para cada celda en este autómata celular importa solamente el valor de la celda anterior y el de la celda posterior. Por este motivo el vecindario está definido en la Figura~\ref{fig:CT-vecindario}.
 
@@ -482,11 +482,11 @@ rule : { [(0,0)!0,(0,0)!1,1] } { 1 } { portValue(thisPort)!=0 }
 Se puede ver que:
 \begin{enumerate}
  \item Como se utiliza el comando \texttt{thisPort} esta regla es válida para todas las celdas de la cinta transportadora. 
- \item Si la respuesta que recibe la celda de parte del inventario es nula entonces se envía el producto por el mismo puerto por el que se realizó la consulta: \texttt{[(0,0)!0,0+send(output,(0,0)!1),0]} y se coloca un $0$ en su lugar.
- \item Si en cambio no hay lugar entonces se indica colocando un $1$ en el indicador de la tupla: \texttt{[(0,0)!0,(0,0)!1,1]}.
+ \item Si la respuesta que recibe la celda de parte del inventario es nula entonces hay lugar y se envía el producto por el mismo puerto por el que se realizó la consulta: \texttt{[(0,0)!0,0+send(output,(0,0)!1),0]} y se coloca un $0$ en su lugar.
+ \item Si en cambio no hay lugar entonces se indica colocando un $1$ en el elemento \texttt{indicador} de la tupla: \texttt{[(0,0)!0,(0,0)!1,1]}.
 \end{enumerate}
 
-Este conjunto de reglas junto con la estructura graficada en la Figura~\ref{fig:CT-automata} definen el modelo de la cinta transportadora. Los links y la asignación de reglas se pueden ver en la siguiente definición dentro del archivo ".ma".
+Este conjunto de reglas junto con la estructura graficada en la Figura~\ref{fig:CT-automata} definen el modelo de la cinta transportadora. Los links y la asignación de reglas se pueden ver en la siguiente definición dentro del archivo \verb|cinta.ma|.
 
 \begin{minipage}{1\textwidth}
 	\centering
@@ -549,10 +549,9 @@ Para cada celda en este autómata celular interesa el valor de las $8$ celdas al
 \end{figure}
 \FloatBarrier
 
- El ordenamiento de productos está basado en la fecha de vencimiento de los mismos. Cada columna tiene asociada una fecha relativa de vencimiento, por ejemplo, hay columnas que pueden contener los productos que les falte 1 mes para vencer, otra para los que les falte 2 meses para vencer, otra de 3 meses, etc. Las columnas con tiempo de vencimiento mayor son las de la izquierda de la grilla. Esto es así, porque la salida más próxima de productos en la zona de despachos se realiza en la columna de la derecha.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-El acomodamiento de los productos dentro del inventario es el siguiente: los productos van formando una pila en la columna donde entran. Los productos sólo se pueden mover hacia abajo o hacia la derecha. Un producto se podrá mover a la derecha sólo si el paso del tiempo hace que el vencimiento del mismo ya pueda pertenecer a la columna de la derecha. Si la posición se encuentra ocupada, no hay movimiento.
-Puede ocurrir una situación de disputa si se libera una posición que puede se tomada tanto por el bloque superior como por el bloque contiguo. Esto se muestra en la Figura~\ref{fig:IP-disputa}. En este caso, se compara las fechas de vencimiento de ambos productos y la ocupa el de vencimiento más próximo.
+El acomodamiento de los productos dentro del inventario es el siguiente: los productos van formando una pila en la columna donde entran y sólo se pueden mover hacia abajo o hacia la derecha. Un producto se podrá mover a la derecha sólo si el paso del tiempo hace que el vencimiento del mismo ya pueda pertenecer a la columna de la derecha. Si la posición se encuentra ocupada, no hay movimiento.
+Puede ocurrir una situación de disputa si se libera una posición que puede se tomada tanto por el bloque superior como por el bloque contiguo. Esta situación se representa en la Figura~\ref{fig:IP-disputa}. En este caso, se comparan las fechas de vencimiento de ambos productos y la ocupa el de vencimiento más próximo.
 
 \begin{figure}[h] 
 	\centering 
@@ -562,7 +561,7 @@ Puede ocurrir una situación de disputa si se libera una posición que puede se 
 \end{figure}
 \FloatBarrier
 
-Cada celda del inventario se representa por una tupla de 3 elementos: \texttt{[rango,producto,flag]}. El elemento \texttt{rango} de la tupla identifica a la columna del inventario a la que pertenece la celda y representa el rango \textit{relativo} de fechas de vencimiento de productos que se pueden alojar en la columna. Por ejemplo, en la columna $i$ se puede alojar aquellos productos cuyas fechas de vencimiento estén comprendidas entre $1~\textrm{mes}$ y $2~\textrm{meses}$. Por otro lado, el elemento \texttt{producto} de la tupla es la fecha de vencimiento \textit{absoluta} del producto alojado en dicha celda. Por ejemplo, la fecha de vencimiento del producto en la celda es \today. Por último, el elemento \texttt{flag} de la tupla se utiliza para generar eventos en las celdas y de esta manera lograr que un producto avance de acuerdo con el paso del tiempo. En la Figura~\ref{fig:IP-ejemplo} se puede ver el significado de los elementos de la tupla.
+Cada celda del inventario se representa por una tupla de 3 elementos: \texttt{[rango,\\producto,flag]}. El elemento \texttt{rango} de la tupla identifica a la columna del inventario a la que pertenece la celda y representa el rango \textit{relativo} de fechas de vencimiento de productos que se pueden alojar en la columna. Por ejemplo, en la columna $i$ se puede alojar aquellos productos cuyas fechas de vencimiento estén comprendidas entre $1~\textrm{mes}$ y $2~\textrm{meses}$. Por otro lado, el elemento \texttt{producto} de la tupla es la fecha de vencimiento \textit{absoluta} del producto alojado en dicha celda. Por ejemplo, la fecha de vencimiento del producto en la celda es \today. Por último, el elemento \texttt{flag} de la tupla se utiliza para generar eventos en las celdas y de esta manera lograr que un producto avance de acuerdo con el paso del tiempo. % En la Figura~\ref{fig:IP-ejemplo} se puede ver el significado de los elementos de la tupla.
 
 %\begin{figure}[h] 
 %	\centering 
@@ -649,7 +648,7 @@ Las reglas se agrupan en pares de reglas complementarias asociadas con el movimi
 	\subitem No hay nada en la celda de arriba a la celda vacía por lo que el producto de la izquierda la puede ocupar libremente, si su fecha de vencimiento le permite pasar de columna.
 	\subitem Mismo caso anterior, pero en la fila de abajo.
 	\item Esta regla es el caso particular donde la celda vacía se encuentra en la fila de arriba (no es necesario preguntar por arriba) y el producto a la izquierda puede pasar porque tiene alguien abajo que lo "sostiene".
-	\item Esta regla es la que setea el cambio para el momento de vencimiento de la columna, de esta forma se dispara una transición que genera el reacomodamiento del producto. Simplemente escribe un 1 en la posición 3 de la tupla al momento de vencer el producto (según su columna) 
+	\item Esta regla es la que agenda el momento en que el producto en una celda debe avanzar hacia la derecha. En ese momento se dispara una transición que genera el reacomodamiento del producto. Para esto, simplemente escribe un 1 en la posición 3 de la tupla al momento de vencer el producto (según su columna). 
 	\item La última regla es la que se evalúa siempre positivamente.
 \end{enumerate}
 
@@ -687,7 +686,7 @@ Se observa que:
   \item Si se recibe una consulta por los puertos de entrada que están debajo del inventario se está consultando por la disponibilidad de un producto para despachar. Entonces se devuelve un producto representado por su fecha de vencimiento: $(0,0)!1$. Si este valor es $>0$ significa que es un producto válido, mientras que si en su lugar se devuelve $0$ significa que esa posición del inventario estaba vacía (ya sea porque la columna está vacía o porque esa celda está vacía y aún no se reordenó el inventario).
 \end{itemize}
 
-Este conjunto de reglas con la estructura graficada en la Figura~\ref{fig:IP-estructura} definen el modelo del inventario de productos. Los \textit{links} y la asignación de reglas se pueden ver en la siguiente definición dentro del archivo \texttt{.ma}:
+Este conjunto de reglas con la estructura graficada en la Figura~\ref{fig:IP-estructura} definen el modelo del inventario de productos. Los \textit{links} y la asignación de reglas se pueden ver en la siguiente definición dentro del archivo \verb|inventario.ma|:
 
 \begin{minipage}{1\textwidth}
 	\centering
@@ -833,7 +832,7 @@ rule : { [portValue(thisPort),0] } 1 { portValue(thisPort)>0 }
 	\end{lstlisting}
 \end{minipage}
 
-Este conjunto de reglas con la estructura graficada en la Figura~\ref{fig:DP-estructura} definen el modelo del despacho de productos. Los \textit{links} y la asignación de reglas se pueden ver en la siguiente definición dentro del archivo \texttt{.ma}:
+Este conjunto de reglas junto con la estructura graficada en la Figura~\ref{fig:DP-estructura} definen el modelo del despacho de productos. Los \textit{links} y la asignación de reglas se pueden ver en la siguiente definición dentro del archivo \verb|despacho.ma|:
 
 \begin{minipage}{1\textwidth}
 	\centering
@@ -978,7 +977,7 @@ New Eval: cinta-reglas - 00:05:00:201:0 - cinta(0,2)
 Eval: SendToNCPort Reference(out, [0.4, 0, 0]) at time 00:05:00:201:0
 +-----------------------------------------------------+
 New Eval: cinta-reglas - 00:05:00:201:0 - cinta(0,3)
-Eval: SendToPort Reference(output, -1) at time 00:05:00:201:0http://latex.org/forum/viewtopic.php?t=30100http://latex.org/forum/viewtopic.php?t=30100
+Eval: SendToPort Reference(output, -1) at time 00:05:00:201:0
 Eval: SendToNCPort Reference(out, [0.3, 300.4, 0]) at time 00:05:00:201:0
 +-----------------------------------------------------+
 New Eval: cinta-reglas - 00:05:00:201:0 - cinta(0,4)
