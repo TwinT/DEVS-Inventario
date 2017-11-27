@@ -879,9 +879,9 @@ localtransition : despacho-reglas
 \subsection{Pruebas parciales}
 \subsubsection{Cinta Transportadora}
 
-Para este ejemplo se utilizó una cinta transportadora de $6$ celdas. El tiempo entre ejecuciones de las reglas en las transiciones locales se configuró en $100~\textrm{ms}$, mientras que el tiempo en las reglas de las transiciones en los puertos de entrada se configuró en $1~\textrm{ms}$. Con el primer tiempo se modeliza la velocidad de avance de la cinta transportadora.
+Para este ejemplo se utilizó una cinta transportadora de $6$ celdas. El tiempo de demora desde que la condición de una regla en las transiciones locales es válida hasta que se ejecuta se configuró en $100~\textrm{ms}$, mientras que para las reglas de las transiciones en los puertos de entrada se configuró en $1~\textrm{ms}$. Con el primer tiempo se modeliza la velocidad de avance de la cinta transportadora.
 
-Los valores iniciales de las celdas se configuraron mediante el archivo \texttt{cinta.val} cuyo contenido se muestra a continuación:
+Los valores iniciales de las celdas se cargaron mediante el archivo \texttt{cinta.val} cuyo contenido se muestra a continuación:
 
 \begin{minipage}{1\textwidth}
 	\centering
@@ -895,7 +895,7 @@ Los valores iniciales de las celdas se configuraron mediante el archivo \texttt{
 	\end{lstlisting}
 \end{minipage}
 
-Como se mencionó anteriormente, se observa que cada celda tiene asociada una tupla de $3$ elementos: \texttt{[ID columna, producto, indicador]}. El primer elemento de estas tuplas coincide con el rango de fechas de vencimiento del inventario. Este rango se mantiene fijo a lo largo de la simulación. % aunque al momento de comparar la fecha de vencimiento de un producto con el de la celda a esta última se le suma el tiempo actual \texttt{time/1000}.
+Como se mencionó anteriormente, se observa que cada celda en la cinta transportadora tiene asociada una tupla de $3$ elementos: \texttt{[ID columna, producto, indicador]}. El primer elemento de estas tuplas coincide con el rango de fechas de vencimiento de la columna del inventario asociada con la celda de la cinta transportadora. Este rango se mantiene fijo a lo largo de la simulación. % aunque al momento de comparar la fecha de vencimiento de un producto con el de la celda a esta última se le suma el tiempo actual \texttt{time/1000}.
 
 Los eventos de entrada: a) arribo de productos a la cinta y b) respuestas del inventario, se manejan mediante el archivo \texttt{cinta.ev} cuyo contenido se muestra a continuación:
 
@@ -916,7 +916,7 @@ Los eventos de entrada: a) arribo de productos a la cinta y b) respuestas del in
 	\end{lstlisting}	
 \end{minipage}
 
-Para analizar el comportamiento del autómata celular que utiliza las reglas antes mencionadas y la secuencia de eventos de entrada del archivo \texttt{cinta.ev} se ejecutó el simulador con el parámetro \texttt{-v} de modo de tener una salida \textit{verbosa}. El primer producto que ingresa en la cinta lo hace mediante el archivo \texttt{cinta.val}. La salida de la prueba es la siguiente:
+Para analizar el comportamiento del autómata celular que utiliza las reglas antes mencionadas y la secuencia de eventos de entrada del archivo \texttt{cinta.ev} se ejecutó el simulador \texttt{CD++} con el parámetro \texttt{-v} de modo de tener una salida \textit{verbosa}. La salida de la prueba es la siguiente:
 
 \begin{minipage}{1\textwidth}
 	\centering
@@ -946,9 +946,9 @@ Para analizar el comportamiento del autómata celular que utiliza las reglas ant
 	\end{lstlisting}	
 \end{minipage}
 
-Esta salida se obtuvo del archivo \texttt{log} del modelo \textit{top} reteniendo solamente los eventos de entrada (X) y salida (Y). El primer producto ingresa a la cinta durante la inicialización en $t = 00:00:00:000$ y por ese motivo no aparece aquí. Ese primer producto tiene una fecha de vencimiento de $0.3$. En el tiempo $0$ se evalúan todas las celdas y el producto avanza una celda hacia la izquierda alcanzando la celda $(0,4)$ de la Figura~\ref{fig:CT-automata}. La siguiente ejecución de las reglas se produce a los $100~\textrm{ms}$ y sólo se evalúan aquellas celdas que tienen a la celda que sufrió modificaciones en el paso anterior dentro de su vecindario. En este paso el producto no avanza un casillero más hacia la izquierda pues en la comparación de \texttt{(0,0)!1} con \texttt{(0,0)!0 + time/1000} de las primera y segunda regla el producto se queda en la celda $(0,4)$ cuyo campo \texttt{ID} es $0.2$. Entonces en este paso se consulta al inventario si hay lugar disponible en la columna conectada a la salida \texttt{out2} enviando un $-1$ por el puerto de salida. Un tiempo después llega la respuesta del inventario indicando con un $0$ que no hay lugar, entonces el producto avanzará una posición hacia la izquierda. Se repite la consulta al inventario pero esta vez desde la salida \texttt{out3}. Al tiempo llega la respuesta del inventario indicando que hay lugar e instantáneamente la cinta descarga el producto por la salida. Luego de un tiempo arriba un producto de valor de fecha de vencimiento $300.4~\textrm{ms}$. Este producto avanza en la cinta hasta la posición $(0,3)$, consulta si hay lugar en el inventario y se descarga allí. De igual manera se procede con el producto que ingresa a la cinta a continuación de valor de fecha de vencimiento $600.2~\textrm{ms}$. Finalmente, el último producto de valor $900.5~\textrm{ms}$ que avanza hasta la celda $(0,3)$ y consulta al inventario, ante la respuesta de éste el producto avanza una posición más en la cinta transportadora y vuelve a consultar. Esta operación se repite y el producto alcanza el final de la cinta transportadora y ante la falta de lugar en el inventario entonces el producto permanece en la cinta transportadora.
+Esta salida se obtuvo del archivo \texttt{log} del modelo \textit{top} reteniendo solamente los eventos de entrada (X) y salida (Y). El primer producto que ingresa en la cinta lo hace durante la inicialización en $t = 00:00:00:000$ (mediante el archivo \texttt{cinta.val}) y por ese motivo no aparece aquí. Este primer producto tiene una fecha de vencimiento de $0.3~\textrm{s}$. En el tiempo $0$ se evalúan todas las celdas y el producto avanza una celda hacia la izquierda alcanzando la celda $(0,4)$ de la Figura~\ref{fig:CT-automata}. A los $100~\textrm{ms}$ vuelven a evaluarse las reglas y sólo se ejecutan aquellas celdas que tienen dentro de su vecindario a la celda que sufrió modificaciones en el paso anterior. En este paso el producto no avanza un casillero más hacia la izquierda pues en la comparación de la fecha de vencimiento del producto, \texttt{(0,0)!1}$=0.3~\textrm{s}$, con el rango de fechas en la columna asociada del inventario, \texttt{(0,0)!0 + time/1000}$=0.2~\textrm{s}+0.1~\textrm{s}$, el producto se queda en la celda $(0,4)$. Entonces en este paso se consulta al inventario si hay lugar disponible en la columna conectada a la salida \texttt{out2} asociada a la celda \texttt{(0,4)} enviando un $-1$. Un tiempo después, $t = 00:00:00:111$, llega la respuesta del inventario indicando con un $1$ que no hay lugar en esa columna. Entonces el producto avanza una posición hacia la izquierda en la cinta transportadora y se repite la consulta al inventario pero esta vez desde la salida \texttt{out3} asociada a la celda \texttt{(0,3)}. Al tiempo, $t = 00:00:00:221$, llega la respuesta del inventario indicando con $0$ que hay lugar disponible en la columna por la que se consultó e instantáneamente la cinta descarga el producto por la salida. Luego de un tiempo, $t = 00:05:00:000$, ingresa a la cinta transportadora un producto con fecha de vencimiento $300.4~\textrm{s}$. Este producto avanza en la cinta hasta la posición $(0,3)$, cuando \texttt{(0,0)!1}$=300.4~\textrm{s}\leq$\texttt{(0,0)!0 + time/1000}$=0.3~\textrm{s}+300.1~\textrm{s}$, consulta si hay lugar en el inventario y se descarga allí en $t = 00:06:00:000$. De igual manera se procede con el producto que ingresa a la cinta transportadora en $t = 00:10:00:000$ con valor de fecha de vencimiento $600.2~\textrm{s}$. Finalmente, el último producto en ingresar a la cinta transportadora de valor $900.5~\textrm{s}$ lo hace en $t = 00:15:00:000$. Éste avanza hasta la celda $(0,3)$, cuando \texttt{(0,0)!1}$=900.5~\textrm{s}\leq$\texttt{(0,0)!0 + time/1000}$=0.3~\textrm{s}+900.2~\textrm{s}$, y consulta al inventario si hay lugar en la columna asociada a esta celda. Ante la respuesta negativa de éste, el producto avanza una posición más en la cinta transportadora y vuelve a consultar. Esta operación se repite y en todos los casos el inventario responde que no tiene lugar para que la cinta descargue el producto, y por lo tanto el producto alcanza el final de la cinta transportadora y permanece allí.
 
-Para tener mayor detalle de la ejecución de las reglas se puede observar la salida del simulador en modo \textit{verboso}. De allí se puede concluir que en cada paso sólo se evalúan aquellas celdas que tienen en su vecindario a una celda que sufrió cambios en el paso de simulación anterior. De esta manera no están ejecutándose todo el tiempo todas las reglas para todas las celdas. Esto se puede observar en el siguiente extracto de la salida (donde para facilitar la legibilidad se quitaron algunas líneas):
+Para tener mayor detalle de la ejecución de las reglas se puede analizar la salida del simulador en modo \textit{verboso}. De allí se puede verificar que en cada paso de simulación sólo se evalúan aquellas celdas que tienen en su vecindario a una celda que sufrió cambios en el paso de simulación anterior. De esta manera no están ejecutándose todo el tiempo todas las reglas para todas las celdas. Esto se puede observar en el siguiente extracto de la salida que corresponde al ensayo anterior (donde para facilitar la legibilidad se quitaron algunas líneas):
 
 \begin{minipage}{1\textwidth}
 	\centering
@@ -987,21 +987,21 @@ New Eval: cinta-reglas - 00:05:00:201:0 - cinta(0,5)
 Eval: SendToNCPort Reference(out, [0.1, 0, 0]) at time 00:05:00:201:0
 +-----------------------------------------------------+
 New Eval: inventario-regla - 00:06:00:000:0 - cinta(0,3)
-Eval: PortIn Reference(in3) = 1
+Eval: PortIn Reference(in3) = 0
 Eval: SendToPort Reference(output, 300.4) at time 00:06:00:000:0
 Eval: SendToNCPort Reference(out, [0.3, 0, 0]) at time 00:06:00:000:0
 	\end{lstlisting}	
 \end{minipage}
 
-En esta prueba se observa que se produce un evento de entrada en $00:05:00:000$ que modifica el estado de la celda (0,5). Este evento es el ingreso de un producto de fecha de vencimiento $300.4~\textrm{ms}$. La demora de las reglas asociadas con entradas es de $1~\textrm{ms}$. En $00:05:00:001$ se determinan aquellas celdas que se pueden ver afectadas por el cambio en la celda $(0,5)$, que son las celdas $(0,4)$ y $(0,5)$, y se evalúa cómo repercute este cambio. A partir de la ejecución de la primera y segunda regla el producto es tomado por la celda $(0,4)$ y se quita de la $(0,5)$. Las reglas locales se ejecutan cada $100~\textrm{ms}$, por lo tanto en el tiempo $00:05:00:101$ se evalúan aquellas celdas que pueden verse afectadas por las celdas que sufrieron cambios en el paso anterior. Estas son las celdas $(0,3)$, $(0,4)$ y $(0,5)$. En este paso el producto avanza una celda más hacia la izquierda pasando a la celda $(0,3)$. Nuevamente se esperan $100~\textrm{ms}$ para volver a evaluar las reglas y en este caso se determina que la celda $(0,3)$ es la que le corresponde al producto y entonces se consulta inventario por la disponibilidad de lugar. Se puede observar que como el valor de las celdas evaluadas en $00:05:00:201$ no cambió entonces no se vuelven a evaluar las reglas locales. La respuesta del inventario llega a la celda $(0,3)$ en el tiempo $00:06:00:000$.
+Se observa el ingreso del producto de fecha de vencimiento $300.4~\textrm{s}$ por el puerto de entrada en $t = 00:05:00:000$. Este evento modifica el campo \texttt{producto} de la tupla en la celda \texttt{(0,5)}. Dado que la demora de las reglas asociadas con entradas es de $1~\textrm{ms}$, en $ t = 00:05:00:001$ se determinan aquellas celdas que se pueden ver afectadas por el cambio en la celda \texttt{(0,5)}, que son las celdas \texttt{(0,4)} y \texttt{(0,5)}, y se evalúa cómo repercute este cambio. A partir de la ejecución de la primera y segunda regla de cada celda el producto es tomado por la celda \texttt{(0,4)} y se quita de la \texttt{(0,5)}. Las reglas locales se ejecutan cada $100~\textrm{ms}$, por lo tanto en el tiempo $t = 00:05:00:101$ se evalúan aquellas celdas que pueden verse afectadas por las celdas que sufrieron cambios en el paso anterior. Estas son las celdas \texttt{(0,3)}, \texttt{(0,4)} y \texttt{(0,5)}. En este paso el producto avanza una celda más hacia la izquierda pasando a la celda \texttt{(0,3)}. Nuevamente se esperan $100~\textrm{ms}$ para volver a evaluar las reglas y en este caso se determina que la celda \texttt{(0,3)} es la que le corresponde al producto y entonces se consulta inventario por la disponibilidad de lugar. Se puede observar que como el valor de las celdas evaluadas en $t = 00:05:00:201$ no cambió entonces no se vuelven a evaluar las reglas locales. La respuesta del inventario llega a la celda \texttt{(0,3)} en el tiempo $t = 00:06:00:000$ donde indica con $0$ que hay lugar disponible en la columna por la que se consultó. A continuación la cinta transportadora descarga el producto de fecha de vencimiento $300.4~\textrm{s}$ y coloca un $0$ en el elemento \texttt{producto} de la tupla en la celda \texttt{(0,3)}.
 
 
 
 
 \subsubsection{Inventario}
-En primera instancia las pruebas de este módulo individual se realizaron cargando valores iniciales de las celdas en el archivo \verb|inventario.val|, en conjunto con los eventos configurados en el archivo \verb|inventario.ev| y observando la evolución de los productos en el inventario.
+Las pruebas de este módulo individual se realizaron cargando valores iniciales de las celdas con el archivo \verb|inventario.val|, en conjunto con los eventos configurados en el archivo \verb|inventario.ev| y observando la evolución de los productos en el inventario.
 
-En la Figura~\ref{fig:IP-movimiento} se puede observar el movimiento lateral y hacia abajo de un producto dentro del inventario. Este movimiento depende de si su fecha de vencimiento cae dentro del rango de fechas comprendidas dentro de la columna en la que está ubicado o no, como se explicó previamente.
+Por medio de la Figura~\ref{fig:IP-movimiento} se puede observar el movimiento lateral y hacia abajo de un producto dentro del inventario. Este movimiento depende de si su fecha de vencimiento cae dentro del rango de fechas comprendidas dentro de la columna en la que está ubicado o no, como se explicó anteriormente. Las celdas que no tienen valor están vacías, mientras que las que están llenas muestran las fechas de vencimiento de los producto en ellas. En concreto, se va a analizar el movimiento del producto con fecha de vencimiento $320~\textrm{s}$.
 
 \begin{figure}[h] 
 	\centering
@@ -1033,7 +1033,7 @@ En la Figura~\ref{fig:IP-movimiento} se puede observar el movimiento lateral y h
 
 Aquí se puede ver el significado de las fechas de vencimiento relativas por columna y absolutas para cada producto. En $t = 00:05:00:000$, que corresponde a $300~\textrm{s}$, ingresa a la tercer columna del inventario un producto cuya fecha de vencimiento es $320~\textrm{s}$. Éste se desplaza por la columna hacia abajo. Los productos dentro de esta columna son aquellos que vencerán dentro de entre $0.3~\textrm{s}$ y $0.4~\textrm{s}$ respecto de la fecha actual, es decir, en el momento en que ingresa el producto al inventario corresponden a fechas de vencimiento entre $300.3~\textrm{s}$ y $300.4~\textrm{s}$. Se puede notar que la fecha de vencimiento del producto es mayor a este rango, sin embargo los productos sólo se puede mover hacia abajo y/o hacia la derecha, por lo tanto si un producto es puesto en una columna equivocada, en la que se deberían ubicar productos con fecha de vencimiento más próxima a la del propio producto, éste permanecerá allí. En $t = 00:05:19:800$, que corresponde a $319.8~\textrm{s}$, los productos que pueden estar dentro de la columna son aquellos cuya fecha de vencimiento está comprendida entre: $320.1~\textrm{s}$ y $320.2~\textrm{s}$. Las reglas se evalúan en un momento y se ejecutan luego de $0.1~\textrm{s}$ de demora, pues con este tiempo modelizamos la dinámica de tiempo asociada con el manipulador que desplaza los productos dentro del inventario. Por este motivo el producto se desplaza a la columna contigua recién en $t = 00:05:19:900$. En este momento, en la segunda columna se deben alojar aquellos productos con fecha de vencimiento comprendida entre $320.0~\textrm{s}$ y $320.1~\textrm{s}$. Luego de $0.1~\textrm{s}$ el producto debe desplazarse hacia la siguiente columna a la derecha que para ese momento admitirá aquellos productos cuya fecha de vencimiento sea menor a $320.2~\textrm{s}$.
 
-En la Figura~\ref{fig:IP-ensayodisputa} se puede observar el comportamiento del inventario ante una situación de disputa. La celda disputada es la que se encuentra en la esquina inferior derecha. Se puede ver que la fecha de vencimiento del producto que está por encima de la celda vacía es menor que la de la celda a su izquierda. Por este motivo, el primer producto gana la disputa y ocupa la celda vacía.
+En la Figura~\ref{fig:IP-ensayodisputa} se puede observar el comportamiento del inventario ante una situación de disputa. La celda disputada es la que se encuentra en la esquina inferior derecha. Se puede ver que la fecha de vencimiento del producto que está por encima de la celda vacía es menor que la de la celda a su izquierda. Por este motivo, el primer producto gana la disputa y ocupa la celda vacía. A continuación se repite la misma situación para los demás productos que están en la primer columna.
 
 \begin{figure}[h] 
 	\centering
@@ -1064,7 +1064,7 @@ En la Figura~\ref{fig:IP-ensayodisputa} se puede observar el comportamiento del 
 \FloatBarrier
 
 \subsubsection{Despacho de Productos}
-Para la prueba de este módulo también se procedió a excitarlo con un archivo de eventos ".ev", conteniendo los pedidos de productos y las respuestas del inventario. Se tuvo especial cuidado en generar las respuestas del inventario en los momentos adecuados a la salida de consultas a las columnas. Considerando que la asignación de los valores de las reglas tiene un retraso de 100 ms (velocidad del despachante).
+Los valores iniciales de las celdas de este autómata se cargaron con el archivo \verb|despacho.val|. Para la prueba de este módulo también se procedió a excitarlo con un archivo de eventos \verb|despacho.ev|, que contiene los pedidos de productos y las respuestas del inventario:
 
 \begin{minipage}{1\textwidth}
 	\centering
@@ -1086,21 +1086,24 @@ Para la prueba de este módulo también se procedió a excitarlo con un archivo 
 	\end{lstlisting}	
 \end{minipage}
 
+Se tuvo especial cuidado en emular las respuestas del inventario en los momentos adecuados de acuerdo con las consultas realizadas al mismo. Consideramos que la asignación de los valores de las reglas tiene un retraso de $100~\textrm{ms}$, que modeliza la velocidad del despachante.
+
 Ante este estímulo, el comportamiento que se espera es el siguiente:
 \begin{enumerate}
-	\item En el tiempo 00:01:00:000 se recibe un evento de pedido de producto.
-	\item Luego de 1 ms el pedido se registra en la oficina del despachante (celda (0,5)).
-	\item Luego de 100 ms, el despachante camina hasta la primera columna del inventario (celda (0,5)) y hace el pedido al inventario.
-	\item En el tiempo 00:01:00:103 el inventario responde que no hay productos en esa columna.
-	\item Luego de 100 ms más el despachante camina una columna más y repite el pedido.
-	\item Se repite el proceso con sus respectivos tiempos hasta que el despachante llega a la columna 3 (celda (0,2)) donde el inventario en tiempo 00:01:00:412 responde con un producto con fecha de caducidad 600.2 (recordar que el control de calidad se realiza por un modelo atómico mostrado en el TP1).
-	\item El producto se debe desplazar hacia la derecha a 100 ms por celda hasta salir por el puerto de salida de pedidos.
-	\item El proceso se repite ante una llegada de un pedido en el tiempo 00:01:01:000. Pero el despachante debe llegar hasta la primer columna para encontrar un producto.
-	\item Finalmente el proceso se repite en el tiempo 00:02:00:000 pero el inventario dispone de producto en la columna más cercana al despachante (celda (0,5)). Por lo que el recorrido del despachante es solamente de una posición.
+	\item En el tiempo $00:01:00:000$ se recibe un evento de pedido de producto.
+	\item Luego de $1~\textrm{ms}$ el pedido se registra en la oficina del despachante (celda \texttt{(0,6)}).
+	\item Luego de $100~\textrm{ms}$, el despachante camina hasta la primera columna del inventario (celda \texttt{(0,5)}) y hace el pedido al inventario.
+	\item En el tiempo $00:01:00:103$ el inventario responde que no hay productos en esa columna.
+	\item Luego de $100~\textrm{ms}$ más el despachante camina una columna más y repite el pedido.
+	\item Se repite el proceso con sus respectivos tiempos hasta que el despachante llega a la columna 3 (celda \texttt{(0,2)}) donde el inventario responde con un producto con fecha de caducidad $600.2~\textrm{s}$ (recordar que el control de calidad se realiza por un modelo atómico mostrado en el TP1) en tiempo $00:01:00:412$.
+	\item El producto se debe desplazar hacia la derecha a $100~\textrm{ms}$ por celda hasta salir por el puerto de salida de pedidos.
+	\item El proceso se repite ante una llegada de un pedido en el tiempo $00:01:01:000$. Pero el despachante debe llegar hasta la primer columna para encontrar un producto.
+	\item Finalmente el proceso se repite en el tiempo $00:02:00:000$ pero el inventario dispone de producto en la columna más cercana al despachante (celda \textrm{(0,5)}). Por lo que el recorrido del despachante es solamente de una posición.
 \end{enumerate}
 
-Para verificar el comportamiento esperado anterior, se procedió a analizar los archivos logs generados. Filtrando con el comando \textit{grep}, y conociendo la nomenclatura de los mensajes se puede analizar el comportamiento.
-Para la salida del top-model podemos observar:
+Para verificar el comportamiento esperado anterior, se procedió a analizar los archivos \verb|log| generados. Filtrando con el comando \verb|grep|, y conociendo la nomenclatura de los mensajes se puede analizar el comportamiento.
+
+Para la salida del \textit{top-model} podemos observar:
 
 \begin{minipage}{1\textwidth}
 	\centering
@@ -1122,7 +1125,7 @@ Y / 00:02:00:204:0 / pedidosout /    900.50000 / top(09)
 	\end{lstlisting}	
 \end{minipage}
 
-Donde se observa que 101 ms después de cada respuesta del inventario se cursa un pedido a la columna siguiente. Por otro lado se observa que el producto sale correctamente por la salida \textit{pedidosOut} 503 ms después de haber entrado en el despacho, tal como fue previsto. Se observa coherencia también en los casos siguientes, con un tiempo de demora en la salida proporcional a la distancia recorrida por el despachante para encontrar un producto en el inventario.
+Donde se observa que $101~\textrm{ms}$ después de cada respuesta del inventario se cursa un pedido a la columna siguiente. Por otro lado se observa que el producto sale correctamente por la salida \textit{pedidosOut} $503~\textrm{ms}$ después de haber entrado en el despacho, tal como fue previsto. Se observa coherencia también en los casos siguientes, con un tiempo de demora en la salida proporcional a la distancia recorrida por el despachante para encontrar un producto en el inventario.
 
 
 
@@ -1130,9 +1133,26 @@ Donde se observa que 101 ms después de cada respuesta del inventario se cursa u
 
 \section{Conclusiones}
 
-A lo largo del desarrollo del trabajo práctico con la herramienta CD++ en su versión \textit{standalone} se encontraron algunos inconvenientes: a) cuando se incluye un bloque generador se genera un error que indica que el bloque no está registrado, b) cuando se ejecuta el simulador avanzado con el parámetro \texttt{-r} se produce una excepción y se aborta la ejecución, c) no existe un visualizador para el simulador avanzado ya que los que hay (\textit{drawlog} y \textit{webviewer}) no permiten representar tuplas y d) el archivo de salida generado por el simulador con la opción \texttt{-o} genera un archivo vacío. Esto último dificulta el ensayo de los autómatas celulares. A pesar que existe un \textit{script} de python para procesar archivos de \texttt{log} de tuplas y procesarlos con los visualizadores antes mencionados, hubo que hacerle correcciones para procesar los distintos índices de la tupla. En lugar de utilizar tres autómatas celulares este trabajo podría haberse resuelto utilizando tan solo uno y definiendo tres zonas cada una con sus reglas. Sin embargo, en la versión avanzada del simulador nos recomendaron no utilizar zonas ya que no están aún debidamente probadas. También encontramos que las macros no funcionan en el simulador avanzado. No obstante los comentarios anteriores, la versión avanzada del simulador presenta como ventaja la incorporación de tuplas que simplifica los vecindarios a utilizar relaxedy da mayor flexibilidad.
+Se comprobó la utilidad del formalismo cell-DEVS para simular el comportamiento de sistemas espaciales que implican dinámicas en varias dimensiones. Se comprobó también la versatilidad del simulador \verb|CD++| que tanto se puede utilizar para simular modelos DEVS como cell-DEVS.
 
-Al integrar todos los modelos en el \texttt{topModel.ma} y ensayarlo obtuvimos el siguiente error:
+Utilizando reglas simples por celda y replicando estas celdas se pueden lograr comportamientos complejos. Pudimos verificar también que a partir de la definición del vecindario de cada celda se determina qué grupo de celdas evaluar en cada paso de simulación. De esta manera, al igual que sucedía en el TP1 con el formalismo DEVS, verificamos que para sistemas con gran cantidad de celdas esto implica un gran ahorro de cómputo.
+
+A lo largo del desarrollo del trabajo práctico con la herramienta \verb|CD++| en su versión \textit{standalone} se encontraron algunos inconvenientes: a) cuando se incluye un bloque generador se genera un error que indica que el bloque no está registrado, b) cuando se ejecuta el simulador avanzado con el parámetro \texttt{-r} se produce una excepción y se aborta la ejecución, c) el archivo de salida generado por el simulador con la opción \texttt{-o} genera un archivo vacío, y d) no pudimos definir reglas por zonas ni utilizar \textit{macros}. El primer punto nos llevó a probar todos los autómatas recurriendo a archivos de eventos. Por su parte, el no poder utilizar el comando \verb|cd++ -r| nos dificultó el \textit{debug} de las reglas para cada autómata. Cada vez que invocamos al simulador con esta opción obtuvimos el siguiente mensaje de error:
+
+\begin{lstlisting}
+Exception MException thrown!
+Description: Rules 8 and 19 evaluate to TRUE and their results are different!
+Thrown in: 
+File: synnode.cpp - Method: evaluate - Line: 118
+\end{lstlisting}
+
+\noindent Por esta razón utilizamos el comando \verb|cd++ -v| que devuelve mucha más información y requiere de un análisis más detallado. Por último, el hecho de no poder definir reglas que se ejecuten por zonas dificultó la implementación del autómata celular correspondiente al inventario donde se tuvieron que agregar varias reglas para las filas y columnas en los bordes que tienen un comportamiento distinto a las restantes. Por este mismo motivo, en lugar de haber utilizado $3$ automatas celulares para resolver el problema de este trabajo: cinta transportadora, inventario, despacho de productos, podría haberse utilizado tan sólo uno definiendo zonas cada una con sus reglas.
+
+No obstante los comentarios anteriores, la versión avanzada del simulador presenta como ventaja la incorporación de tuplas que simplifican enormemente los vecindarios a utilizar y dan mayor flexibilidad.
+
+Para analizar el resultado del autómata celular correspondiente al inventario utilizamos el visualizador online \url{http://omarhesham.com/arslab/webviewer/} en conjunto con el \textit{script} de python provisto por la cátedra y corregido para seleccionar el elemento de la tupla a visualizar. Sería interesante contar con un visualizador que permita ver más de un elemento de la tupla a la vez.
+
+Al integrar los $3$ autómatas celulares implementados en el \texttt{topModel.ma} y ensayarlo obtuvimos el siguiente error:
 \begin{lstlisting}
 Exception AssertException thrown!
 Description: Invalid assertion
@@ -1143,17 +1163,14 @@ Description:
 	Unexpected Done message!
 \end{lstlisting}
 
-Ejecutando el simulador en modo \textit{verboso} podemos ver que la excepción se debe a un error de \textbf{rollback}:
+\noindent Ejecutando el simulador en modo \textit{verboso} podemos ver que la excepción se debe a un error de \textbf{rollback}:
 \begin{lstlisting}
 StateVars: ()
 Rolling back, current time: 00:00:00:100:0 last time: 00:01:00:000:0
 Aborting simulation...
 \end{lstlisting}
 
-% Tampoco anduvieron el script de python ni 
-% Tampoco andan las macros ni las zonas en el simulador avanzado o \textit{standalone}.
-% el visualizador web toma el archivo val y de este inicializa tomando la primer componente de las tuplas.
-% al script de python le paso el log08 o el log01 y parece estar mirando el estado de las salidas en lugar de el del indice de la tupla que le paso.
+Por esta razón sólo pudimos ensayar cada autómata celular de forma individual.
 
 \appendix
 \section{Código Implementado}
