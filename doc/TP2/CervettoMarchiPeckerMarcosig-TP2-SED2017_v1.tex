@@ -1133,11 +1133,11 @@ Donde se observa que $101~\textrm{ms}$ después de cada respuesta del inventario
 
 \section{Conclusiones}
 
-Se comprobó la utilidad del formalismo cell-DEVS para simular el comportamiento de sistemas espaciales que implican dinámicas en varias dimensiones. Se comprobó también la versatilidad del simulador \verb|CD++| que tanto se puede utilizar para simular modelos DEVS como cell-DEVS.
+Se comprobó la utilidad del formalismo cell-DEVS para simular el comportamiento de sistemas espaciales que implican dinámicas en varias dimensiones. 
 
-Utilizando reglas simples por celda y replicando estas celdas se pueden lograr comportamientos complejos. Pudimos verificar también que a partir de la definición del vecindario de cada celda se determina qué grupo de celdas evaluar en cada paso de simulación. De esta manera, al igual que sucedía en el TP1 con el formalismo DEVS, verificamos que para sistemas con gran cantidad de celdas esto implica un gran ahorro de cómputo.
+Utilizando reglas simples por celda y replicando estas celdas se pueden lograr comportamientos emergentes o complejos. Pudimos experimentar también que a partir de la definición del vecindario de cada celda se determina qué grupo de celdas evaluar en cada paso de simulación, resultando en una ejecución más eficiente que modelando con otro formalismo.
 
-A lo largo del desarrollo del trabajo práctico con la herramienta \verb|CD++| en su versión \textit{standalone} se encontraron algunos inconvenientes: a) cuando se incluye un bloque generador se genera un error que indica que el bloque no está registrado, b) cuando se ejecuta el simulador avanzado con el parámetro \texttt{-r} se produce una excepción y se aborta la ejecución, c) el archivo de salida generado por el simulador con la opción \texttt{-o} genera un archivo vacío, y d) no pudimos definir reglas por zonas ni utilizar \textit{macros}. El primer punto nos llevó a probar todos los autómatas recurriendo a archivos de eventos. Por su parte, el no poder utilizar el comando \verb|cd++ -r| nos dificultó el \textit{debug} de las reglas para cada autómata. Cada vez que invocamos al simulador con esta opción obtuvimos el siguiente mensaje de error:
+A lo largo del desarrollo del trabajo práctico con la herramienta \verb|CD++| en su versión \textit{standalone} se encontraron algunos inconvenientes: a) cuando se incluye un bloque generador se genera un error que indica que el bloque no está registrado, b) cuando se ejecuta el simulador avanzado con el parámetro \texttt{-r} se produce una excepción y se aborta la ejecución, c) el archivo de salida generado por el simulador con la opción \texttt{-o} genera un archivo vacío, y d) no pudimos definir reglas por zonas ni utilizar algunas \textit{macros}. El primer punto nos llevó a probar todos los autómatas recurriendo a archivos de eventos. Por su parte, el no poder utilizar el comando \verb|cd++ -r| nos dificultó el \textit{debug} de las reglas para cada autómata. Cada vez que invocamos al simulador con esta opción obtuvimos el siguiente mensaje de error:
 
 \begin{lstlisting}
 Exception MException thrown!
@@ -1146,9 +1146,9 @@ Thrown in:
 File: synnode.cpp - Method: evaluate - Line: 118
 \end{lstlisting}
 
-\noindent Por esta razón utilizamos el comando \verb|cd++ -v| que devuelve mucha más información y requiere de un análisis más detallado. Por último, el hecho de no poder definir reglas que se ejecuten por zonas dificultó la implementación del autómata celular correspondiente al inventario donde se tuvieron que agregar varias reglas para las filas y columnas en los bordes que tienen un comportamiento distinto a las restantes. Por este mismo motivo, en lugar de haber utilizado $3$ automatas celulares para resolver el problema de este trabajo: cinta transportadora, inventario, despacho de productos, podría haberse utilizado tan sólo uno definiendo zonas cada una con sus reglas.
+\noindent Por esta razón utilizamos el comando \verb|cd++ -v| que devuelve mucha más información y requiere de un análisis más detallado. Por último, el hecho de no poder definir reglas que se ejecuten por zonas dificultó la implementación del autómata celular correspondiente al inventario donde se tuvieron que agregar varias reglas para las filas y columnas en los bordes que tienen un comportamiento distinto a las restantes. Por este mismo motivo, en lugar de haber utilizado $3$ autómatas celulares (cinta transportadora, inventario, despacho de productos) para resolver el problema de este trabajo, podría haberse utilizado tan sólo uno, definiendo zonas cada una con sus reglas.
 
-No obstante los comentarios anteriores, la versión avanzada del simulador presenta como ventaja la incorporación de tuplas que simplifican enormemente los vecindarios a utilizar y dan mayor flexibilidad.
+La posibilidad de incorporar tuplas del simulador avanzado simplifica enormemente los vecindarios a utilizar y da mayor flexibilidad.
 
 Para analizar el resultado del autómata celular correspondiente al inventario utilizamos el visualizador online \url{http://omarhesham.com/arslab/webviewer/} en conjunto con el \textit{script} de python provisto por la cátedra y corregido para seleccionar el elemento de la tupla a visualizar. Sería interesante contar con un visualizador que permita ver más de un elemento de la tupla a la vez.
 
@@ -1171,6 +1171,8 @@ Aborting simulation...
 \end{lstlisting}
 
 Por esta razón sólo pudimos ensayar cada autómata celular de forma individual.
+
+El desarrollo del presente trabajo, en conjunto con el primer TP, nos permitió introducirnos en el tema de simulación por eventos discretos y apropiarnos de los conceptos básicos del formalismo.
 
 \appendix
 \section{Código Implementado}
