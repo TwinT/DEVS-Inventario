@@ -1,0 +1,15 @@
+Desde la carpeta src/TP1:
+
+1. make
+2. ./bin/cd++ -mtest/top.ma > test/salida.out 
+   ctrl + c para terminar
+   Acondicionar la última línea
+
+3. grep INVENTARIO test/salida.out > test/inventario.out && \
+   grep CONTROLDECALIDAD test/salida.out > test/controldecalidad.out && \
+   grep CONTROLDEINV test/salida.out > test/controldeinventario.out
+
+4. spyder -> analisis.py
+
+
+
