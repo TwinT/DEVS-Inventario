@@ -518,23 +518,22 @@ El modelo atómico correspondiente al bloque del cliente tipo B (CTB) queda defi
 		$Y=\{query\_o, pedido\_o\}  \in \mathbb{N}^+_0$\\
 		
 		$\delta_{int}: \delta_{int}(S) \begin{cases}
-		\delta_{int}(IDLE)=QUERY\\
-		\delta_{int}(CALC)=IDLE\\
+		QUERY ~si ~s=IDLE\\
+		IDLE ~si ~s=CALC\\
 		\end{cases}$\\
 		
-		$\delta_{ext}:\delta_{ext}(S,X) \begin{cases} Si ~S=QUERY \wedge  disponibles\_i=P\\
-		\hfill \rightarrow \delta_{ext}(QUERY,disponibles\_i)=CALC\\
+		$\delta_{ext}:\delta_{ext}(S,X) \begin{cases} CALC ~si ~s=QUERY \wedge  disponibles\_i=P\\
 		\end{cases}$\\
 		
 		$\lambda:~\lambda(S)\begin{cases}
-		\lambda(IDLE)=\{query\_o = N\}\\
-		\lambda(CALC)=\{pedido\_o = P\}\\
+		query\_o = N ~si s=IDLE\\
+		pedido\_o = P ~si s=CALC\\
 		\end{cases}$\\
 		
 		$t_A(S)=\begin{cases}
-		0~si~S=\{CALC\}\\
-		\infty~si~S=\{QUERY\}\\
-		EXP\_VAR~si~S=\{IDLE\}\
+		0~si~s=\{CALC\}\\
+		\infty~si~s=\{QUERY\}\\
+		EXP\_VAR~si~s=\{IDLE\}\
 		\end{cases}$
 	\end{minipage}
 }\\
@@ -571,21 +570,19 @@ El modelo atómico correspondiente al bloque del cliente tipo C (CTC) queda defi
 		$Y=\{query\_o, pedido\_o\}  \in \mathbb{N}^+_0$\\
 		
 		$\delta_{int}: \delta_{int}(S) \begin{cases}
-		\delta_{int}(IDLE)=QUERY\\
-		\delta_{int}(DECLINE)=IDLE\\
-		\delta_{int}(ACCEPT)=IDLE
+		QUERY~si~s=IDLE\\
+		IDLE~si~s=DECLINE\\
+		IDLE~si~s=ACCEPT
 		\end{cases}$\\
 		
-		$\delta_{ext}:\delta_{ext}(S,X) \begin{cases} Si ~S=QUERY \wedge  disponibles\_i=N\\
-		\hfill \rightarrow \delta_{ext}(QUERY,disponibles\_i)=ACCEPT\\
-		Si ~S=QUERY \wedge disponibles\_i < N\\
-		\hfill \rightarrow \delta_{ext}(QUERY,disponibles\_i)=DECLINE\\
+		$\delta_{ext}:\delta_{ext}(S,X) \begin{cases} ACCEPT ~si ~s=QUERY \wedge  disponibles\_i=N\\
+		DECLINE ~si ~s=QUERY \wedge disponibles\_i < N
 		\end{cases}$\\
 		
 		$\lambda:~\lambda(S)\begin{cases}
-		\lambda(IDLE)=\{query\_o = N\}\\
-		\lambda(DECLINE)=\{pedido\_o = 0\}\\
-		\lambda(ACCEPT)=\{pedido\_o = N\}
+		query\_o = N ~si~s=IDLE\\
+		pedido\_o = 0 ~si ~s=DECLINE\\
+		pedido\_o = N ~si ~s=ACCEPT
 		\end{cases}$\\
 		
 		$t_A(S)=\begin{cases}
@@ -629,20 +626,17 @@ El modelo atómico correspondiente al bloque de control de inventario (CI) queda
 	$Y=\{queryInventory\_o, querySuppliers\_o\} \in \mathbb{N}^+_0$\\
 	
 	$\delta_{int}: \delta_{int}(S) \begin{cases}
-		\delta_{int}(WAITING)=QUERY\\
-		\delta_{int}(CALC)=WAITING
+		QUERY ~si ~s=WAITING\\
+		WAITING ~si ~s=CALC
 		\end{cases}$\\
 		
-	$\delta_{ext}:\delta_{ext}(S,numProd\_i) \begin{cases} Si ~S=QUERY \wedge  numProd\_i=N\\
-	\hfill \rightarrow \delta_{ext}(S,numProd\_i)=CALC \end{cases}$\\
+	$\delta_{ext}:\delta_{ext}(S,numProd\_i) \begin{cases} CALC ~si ~s=QUERY \wedge  numProd\_i=N
+	\end{cases}$\\
 	
 	$\lambda:~\lambda(S)\begin{cases}
-	\lambda(WAITING)=\{queryInventory\_o = 1\}\\
-	\lambda(CALC)=\{ querySuppliers\_o = \begin{cases}
-		S-N~si~numProd\_i\\
-		\hfill < s\\
-		0~\forall~numProd\_i
-		\end{cases} \}
+	queryInventory\_o = 1 ~si ~s=WAITING\\
+	querySuppliers\_o = S-N ~si ~s=CALC \wedge numProd\_i < s \\
+	querySuppliera\_o = 0 ~\forall~numProd\_i
 	\end{cases}$\\
 	
 	$t_A(S)=\begin{cases}
@@ -684,27 +678,22 @@ El modelo atómico correspondiente al bloque de control de calidad (CC) queda de
 		$Y=\{prod\_o \in \mathbb{R}^+, queryInventory\_o  \in \mathbb{N}^+_0\}$\\
 		
 		$\delta_{int}: \delta_{int}(S) \begin{cases}
-		\delta_{int}(QUERY)=INV\_WAIT\\
-		\delta_{int}(CHECK)=\begin{cases}
-		QUERY\\
-		\hfill si~(numPassProd <\\
+		INV\_WAIT ~si ~s=QUERY\\
+		QUERY ~si ~s=CHECK \wedge (numPassProd <\\
 		\hfill numClientQuery)~\wedge\\
 		\hfill (\neg{invEmpty})\\
-		SEND~\forall~otra~condicion.
-		\end{cases}\\
-		\delta_{int}(SEND)=WAITING
+		SEND ~si ~s=CHECK \wedge \forall~otra~condicion.\\
+		WAITING ~si ~s=SEND
 		\end{cases}$\\
 		
-		$\delta_{ext}:\delta_{ext}(S,X) \begin{cases} Si ~S=WAITING \wedge  queryClient\_i=N\\
-		\hfill \rightarrow \delta_{ext}(QUERY,queryClient\_i)=QUERY\\
-		Si ~S=CHECK \wedge size(prod\_i)=P\\
-		\hfill \rightarrow \delta_{ext}(CHECK,prod\_i)=SEND
-		 \end{cases}$\\
+		$\delta_{ext}:\delta_{ext}(S,X) \begin{cases} QUERY ~si ~s=WAITING \wedge  queryClient\_i=N\\
+		SEND ~si ~s=CHECK \wedge size(prod\_i)=P
+		\end{cases}$\\
 		
 		$\lambda:~\lambda(S)\begin{cases}
-		\lambda(QUERY)=\{queryInventory\_o = 1\}\\
-		\lambda(CHECK)=\{\O\}\\
-		\lambda(SEND)=\{prod\_o = K\}
+		queryInventory\_o = 1 ~si ~s=QUERY\\
+		\O ~si ~s=CHECK\\
+		prod\_o = K ~si ~s=SEND
 		\end{cases}$\\
 		
 		$t_A(S)=\begin{cases}
