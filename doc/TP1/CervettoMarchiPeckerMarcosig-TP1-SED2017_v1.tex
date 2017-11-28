@@ -368,7 +368,7 @@ El departamento de atención al cliente se encarga de realizar la negociación c
 
 \subsubsection{Control de inventario\label{sec:CID}}
 
-Al comienzo de cada mes, la compañía revisa el nivel de inventario y decide cuántas nuevas unidades pedir a sus proveedores. La compañía ordena $Z$ unidades a todos los proveedores por igual. El costo costo será $K + pZ$, donde $K = 350~\textrm{pesos}$ es el costo fijo del pedido y $p = 25~\textrm{pesos}$ es el costo incremental por unidad. Naturalmente, si $Z = 0$ no se incurre en ningún costo. La compañía usa la siguiente política para decidir cuántas unidades pedir: si $I$ es el nivel de inventario al comienzo del mes, $S$ el inventario máximo posible (capacidad de almacenamiento) y $n$ el parámetro de política de reposición, $Z$ estará dado por:
+Al comienzo de cada mes, la compañía revisa el nivel de inventario y decide cuántas nuevas unidades pedir a sus proveedores. La compañía ordena $Z$ unidades a todos los proveedores por igual. El costo será $K + pZ$, donde $K = 350~\textrm{pesos}$ es el costo fijo del pedido y $p = 25~\textrm{pesos}$ es el costo incremental por unidad. Naturalmente, si $Z = 0$ no se incurre en ningún costo. La compañía usa la siguiente política para decidir cuántas unidades pedir: si $I$ es el nivel de inventario al comienzo del mes, $S$ el inventario máximo posible (capacidad de almacenamiento) y $n$ el parámetro de política de reposición, $Z$ estará dado por:
 
 \begin{equation}
 Z=\left\{\begin{array}{lr}
@@ -518,22 +518,22 @@ El modelo atómico correspondiente al bloque del cliente tipo B (CTB) queda defi
 		$Y=\{query\_o, pedido\_o\}  \in \mathbb{N}^+_0$\\
 		
 		$\delta_{int}: \delta_{int}(S) \begin{cases}
-		QUERY ~si ~s=IDLE\\
-		IDLE ~si ~s=CALC\\
+		QUERY & si ~s=IDLE\\
+		IDLE  & si ~s=CALC\\
 		\end{cases}$\\
 		
-		$\delta_{ext}:\delta_{ext}(S,X) \begin{cases} CALC ~si ~s=QUERY \wedge  disponibles\_i=P\\
+		$\delta_{ext}:\delta_{ext}(S,X) \begin{cases} CALC & si ~s=QUERY \wedge  disponibles\_i=P\\
 		\end{cases}$\\
 		
 		$\lambda:~\lambda(S)\begin{cases}
-		query\_o = N ~si s=IDLE\\
-		pedido\_o = P ~si s=CALC\\
+		query\_o = N  & si ~s=IDLE\\
+		pedido\_o = P & si ~s=CALC\\
 		\end{cases}$\\
 		
 		$t_A(S)=\begin{cases}
-		0~si~s=\{CALC\}\\
-		\infty~si~s=\{QUERY\}\\
-		EXP\_VAR~si~s=\{IDLE\}\
+		0 & si ~s=\{CALC\}\\
+		\infty & si ~s=\{QUERY\}\\
+		EXP\_VAR & si ~s=\{IDLE\}\
 		\end{cases}$
 	\end{minipage}
 }\\
@@ -570,25 +570,25 @@ El modelo atómico correspondiente al bloque del cliente tipo C (CTC) queda defi
 		$Y=\{query\_o, pedido\_o\}  \in \mathbb{N}^+_0$\\
 		
 		$\delta_{int}: \delta_{int}(S) \begin{cases}
-		QUERY~si~s=IDLE\\
-		IDLE~si~s=DECLINE\\
-		IDLE~si~s=ACCEPT
+		QUERY & si~s=IDLE\\
+		IDLE & si~s=DECLINE\\
+		IDLE & si~s=ACCEPT
 		\end{cases}$\\
 		
-		$\delta_{ext}:\delta_{ext}(S,X) \begin{cases} ACCEPT ~si ~s=QUERY \wedge  disponibles\_i=N\\
-		DECLINE ~si ~s=QUERY \wedge disponibles\_i < N
+		$\delta_{ext}:\delta_{ext}(S,X) \begin{cases} ACCEPT & si ~s=QUERY \wedge  disponibles\_i=N\\
+		DECLINE & si ~s=QUERY \wedge disponibles\_i < N
 		\end{cases}$\\
 		
 		$\lambda:~\lambda(S)\begin{cases}
-		query\_o = N ~si~s=IDLE\\
-		pedido\_o = 0 ~si ~s=DECLINE\\
-		pedido\_o = N ~si ~s=ACCEPT
+		query\_o = N &si~s=IDLE\\
+		pedido\_o = 0 &si ~s=DECLINE\\
+		pedido\_o = N &si ~s=ACCEPT
 		\end{cases}$\\
 		
 		$t_A(S)=\begin{cases}
-		0~si~S=\{ACCEPT, DECLINE\}\\
-		\infty~si~S=\{QUERY\}\\
-		EXP\_VAR~si~S=\{IDLE\}\
+		0 & si~s=\{ACCEPT, DECLINE\}\\
+		\infty & si~s=\{QUERY\}\\
+		EXP\_VAR & si~s=\{IDLE\}\
 		\end{cases}$
 	\end{minipage}
 }\\
@@ -626,26 +626,30 @@ El modelo atómico correspondiente al bloque de control de inventario (CI) queda
 	$Y=\{queryInventory\_o, querySuppliers\_o\} \in \mathbb{N}^+_0$\\
 	
 	$\delta_{int}: \delta_{int}(S) \begin{cases}
-		QUERY ~si ~s=WAITING\\
-		WAITING ~si ~s=CALC
+		QUERY & si ~s=WAITING\\
+		WAITING & si ~s=CALC
 		\end{cases}$\\
 		
-	$\delta_{ext}:\delta_{ext}(S,numProd\_i) \begin{cases} CALC ~si ~s=QUERY \wedge  numProd\_i=N
+	$\delta_{ext}:\delta_{ext}(S,numProd\_i) \begin{cases} CALC & si ~s=QUERY \wedge  numProd\_i=N
 	\end{cases}$\\
 	
 	$\lambda:~\lambda(S)\begin{cases}
-	queryInventory\_o = 1 ~si ~s=WAITING\\
-	querySuppliers\_o = S-N ~si ~s=CALC \wedge numProd\_i < s \\
-	querySuppliera\_o = 0 ~\forall~numProd\_i
+	queryInventory\_o = 1 & si ~s=WAITING\\
+	querySuppliers\_o = S-N & si ~s=CALC \wedge numProd\_i < n \\
+	querySuppliera\_o = 0 & si ~s=CALC \wedge numProd\_i \geq n
 	\end{cases}$\\
 	
 	$t_A(S)=\begin{cases}
-	1~si~S=WAITING\\
-	0~si~S=CALC\\
-	\infty~si~S=QUERY
+	1 & si~s=WAITING\\
+	0 & si~s=CALC\\
+	\infty & si~s=QUERY
 	\end{cases}$
 \end{minipage}
 }
+
+En el pseudocódigo se puede observar la política de reposición de insumos explicada en la sección~\ref{sec:CID}. En la función de salida $\lambda$ se implementa la Ecuación~\eqref{eq:ctrlinv} donde:\\
+$S = $ es la capacidad de almacenamiento del inventario.\\
+$n = $ es el parámetro de política de reposición.
 
 En las figuras \ref{fig:CI-esquematico} y \ref{fig:CI-estados} se pueden observar los puertos de entrada/salida y el diagrama de estados respectivamente.
 
@@ -678,27 +682,27 @@ El modelo atómico correspondiente al bloque de control de calidad (CC) queda de
 		$Y=\{prod\_o \in \mathbb{R}^+, queryInventory\_o  \in \mathbb{N}^+_0\}$\\
 		
 		$\delta_{int}: \delta_{int}(S) \begin{cases}
-		INV\_WAIT ~si ~s=QUERY\\
-		QUERY ~si ~s=CHECK \wedge (numPassProd <\\
-		\hfill numClientQuery)~\wedge\\
-		\hfill (\neg{invEmpty})\\
-		SEND ~si ~s=CHECK \wedge \forall~otra~condicion.\\
-		WAITING ~si ~s=SEND
+		INV\_WAIT & si ~s=QUERY\\
+		QUERY & si ~s=CHECK \wedge (numPassProd <\\
+		& \hfill numClientQuery)~\wedge\\
+		& \hfill (\neg{invEmpty})\\
+		SEND &si ~s=CHECK \wedge \forall~otra~condicion.\\
+		WAITING &si ~s=SEND
 		\end{cases}$\\
 		
-		$\delta_{ext}:\delta_{ext}(S,X) \begin{cases} QUERY ~si ~s=WAITING \wedge  queryClient\_i=N\\
-		SEND ~si ~s=CHECK \wedge size(prod\_i)=P
+		$\delta_{ext}:\delta_{ext}(S,X) \begin{cases} QUERY &si ~s=WAITING \wedge  queryClient\_i=N\\
+		SEND &si ~s=CHECK \wedge size(prod\_i)=P
 		\end{cases}$\\
 		
 		$\lambda:~\lambda(S)\begin{cases}
-		queryInventory\_o = 1 ~si ~s=QUERY\\
-		\O ~si ~s=CHECK\\
-		prod\_o = K ~si ~s=SEND
+		queryInventory\_o = 1 & si ~s=QUERY\\
+		\O & si ~s=CHECK\\
+		prod\_o = K & si ~s=SEND
 		\end{cases}$\\
 		
 		$t_A(S)=\begin{cases}
-		0~si~S=\{QUERY,CHECK,SEND\}\\
-		\infty~si~S=\{WAITING, INV\_WAIT\}
+		0 & si~s=\{QUERY,CHECK,SEND\}\\
+		\infty & si~s=\{WAITING, INV\_WAIT\}
 		\end{cases}$
 	\end{minipage}
 }\\
@@ -740,28 +744,28 @@ El modelo atómico correspondiente al bloque de atención al cliente (AC) queda 
 		$Y=\{prodInventory\_o, queryInventory\_o, queryClient_o\}  \in \mathbb{N}^+_0$\\
 		
 		$\delta_{int}: \delta_{int}(S) \begin{cases}
-		\delta_{int}(QUERY)=INV\_WAIT\\
-		\delta_{int}(CLI\_RPLY)=CLI\_WAIT\\
-		\delta_{int}(INV\_GET)=WAITING
+		INV\_WAIT & si ~s = QUERY\\
+		CLI\_WAIT & si ~s=CLI\_RPLY\\
+		WAITING & si ~s=INV\_GET
 		\end{cases}$\\
 		
-		$\delta_{ext}:\delta_{ext}(S,X) \begin{cases} Si ~S=WAITING \wedge  queryClient\_i=N\\
-		\hfill \rightarrow \delta_{ext}(WAITING,queryClient\_i)=QUERY\\
-		Si ~S=INV\_WAIT \wedge queryInventory\_i=P\\
-		\hfill \rightarrow \delta_{ext}(INV\_WAIT,queryInventory\_i)=CLI\_RPLY\\
-		Si ~S=CLI\_WAIT \wedge numProdClient\_i=K\\
-		\hfill \rightarrow \delta_{ext}(CLI\_WAIT,numProdClient\_i)=INV\_GET
+		$\delta_{ext}:\delta_{ext}(S,X) \begin{cases} 
+		QUERY & si ~s=WAITING \wedge  queryClient\_i=N\\
+		CLI\_RPLY & si ~s=INV\_WAIT \\
+		& \hfill \wedge ~queryInventory\_i=P\\
+		INV\_GET & si ~s=CLI\_WAIT \\
+		& \hfill \wedge ~ numProdClient\_i=K\\
 		\end{cases}$\\
 		
 		$\lambda:~\lambda(S)\begin{cases}
-		\lambda(QUERY)=\{queryInventory\_o = N\}\\
-		\lambda(CLI\_RPLY)=\{queryCLient\_o = P\}\\
-		\lambda(INV\_GET)=\{prodInventory\_o = K\}
+		queryInventory\_o = N & si ~s = QUERY\\
+		queryClient\_o = P & si ~ s=CLI\_RPLY\\
+		prodInventory\_o = K & si ~s=INV\_GET
 		\end{cases}$\\
 		
 		$t_A(S)=\begin{cases}
-		0~si~S=\{QUERY,CLI\_RPLY,INV\_GET\}\\
-		\infty~si~S=\{WAITING, INV\_WAIT, CLI\_WAIT\}
+		0 & si~s=\{QUERY,CLI\_RPLY,INV\_GET\}\\
+		\infty & si~s=\{WAITING, INV\_WAIT, CLI\_WAIT\}
 		\end{cases}$
 	\end{minipage}%
 }\\
@@ -798,36 +802,30 @@ El modelo atómico correspondiente al bloque de inventario (I) queda definido de
 		$Y=\{producto\_out, query\_out\}  \in \mathbb{N}^+_0$\\
 		
 		$\delta_{int}: \delta_{int}(S) \begin{cases}
-		\delta_{int}(QUERY)=IDLE\\
-		\delta_{int}(ENCARGO)=IDLE\\
-		\delta_{int}(PUSH)=IDLE\\
-		\delta_{it}(GET)=IDLE\\
+		IDLE & si~s=QUERY\\
+		IDLE & si~s=ENCARGO\\
+		IDLE & si~s=PUSH\\
+		IDLE & si~s=GET\\
 		\end{cases}$\\
 		
-		$\delta_{ext}:\delta_{ext}(S,X) \begin{cases} Si ~S=IDLE \wedge \begin{cases} product\_in\_A = Na \\ product\_in\_B = Nb \\ product\_in\_C = Nc \\ \end{cases}\\
-		\hfill \wedge ~size(cola\_i) == 0 ~\exists i \in \{A,B,C\}\\
-		\hfill \rightarrow \delta_{ext}(IDLE,\{product\_in\_A, product\_in\_B \\
-		\hfill product\_in\_C\})=QUERY\\
-		Si ~S= IDLE \wedge encargo = Ne\\
-		\hfill \rightarrow \delta_{ext}(IDLE,encargo)=ENCARGO\\
-		Si ~S=IDLE \wedge \begin{cases} product\_in\_A = Na \\ product\_in\_B = Nb \\ product\_in\_C = Nc \\ \end{cases}\\
-		\hfill \wedge ~size(cola\_i) != 0 ~\forall i \in \{A,B,C\}\\
-		\hfill \rightarrow \delta_{ext}(IDLE,\{product\_in\_A, product\_in\_B \\
-		\hfill product\_in\_C\})=PUSH\\
-		Si ~S=IDLE \wedge get = Ng\\
-		\hfill \rightarrow \delta_{ext}(IDLE,get)=GET
+		$\delta_{ext}:\delta_{ext}(S,X) \begin{cases} QUERY & si ~s=IDLE \wedge \begin{cases} product\_in\_A = Na \\ product\_in\_B = Nb \\ product\_in\_C = Nc \\ \end{cases}\\
+		& \hfill \wedge ~\exists i \in \{A,B,C\}: ~size(cola\_i) == 0\\
+		ENCARGO & si ~s= IDLE \wedge encargo = Ne\\
+		PUSH & si ~s=IDLE \wedge \begin{cases} product\_in\_A = Na \\ product\_in\_B = Nb \\ product\_in\_C = Nc \\ \end{cases}\\
+		& \hfill \wedge ~\forall i \in \{A,B,C\}: ~size(cola\_i) != 0 \\
+		GET & si ~s=IDLE \wedge get = Ng\\
 		\end{cases}$\\
 		
 		$\lambda:~\lambda(S)\begin{cases}
-		\lambda(QUERY)=\{query\_out = size(cola) - encargos\_q\}\\
-		\lambda(ENCARGO)=\{\O\}\\
-		\lambda(PUSH)=\{producto\_out = \min(get\_q,size(cola))\}\\
-		\lambda(GET)=\{producto\_out = \min(encargos\_q,size(cola))\}\\
+		query\_out = size(cola) - encargos\_q & si ~s = QUERY\\
+		\O & si~s=ENCARGO\\
+		producto\_out = \min(get\_q,size(cola)) & si ~s = PUSH\\
+		producto\_out = \min(encargos\_q,size(cola)) & si~s = GET\\
 		\end{cases}$\\
 		
 		$t_A(S)=\begin{cases}
-		0~si~S=\{QUERY,ENCARGO,PUSH,GET\}\\
-		\infty~si~S=\{IDLE\}
+		0 & si~s=\{QUERY,ENCARGO,PUSH,GET\}\\
+		\infty & si~s=IDLE
 		\end{cases}$
 	\end{minipage}
 }\\
@@ -903,17 +901,16 @@ El modelo atómico correspondiente al bloque del proveedor inmediato (PI) queda 
 		
 		$Y=\{entrega \}  \in \mathbb{N}^+_0$\\
 		
-		$\delta_{int}: \delta_{int}(SERVE) = IDLE$\\
+		$\delta_{int}: ~\delta_{int}(S) \begin{cases} IDLE & si~s=SERVE \end{cases}$\\
 		
-		$\delta_{ext}:\delta_{ext}(S,X) \begin{cases} Si ~S=IDLE \wedge  pedido = N\\
-		\hfill \rightarrow \delta_{ext}(IDLE, pedido)=SERVE\\
+		$\delta_{ext}:\delta_{ext}(S,X) \begin{cases} SERVE & si ~s=IDLE \wedge  pedido = N\\
 		\end{cases}$\\
 		
-		$\lambda:~\lambda(SERVE)=\{entrega = N\}$\\
+		$\lambda:~\lambda(S) \begin{cases} entrega = N & si~s = SERVE \end{cases}$\\
 		
 		$t_A(S)=\begin{cases}
-		0~si~S=\{SERVE \}\\
-		\infty~si~S=\{IDLE \}
+		0 & si~s=SERVE\\
+		\infty & si~s=IDLE
 		\end{cases}$
 	\end{minipage}
 }\\
@@ -948,21 +945,21 @@ El modelo atómico correspondiente al bloque del proveedor por múltiplo de cant
 		
 		$Y=\{entrega \}  \in \mathbb{N}^+_0$\\
 		
-		$\delta_{int}: \delta_{int}(SERVE) = IDLE$\\
+		$\delta_{int}:~\delta_{int}(S) \begin{cases} IDLE & si ~s=SERVE \end{cases}$\\
 		
-		$\delta_{ext}:\delta_{ext}(S,X) \begin{cases} Si ~S=IDLE \wedge  pedido = N\\
-		\hfill \rightarrow \delta_{ext}(IDLE, pedido)=SERVE\\
+		$\delta_{ext}:~\delta_{ext}(S,X) \begin{cases} SERVE & si ~s=IDLE \wedge  pedido = N\\
 		\end{cases}$\\
 		
-		$\lambda:~\lambda(SERVE) = \{ entrega = \begin{cases}
-		N~Si~N\%numProdPkg=0 \\
-		\lfloor N/numProdPkg \rfloor \\
-		\hfill + N\%numProdpkg~\forall~N
-		\end{cases}$\}\\
+		$\lambda:~\lambda(S) \begin{cases} 
+		entrega = N & si ~s = SERVE \\
+		& \hfill \wedge ~N\%numProdPkg = 0 \\
+		entrega = \lfloor N/numProdPkg \rfloor \\
+		\hfill + N\%numProdPkg & si ~s = SERVE \wedge ~\forall~N 
+		\end{cases}$\\
 
 		$t_A(S)=\begin{cases}
-		0~si~S=\{SERVE \}\\
-		\infty~si~S=\{IDLE \}
+		0 & si~s=SERVE\\
+		\infty & si~s=IDLE
 		\end{cases}$
 	\end{minipage}
 }\\
@@ -1000,17 +997,16 @@ El modelo atómico correspondiente al bloque del proveedor por encargo (PE) qued
 		
 		$Y=\{entrega \}  \in \mathbb{N}^+_0$\\
 		
-		$\delta_{int}: \delta_{int}(SERVE) = IDLE$\\
+		$\delta_{int}: \delta_{int}(S)\begin{cases} IDLE & si~s = SERVE \end{cases}$\\
 		
-		$\delta_{ext}:\delta_{ext}(S,X) \begin{cases} Si ~S=IDLE \wedge  pedido = N\\
-		\hfill \rightarrow \delta_{ext}(IDLE, pedido)=SERVE\\
+		$\delta_{ext}:\delta_{ext}(S,X) \begin{cases} SERVE & si ~s=IDLE \wedge  pedido = N\\
 		\end{cases}$\\
 		
-		$\lambda:~\lambda(SERVE)=\{entrega = N\}$\\
+		$\lambda:~\lambda(S) \begin{cases} entrega = N & si~s=SERVE \end{cases}$\\
 		
 		$t_A(S)=\begin{cases}
-		1~si~S=\{SERVE \}\\
-		\infty~si~S=\{IDLE \}
+		1 & si~s= SERVE\\
+		\infty & si~s= IDLE
 		\end{cases}$
 	\end{minipage}
 }\\
@@ -1033,7 +1029,7 @@ En las figuras \ref{fig:PE-esquematico} y \ref{fig:PE-estados} se pueden observa
 \FloatBarrier
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Modelado y simulación}
+\section{Simulación}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \subsection{Pruebas parciales\label{sec:PP}}
