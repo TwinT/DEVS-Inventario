@@ -25,9 +25,9 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="1.3042969"
-     inkscape:cx="231.24438"
-     inkscape:cy="612.00359"
+     inkscape:zoom="1.8445544"
+     inkscape:cx="234.42145"
+     inkscape:cy="640.69194"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="false"
@@ -44,7 +44,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -203,11 +203,6 @@
        inkscape:connector-curvature="0"
        style="fill:#000000;fill-opacity:0;fill-rule:evenodd;stroke:none;stroke-linecap:square;stroke-miterlimit:10" />
     <path
-       d="m 263.97836,282.31848 1.84375,0 0,13.17187 -1.84375,0 0,-13.17187 z m 4.89355,3.57812 q 0.60938,-0.15625 1.60938,-0.32812 1.01562,-0.17188 2.32812,-0.17188 1.17188,0 1.95313,0.34375 0.78125,0.32813 1.25,0.92188 0.46875,0.59375 0.65625,1.4375 0.1875,0.82812 0.1875,1.84375 l 0,5.54687 -1.76563,0 0,-5.17187 q 0,-0.90625 -0.125,-1.54688 -0.125,-0.65625 -0.40625,-1.04687 -0.28125,-0.40625 -0.76562,-0.57813 -0.46875,-0.1875 -1.17188,-0.1875 -0.28125,0 -0.59375,0.0156 -0.29687,0.0156 -0.57812,0.0469 -0.28125,0.0312 -0.5,0.0781 -0.21875,0.0312 -0.3125,0.0469 l 0,8.34375 -1.76563,0 0,-9.59375 z m 14.50266,5.1875 8.70312,0 0,1.5 -8.70312,0 0,-1.5 z m 0,-4.04687 8.70312,0 0,1.5 -8.70312,0 0,-1.5 z m 15.47235,-4.71875 1.84375,0 0,13.17187 -1.84375,0 0,-13.17187 z"
-       id="path71"
-       inkscape:connector-curvature="0"
-       style="fill:#000000;fill-rule:nonzero;stroke:none;stroke-linecap:square;stroke-miterlimit:10" />
-    <path
        d="m 125.3298,399.12941 81.00787,0 0,30.01575 -81.00787,0 z"
        id="path73"
        inkscape:connector-curvature="0"
@@ -222,5 +217,41 @@
        id="path77"
        inkscape:connector-curvature="0"
        style="fill:#000000;fill-rule:nonzero;stroke:none;stroke-linecap:square;stroke-miterlimit:10" />
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:15px;line-height:393.00000668%;font-family:Sans;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       x="275.30972"
+       y="294.84311"
+       id="text4167"
+       sodipodi:linespacing="393.00001%"><tspan
+         sodipodi:role="line"
+         id="tspan4169"
+         x="275.30972"
+         y="294.84311"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:18.75px;font-family:Ubuntu;-inkscape-font-specification:Ubuntu">In ? I</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:15px;line-height:393.00000668%;font-family:Sans;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       x="431.54056"
+       y="483.11902"
+       id="text4171"
+       sodipodi:linespacing="393.00001%"><tspan
+         sodipodi:role="line"
+         id="tspan4173"
+         x="431.54056"
+         y="483.11902"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:16.25px;font-family:Ubuntu;-inkscape-font-specification:Ubuntu">ta = 1</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:15px;line-height:393.00000668%;font-family:Sans;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       x="432.16281"
+       y="357.91846"
+       id="text4171-3"
+       sodipodi:linespacing="393.00001%"><tspan
+         sodipodi:role="line"
+         id="tspan4173-6"
+         x="432.16281"
+         y="357.91846"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:16.25px;font-family:Ubuntu;-inkscape-font-specification:Ubuntu">ta = 0</tspan></text>
   </g>
 </svg>
