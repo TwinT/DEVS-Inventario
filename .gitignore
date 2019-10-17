@@ -54,3 +54,4 @@ doc/TP2/CervettoMarchiPeckerMarcosig-TP2-SED2017_v1\.log
 *.swp
 
 src/TP2/salida
+src/TP1/.vscode/*
